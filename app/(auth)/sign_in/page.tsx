@@ -1,3 +1,4 @@
+"use client";
 import Account from "@/components/Account";
 import React from "react";
 

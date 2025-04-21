@@ -1,7 +1,37 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import { useForm } from "react-hook-form";
+import { accountValidator } from "@/lib/validators/account.validator";
 
 const Account = ({ type }: { type: string }) => {
+  const form = useForm<z.infer<typeof accountValidator>>({
+    resolver: zodResolver(accountValidator),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof accountValidator>) => {
+    // Handle form submission
+    console.log(data);
+    // You can send the data to your API or perform any other actions here
+  };
+
   return (
     <div className="relative z-10">
       <h2 className="text-3xl font-bold text-white text-center mb-2 tracking-wide">
@@ -12,10 +42,33 @@ const Account = ({ type }: { type: string }) => {
           ? "Manage your account,create new projects and more."
           : "Join us to unlock the full potential of our platform."}
       </p>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className=" text-sm text-slate-200/70  mb-1">
+                  Username
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-small"
+                    placeholder="shadcn"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-[12px]" />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
 
-      <form className="space-y-5 text-slate-200">
+      {/* <form className="space-y-5 text-slate-200">
         <div>
-          <label className="block text-sm text-slate-200/70  mb-1">Email</label>
+          <label className="">Email</label>
           <input
             type="email"
             placeholder="you@example.com"
@@ -38,7 +91,7 @@ const Account = ({ type }: { type: string }) => {
         >
           Sign In
         </button>
-      </form>
+      </form> */}
 
       <div className="mt-6 text-center">
         <p className="text-sm text-slate-400/70">
