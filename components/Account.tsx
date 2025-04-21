@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { Icon } from "@iconify/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -15,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { accountValidator } from "@/lib/validators/account.validator";
 import FormInput from "@/components/FormInput";
+import { Button } from "./ui/button";
 
 const Account = ({ type }: { type: string }) => {
   const form = useForm<z.infer<typeof accountValidator>>({
@@ -67,38 +69,20 @@ const Account = ({ type }: { type: string }) => {
             type="password"
           />
 
-          <button className="btn_primary px-10">
-            {type === "sign_in" ? "Login" : "Register"}
-          </button>
+          <Button type="submit" className="btn_primary px-10">
+            {type === "sign_in" ? (
+              <span className="flex items-center gap-2">
+                Sign In <Icon icon="hugeicons:login-method" />
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                Sign Up
+                <Icon icon="ph:user-duotone" />
+              </span>
+            )}
+          </Button>
         </form>
       </Form>
-
-      {/* <form className="space-y-5 text-slate-200">
-        <div>
-          <label className="">Email</label>
-          <input
-            type="email"
-            placeholder="you@example.com"
-            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-small"
-          />
-        </div>
-        <div>
-          <label className="block text-sm text-slate-200/70  mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-small"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-gradient-to-r from-secondary1 to-primary1 hover:from-dark1/75 hover:to-primary1/70 text-white font-semibold rounded-xl shadow-lg transition duration-300 cursor-pointer"
-        >
-          Sign In
-        </button>
-      </form> */}
 
       <div className="mt-6 text-center">
         <p className="text-sm text-slate-400/70">
