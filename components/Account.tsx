@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,6 +14,7 @@ import { Input } from "@/components/ui/input";
 
 import { useForm } from "react-hook-form";
 import { accountValidator } from "@/lib/validators/account.validator";
+import FormInput from "@/components/FormInput";
 
 const Account = ({ type }: { type: string }) => {
   const form = useForm<z.infer<typeof accountValidator>>({
@@ -44,25 +44,32 @@ const Account = ({ type }: { type: string }) => {
       </p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
+          {type === "sign_up" && (
+            <FormInput
+              control={form.control}
+              label="username"
+              placeholder="Username"
+              name="username"
+            />
+          )}
+          <FormInput
             control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className=" text-sm text-slate-200/70  mb-1">
-                  Username
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-small"
-                    placeholder="shadcn"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className="text-[12px]" />
-              </FormItem>
-            )}
+            label="email"
+            placeholder="Email"
+            name="Email"
+            type="email"
           />
+          <FormInput
+            control={form.control}
+            label="password"
+            placeholder="password"
+            name="password"
+            type="password"
+          />
+
+          <button className="btn_primary px-10">
+            {type === "sign_in" ? "Login" : "Register"}
+          </button>
         </form>
       </Form>
 
