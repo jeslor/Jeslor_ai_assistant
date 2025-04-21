@@ -4,11 +4,13 @@ import React from "react";
 const Account = ({ type }: { type: string }) => {
   return (
     <div className="relative z-10">
-      <h2 className="text-3xl font-bold text-white text-center mb-6 tracking-wide">
+      <h2 className="text-3xl font-bold text-white text-center mb-2 tracking-wide">
         {type === "sign_in" ? "Welcome Back" : "Create an Account"}
       </h2>
-      <p className="text-sm text-slate-200/55 text-center mb-8">
-        Sign in to access your dashboard
+      <p className="text-small text-slate-200/55 text-center mb-10">
+        {type === "sign_in"
+          ? "Manage your account,create new projects and more."
+          : "Join us to unlock the full potential of our platform."}
       </p>
 
       <form className="space-y-5 text-slate-200">
@@ -17,7 +19,7 @@ const Account = ({ type }: { type: string }) => {
           <input
             type="email"
             placeholder="you@example.com"
-            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-[14px]"
+            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-small"
           />
         </div>
         <div>
@@ -27,7 +29,7 @@ const Account = ({ type }: { type: string }) => {
           <input
             type="password"
             placeholder="••••••••"
-            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-[14px]"
+            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-small"
           />
         </div>
         <button
@@ -39,7 +41,7 @@ const Account = ({ type }: { type: string }) => {
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-sm text-black-300">
+        <p className="text-sm text-slate-400/70">
           {type === "sign_in"
             ? "Don't have an account?"
             : "Already have an account?"}{" "}
