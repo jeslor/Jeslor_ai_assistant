@@ -7,30 +7,32 @@ const Account = ({ type }: { type: string }) => {
       <h2 className="text-3xl font-bold text-white text-center mb-6 tracking-wide">
         {type === "sign_in" ? "Welcome Back" : "Create an Account"}
       </h2>
-      <p className="text-sm text-black-200 text-center mb-8">
+      <p className="text-sm text-slate-200/55 text-center mb-8">
         Sign in to access your dashboard
       </p>
 
-      <form className="space-y-5">
+      <form className="space-y-5 text-slate-200">
         <div>
-          <label className="block text-sm text-black-300 mb-1">Email</label>
+          <label className="block text-sm text-slate-200/70  mb-1">Email</label>
           <input
             type="email"
             placeholder="you@example.com"
-            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500"
+            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-[14px]"
           />
         </div>
         <div>
-          <label className="block text-sm text-black-300 mb-1">Password</label>
+          <label className="block text-sm text-slate-200/70  mb-1">
+            Password
+          </label>
           <input
             type="password"
             placeholder="••••••••"
-            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500"
+            className="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-black-500 text-[14px]"
           />
         </div>
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-gradient-to-r from-gray-600 to-pink-500 hover:from-gray-700 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg transition duration-300 cursor-pointer"
+          className="w-full py-2 px-4 bg-gradient-to-r from-secondary1 to-primary1 hover:from-dark1/75 hover:to-primary1/70 text-white font-semibold rounded-xl shadow-lg transition duration-300 cursor-pointer"
         >
           Sign In
         </button>
@@ -43,7 +45,7 @@ const Account = ({ type }: { type: string }) => {
             : "Already have an account?"}{" "}
           <Link
             href={type === "sign_in" ? "/sign_up" : "/sign_in"}
-            className="text-pink-500 hover:text-pink-400 font-semibold"
+            className="text-primary1/70 hover:text-primary1 font-semibold"
           >
             {type === "sign_in" ? "Sign Up" : "Sign In"}
           </Link>
