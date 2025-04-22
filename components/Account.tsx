@@ -3,23 +3,14 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
+import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { accountValidator } from "@/lib/validators/account.validator";
 import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
 
 const Account = ({ type }: { type: string }) => {
-  const form = useForm<z.infer<typeof accountValidator>>({
+  const form = useForm<any>({
     resolver: zodResolver(accountValidator),
     defaultValues: {
       username: "",
@@ -28,7 +19,9 @@ const Account = ({ type }: { type: string }) => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof accountValidator>) => {
+  const onSubmit = async (data: any) => {
+    console.log(form.formState.errors);
+
     alert("Form submitted");
     console.log("Form data:", data);
     console.log(data);
@@ -58,7 +51,7 @@ const Account = ({ type }: { type: string }) => {
             control={form.control}
             label="email"
             placeholder="Email"
-            name="Email"
+            name="email"
             type="email"
           />
           <FormInput
@@ -102,3 +95,6 @@ const Account = ({ type }: { type: string }) => {
 };
 
 export default Account;
+
+// z.infer<typeof accountValidator>;
+// z.infer<typeof accountValidator>
