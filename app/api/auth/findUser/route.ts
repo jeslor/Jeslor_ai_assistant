@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma/prisma";
 import { NextResponse } from "next/server";
 
-export const GET = async (req: Request) => {
+export const POST = async (req: Request) => {
   const { email } = await req.json();
 
   try {
@@ -25,5 +25,7 @@ export const GET = async (req: Request) => {
       { error: "Internal server error" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 };

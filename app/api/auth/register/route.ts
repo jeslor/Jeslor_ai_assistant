@@ -52,5 +52,7 @@ export const POST = async (req: Request) => {
       { error: "Internal server error" },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
   }
 };

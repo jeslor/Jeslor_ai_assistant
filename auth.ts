@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import prisma from "./lib/prisma/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -10,27 +11,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (!credentials) {
-          return null;
-        }
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
 
-        const res = await fetch(
-          `${process.env.NEXTAUTH_URL}/api/auth/findUser`,
-          {
-            method: "GET",
-            body: JSON.stringify(credentials),
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        console.log("Credentials:", credentials);
 
-        const user = await res.json();
-        console.log(user);
-
-        if (res.ok && user) {
-          return user;
-        }
         return null;
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`, // Cookie name
+      options: {
+        httpOnly: true, // Ensures the cookie can't be accessed via JavaScript
+        sameSite: "lax", // Helps with cross-site request handling
+        path: "/", // Cookie path
+        secure: process.env.NODE_ENV === "production", // Ensures cookies are sent only over HTTPS in production
+      },
+    },
+  },
 });

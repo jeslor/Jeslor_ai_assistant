@@ -1,5 +1,7 @@
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { z } from "zod";
 import { Icon } from "@iconify/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -9,10 +11,13 @@ import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 import { signIn } from "next-auth/react";
+import { loginUser } from "@/lib/actions/user.action";
+
+type AccountFormData = z.infer<typeof accountValidator>;
 
 const Account = ({ type }: { type: string }) => {
-  const [signiningIn, setSigningIn] = useState(false);
-  const form = useForm<any>({
+  const [signingIn, setSigningIn] = useState(false);
+  const form = useForm<AccountFormData>({
     resolver: zodResolver(accountValidator),
     defaultValues: {
       username: "",
@@ -21,19 +26,17 @@ const Account = ({ type }: { type: string }) => {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: AccountFormData) => {
     setSigningIn(true);
+    console.log("Form data:", data);
+
     try {
       if (type === "sign_in") {
-        await signIn("credentials", {
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        }).then((res) => {
-          console.log(res);
-          if (res?.error) {
-          }
-          if (res?.ok) {
+        await loginUser(data.email, data.password).then((res) => {
+          if (res.error) {
+            console.error("Login error:", res.error);
+          } else {
+            console.log("Login successful:", res);
           }
         });
       }
@@ -97,7 +100,7 @@ const Account = ({ type }: { type: string }) => {
             {type === "sign_in" ? (
               <span className="flex items-center gap-2">
                 Sign In{" "}
-                {signiningIn ? (
+                {signingIn ? (
                   <Loading size={20} />
                 ) : (
                   <Icon icon="hugeicons:login-method" />
@@ -106,7 +109,7 @@ const Account = ({ type }: { type: string }) => {
             ) : (
               <span className="flex items-center gap-2">
                 Sign Up
-                {signiningIn ? (
+                {signingIn ? (
                   <Loading size={20} />
                 ) : (
                   <Icon icon="ph:user-duotone" />
