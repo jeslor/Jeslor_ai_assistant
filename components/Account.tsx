@@ -1,4 +1,5 @@
-import React from "react";
+"import client";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { z } from "zod";
@@ -8,8 +9,10 @@ import { useForm } from "react-hook-form";
 import { accountValidator } from "@/lib/validators/account.validator";
 import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
+import Loading from "./ui/loading";
 
 const Account = ({ type }: { type: string }) => {
+  const [signiningIn, setSigningIn] = useState(true);
   const form = useForm<any>({
     resolver: zodResolver(accountValidator),
     defaultValues: {
@@ -20,34 +23,39 @@ const Account = ({ type }: { type: string }) => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(type);
-
-    if (type === "sign_in") {
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
-      const result = await res.json();
-      if (res.ok) {
-        // Handle successful sign-in
-      } else {
-        // Handle sign-in error
+    setSigningIn(true);
+    try {
+      if (type === "sign_in") {
+        const res = await fetch("/api/auth/signin", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" },
+        });
+        const result = await res.json();
+        if (res.ok) {
+          // Handle successful sign-in
+        } else {
+          // Handle sign-in error
+        }
       }
-    }
 
-    if (type === "sign_up") {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
-      const result = await res.json();
-      if (res.ok) {
-        console.log(result);
-      } else {
-        // Handle sign-up error
+      if (type === "sign_up") {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" },
+        });
+        const result = await res.json();
+        if (res.ok) {
+          console.log(result);
+        } else {
+          // Handle sign-up error
+        }
       }
+    } catch (error) {
+      console.error("Error during sign-in/sign-up:", error);
+    } finally {
+      setSigningIn(false);
     }
   };
 
@@ -89,12 +97,21 @@ const Account = ({ type }: { type: string }) => {
           <Button type="submit" className="btn_primary px-10">
             {type === "sign_in" ? (
               <span className="flex items-center gap-2">
-                Sign In <Icon icon="hugeicons:login-method" />
+                Sign In{" "}
+                {signiningIn ? (
+                  <Loading size={20} />
+                ) : (
+                  <Icon icon="hugeicons:login-method" />
+                )}
               </span>
             ) : (
               <span className="flex items-center gap-2">
                 Sign Up
-                <Icon icon="ph:user-duotone" />
+                {signiningIn ? (
+                  <Loading size={20} />
+                ) : (
+                  <Icon icon="ph:user-duotone" />
+                )}
               </span>
             )}
           </Button>
