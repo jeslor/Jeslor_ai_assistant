@@ -20,11 +20,7 @@ const Account = ({ type }: { type: string }) => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(form.formState.errors);
-
-    alert("Form submitted");
     console.log("Form data:", data);
-    console.log(data);
   };
 
   return (
