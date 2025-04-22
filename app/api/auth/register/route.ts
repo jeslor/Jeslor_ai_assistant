@@ -1,4 +1,4 @@
-import prisma, { connectToDatabase } from "@/lib/prisma/prisma";
+import prisma from "@/lib/prisma/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { z } from "zod";
@@ -6,10 +6,15 @@ import { accountValidator } from "@/lib/validators/account.validator";
 
 export const POST = async (req: Request) => {
   const body = await req.json();
+  console.log(
+    prisma,
+    "*******************************************************"
+  );
+
   const { email, password, username } = accountValidator.parse(body);
 
   try {
-    await connectToDatabase();
+    await prisma.$connect();
     const userExists = await prisma.user.findUnique({
       where: {
         email,
@@ -27,6 +32,13 @@ export const POST = async (req: Request) => {
         email,
         hashedPassword,
         username,
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
     return NextResponse.json(user, { status: 201 });

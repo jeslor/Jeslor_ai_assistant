@@ -20,15 +20,35 @@ const Account = ({ type }: { type: string }) => {
   });
 
   const onSubmit = async (data: any) => {
-    const signIn = await fetch("/api/auth/signin", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const res = await signIn.json();
-    console.log(res);
+    console.log(type);
+
+    if (type === "sign_in") {
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      const result = await res.json();
+      if (res.ok) {
+        // Handle successful sign-in
+      } else {
+        // Handle sign-in error
+      }
+    }
+
+    if (type === "sign_up") {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
+      const result = await res.json();
+      if (res.ok) {
+        console.log(result);
+      } else {
+        // Handle sign-up error
+      }
+    }
   };
 
   return (
