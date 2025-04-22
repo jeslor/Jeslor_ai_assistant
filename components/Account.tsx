@@ -20,7 +20,15 @@ const Account = ({ type }: { type: string }) => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log("Form data:", data);
+    const signIn = await fetch("/api/auth/signin", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const res = await signIn.json();
+    console.log(res);
   };
 
   return (
