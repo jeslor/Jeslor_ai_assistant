@@ -1,4 +1,3 @@
-"import client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
@@ -9,6 +8,7 @@ import { accountValidator } from "@/lib/validators/account.validator";
 import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
 import Loading from "./ui/loading";
+import { signIn } from "next-auth/react";
 
 const Account = ({ type }: { type: string }) => {
   const [signiningIn, setSigningIn] = useState(false);
@@ -25,17 +25,17 @@ const Account = ({ type }: { type: string }) => {
     setSigningIn(true);
     try {
       if (type === "sign_in") {
-        const res = await fetch("/api/auth/signin", {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" },
+        await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        }).then((res) => {
+          console.log(res);
+          if (res?.error) {
+          }
+          if (res?.ok) {
+          }
         });
-        const result = await res.json();
-        if (res.ok) {
-          console.log(result);
-        } else {
-          // Handle sign-in error
-        }
       }
 
       if (type === "sign_up") {
