@@ -32,6 +32,7 @@
     "@eslint/eslintrc": "^3",
     "@iconify/react": "^5.2.1",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
