@@ -29,9 +29,9 @@ const Account = ({ type }: { type: string }) => {
   });
 
   const onSubmit = async (data: z.infer<typeof accountValidator>) => {
-    // Handle form submission
+    alert("Form submitted");
+    console.log("Form data:", data);
     console.log(data);
-    // You can send the data to your API or perform any other actions here
   };
 
   return (
