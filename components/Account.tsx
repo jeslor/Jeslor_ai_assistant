@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -12,7 +11,7 @@ import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 
 const Account = ({ type }: { type: string }) => {
-  const [signiningIn, setSigningIn] = useState(true);
+  const [signiningIn, setSigningIn] = useState(false);
   const form = useForm<any>({
     resolver: zodResolver(accountValidator),
     defaultValues: {
@@ -33,7 +32,7 @@ const Account = ({ type }: { type: string }) => {
         });
         const result = await res.json();
         if (res.ok) {
-          // Handle successful sign-in
+          console.log(result);
         } else {
           // Handle sign-in error
         }

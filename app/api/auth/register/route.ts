@@ -6,10 +6,6 @@ import { accountValidator } from "@/lib/validators/account.validator";
 
 export const POST = async (req: Request) => {
   const body = await req.json();
-  console.log(
-    prisma,
-    "*******************************************************"
-  );
 
   const { email, password, username } = accountValidator.parse(body);
 
