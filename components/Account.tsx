@@ -11,7 +11,6 @@ import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 import { signIn } from "next-auth/react";
-import { loginUser } from "@/lib/actions/user.action";
 
 type AccountFormData = z.infer<typeof accountValidator>;
 
@@ -28,17 +27,16 @@ const Account = ({ type }: { type: string }) => {
 
   const onSubmit = async (data: AccountFormData) => {
     setSigningIn(true);
-    console.log("Form data:", data);
 
     try {
       if (type === "sign_in") {
-        await loginUser(data.email, data.password).then((res) => {
-          if (res.error) {
-            console.error("Login error:", res.error);
-          } else {
-            console.log("Login successful:", res);
-          }
+        const res = await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false,
         });
+
+        console.log(res);
       }
 
       if (type === "sign_up") {

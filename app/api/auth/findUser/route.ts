@@ -10,9 +10,6 @@ export const POST = async (req: Request) => {
       where: {
         email,
       },
-      select: {
-        hashedPassword: false,
-      },
     });
 
     if (!user) {
