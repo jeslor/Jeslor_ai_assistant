@@ -12,6 +12,7 @@ import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type AccountFormData = z.infer<typeof accountValidator>;
 
@@ -53,8 +54,28 @@ const Account = ({ type }: { type: string }) => {
           headers: { "Content-Type": "application/json" },
         });
         const result = await res.json();
-        if (res.ok) {
+        if (result.status === 200) {
+          console.log("reached here");
+
+          const registeredUser = result.user;
+          await signIn("credentials", {
+            email: registeredUser.email,
+            password: data.password,
+          }).then((res: any) => {
+            console.log("res", res);
+
+            if (res?.error) {
+              // Handle sign-in error
+              console.error("Sign-in error:", res.error);
+            } else {
+              // Redirect to the home page or any other page
+              Router.push("/");
+            }
+          });
         } else {
+          console.log("error", result);
+
+          toast.error(result.error);
           // Handle sign-up error
         }
       }

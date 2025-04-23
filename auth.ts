@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { comparePassword } from "./lib/helpers/user";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -40,10 +41,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const user = await res.json();
 
-          const passwordValid = await bcrypt.compareSync(
+          const passwordValid = await comparePassword(
             password,
             user.hashedPassword
           );
+          console.log("Password valid:", passwordValid);
 
           if (!passwordValid) {
             console.error("Invalid password");

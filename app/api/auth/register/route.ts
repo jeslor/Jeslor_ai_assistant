@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma/prisma";
 import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { accountValidator } from "@/lib/validators/account.validator";
 
@@ -17,10 +17,7 @@ export const POST = async (req: Request) => {
       },
     });
     if (userExists) {
-      return NextResponse.json(
-        { error: "User already exists" },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: "User already exists", status: 409 });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
@@ -37,21 +34,15 @@ export const POST = async (req: Request) => {
         updatedAt: true,
       },
     });
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json({ user, status: 200 });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 422 });
+      return NextResponse.json({ error: error.errors, status: 422 });
     }
     if (error.code === "P2002") {
-      return NextResponse.json(
-        { error: "Email already exists" },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: "Email already exists", status: 409 });
     }
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error", status: 500 });
   } finally {
     await prisma.$disconnect();
   }
