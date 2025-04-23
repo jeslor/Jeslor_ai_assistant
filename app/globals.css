@@ -147,4 +147,10 @@ body {
   .btn_primary {
     @apply py-2 px-4 bg-gradient-to-r from-secondary1 to-primary1 hover:from-dark1/75 hover:to-primary1/70 text-white font-semibold rounded-xl shadow-lg transition duration-300 cursor-pointer;
   }
+  .btn_colored_border {
+    @apply bg-red-500 p-[2px]  font-semibold rounded-xl   cursor-pointer bg-gradient-to-br from-secondary1 via-dark1/25 to-primary1;
+  }
+  .btn_colored_border:hover {
+    @apply bg-primary1 text-white;
+  }
 }
