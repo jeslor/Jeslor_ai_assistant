@@ -153,6 +153,17 @@ body {
   .btn_colored_border:hover {
     @apply bg-primary1 text-white;
   }
+  .card-wrapper {
+    @apply relative bg-gradient-to-b from-slate-700 to-slate-800 rounded-4xl overflow-hidden shadow-lg flex flex-col items-center justify-center;
+  }
+  .card-wrapper::before {
+    background: conic-gradient(
+      rgba(243, 88, 80, 0.2) 0deg,
+      rgba(243, 88, 80, 0.2) 0deg,
+      transparent 90deg
+    );
+    @apply absolute h-[150%] w-[150%] -left-[25%] -top-[25%] content-[''] duration-1000 animate-spin;
+  }
 }
 
 ::-webkit-scrollbar {
