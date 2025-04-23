@@ -11,10 +11,12 @@ import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type AccountFormData = z.infer<typeof accountValidator>;
 
 const Account = ({ type }: { type: string }) => {
+  const Router = useRouter();
   const [signingIn, setSigningIn] = useState(false);
   const form = useForm<AccountFormData>({
     resolver: zodResolver(accountValidator),
@@ -35,8 +37,13 @@ const Account = ({ type }: { type: string }) => {
           password: data.password,
           redirect: false,
         });
-
-        console.log(res);
+        if (res?.error) {
+          // Handle sign-in error
+          console.error("Sign-in error:", res.error);
+        } else {
+          // Redirect to the home page or any other page
+          Router.push("/");
+        }
       }
 
       if (type === "sign_up") {
@@ -47,7 +54,6 @@ const Account = ({ type }: { type: string }) => {
         });
         const result = await res.json();
         if (res.ok) {
-          console.log(result);
         } else {
           // Handle sign-up error
         }

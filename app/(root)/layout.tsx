@@ -1,6 +1,10 @@
 import React, { ReactNode } from "react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
+  const session = await auth();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-dark1/95 via-black-900 to-dark1">
       {children}

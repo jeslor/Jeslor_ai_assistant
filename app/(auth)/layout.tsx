@@ -1,6 +1,14 @@
+import { auth } from "@/auth";
 import React, { ReactNode } from "react";
+import { redirect } from "next/navigation";
 
 const AuthLayout = async ({ children }: { children: ReactNode }) => {
+  const session = await auth();
+  console.log("session", session);
+
+  if (session && session.user) {
+    redirect("/");
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-dark1/95 via-black-900 to-dark1">
       <div className="relative bg-slate-200/5 backdrop-blur-md p-10 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200/10">

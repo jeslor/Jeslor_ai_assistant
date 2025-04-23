@@ -45,10 +45,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             user.hashedPassword
           );
 
-          // if (!passwordValid) {
-          //   console.error("Invalid password");
-          //   return null;
-          // }
+          if (!passwordValid) {
+            console.error("Invalid password");
+            return null;
+          }
 
           // Omit sensitive fields before returning
           const { hashedPassword, ...safeUser } = user;
