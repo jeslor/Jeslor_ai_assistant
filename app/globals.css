@@ -12,6 +12,17 @@ body {
   --color-dark1: #0d0d0d;
   --text-small: 14px;
   --text-normal: 16px;
+  --animate-slow: spin 20s linear infinite;
+  --animate-slowping: ping 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Optional fallback for browsers that don’t support @theme */
@@ -140,6 +151,8 @@ body {
   }
   body {
     @apply bg-background text-slate-200;
+    width: 100%;
+    overflow-x: hidden;
   }
 }
 
@@ -154,15 +167,15 @@ body {
     @apply bg-primary1 text-white;
   }
   .card-wrapper {
-    @apply relative bg-gradient-to-b from-slate-700 to-slate-800 rounded-4xl overflow-hidden shadow-lg flex flex-col items-center justify-center;
+    @apply relative bg-gradient-to-b from-slate-700 to-slate-400 rounded-4xl overflow-hidden shadow-lg flex flex-col items-center justify-center py-[1px];
   }
   .card-wrapper::before {
     background: conic-gradient(
-      rgba(243, 88, 80, 0.2) 0deg,
-      rgba(243, 88, 80, 0.2) 0deg,
+      var(--color-primary1) 0deg,
+      rgba(243, 88, 80, 0.6) 0deg,
       transparent 90deg
     );
-    @apply absolute h-[150%] w-[150%] -left-[25%] -top-[25%] content-[''] duration-1000 animate-spin;
+    @apply absolute h-[450%] w-[250%] -left-[75%] -top-[170%] content-[''] duration-1000 animate-slow;
   }
 }
 

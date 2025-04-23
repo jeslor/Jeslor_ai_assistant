@@ -8,13 +8,13 @@ const Agent = () => {
   const { user } = useUserStore();
 
   return (
-    <div className="card-wrapper">
-      <div className="flex justify-around gap-x items-center overflow-hidden  rounded-4xl bg-black  backdrop-blur-md  px-4 py-2 shadow-xl border border-dark1/10 mx-auto relative w-[calc(100%-2px)] h-[90%] ">
+    <div className="card-wrapper w-full max-w-[800px] mx-auto mt-5 mb-[10vh]">
+      <div className="flex justify-around gap-x items-center overflow-hidden  rounded-4xl bg-black  backdrop-blur-md  px-4 py-2 shadow-xl border border-dark1/10 mx-auto relative w-[calc(100%-5px)] h-[90%] ">
         <div className="flex flex-col items-center justify-center h-[300px] relative">
           <button className="h-[70px] w-[70px] absolute flex justify-center items-center bg-primary1/10 hover:bg-primary1/50 transition-all rounded-full cursor-pointer z-[10]">
             <Icon icon="bi:mic-fill" width="16" height="16" />
           </button>
-          <div className=" flex items-center justify-center w-full h-full animate-ping">
+          <div className=" flex items-center justify-center w-full h-full animate-slowping">
             {rings.map((ring) => {
               const width = ring * 20 + 40;
               return (

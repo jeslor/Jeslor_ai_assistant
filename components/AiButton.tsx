@@ -6,8 +6,9 @@ interface ButtonProps {
   onPress: () => void;
   title: string;
   icon: any;
+  extraClasses?: string;
 }
-const AiButton = ({ onPress, title, icon }: ButtonProps) => {
+const AiButton = ({ onPress, title, icon, extraClasses }: ButtonProps) => {
   return (
     <button
       onClick={() => onPress()}
