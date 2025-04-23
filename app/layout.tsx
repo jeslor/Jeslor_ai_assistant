@@ -28,15 +28,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Toaster
-          toastOptions={{
-            className: "bg-slate-900 text-slate-200",
-            style: {
-              background: "rgb(17 24 39)",
-              color: "rgb(156 163 175)",
-            },
-          }}
-        />
+        <Toaster richColors />
         {children}
       </body>
     </html>

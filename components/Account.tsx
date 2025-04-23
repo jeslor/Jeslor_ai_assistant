@@ -39,10 +39,10 @@ const Account = ({ type }: { type: string }) => {
           redirect: false,
         });
         if (res?.error) {
-          // Handle sign-in error
+          toast.error(res.error);
           console.error("Sign-in error:", res.error);
         } else {
-          // Redirect to the home page or any other page
+          toast.success("Sign-in successful");
           Router.push("/");
         }
       }
@@ -55,28 +55,21 @@ const Account = ({ type }: { type: string }) => {
         });
         const result = await res.json();
         if (result.status === 200) {
-          console.log("reached here");
-
           const registeredUser = result.user;
           await signIn("credentials", {
             email: registeredUser.email,
             password: data.password,
           }).then((res: any) => {
-            console.log("res", res);
-
             if (res?.error) {
-              // Handle sign-in error
+              toast.error(res.error);
               console.error("Sign-in error:", res.error);
             } else {
-              // Redirect to the home page or any other page
+              toast.success("Account created successfully");
               Router.push("/");
             }
           });
         } else {
-          console.log("error", result);
-
           toast.error(result.error);
-          // Handle sign-up error
         }
       }
     } catch (error) {
