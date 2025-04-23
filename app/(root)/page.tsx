@@ -1,19 +1,31 @@
 "use client";
 import Account from "@/components/Account";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 import React from "react";
 
 const page = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold mb-4">Account</h1>
-      <button
-        onClick={() => signOut()}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-      >
-        Sign Out
-      </button>
-    </div>
+    <main className="flex flex-col justify-start">
+      <div className=" flex flex-col items-center pb-10 pt-[10vh]">
+        <div className=" text-4xl rounded-3xl  flex items-center justify-center w-fit  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center ">
+          <Image
+            src="/media/images/logo.png"
+            alt="logo"
+            width={50}
+            height={50}
+            className="rounded-full  object-cover"
+          />
+          <span className="py-2 px-4 text-white rounded-2xl text-[22px]">
+            AI Mood Assistant
+          </span>
+        </div>
+        <h3 className=" px-4 text-center  font-normal mt-10 bg-gradient-to-b from-dark1/10 via-white/70 to-white  text-transparent bg-clip-text clampTitle">
+          Your Personal friend <br />
+          at all times
+        </h3>
+      </div>
+    </main>
   );
 };
 

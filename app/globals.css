@@ -139,7 +139,7 @@ body {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-slate-200;
   }
 }
 
@@ -153,4 +153,9 @@ body {
   .btn_colored_border:hover {
     @apply bg-primary1 text-white;
   }
+}
+
+.clampTitle {
+  font-size: clamp(20px, 7vw + 1rem, 110px);
+  line-height: clamp(20px, 7vw + 2rem, 110px);
 }
