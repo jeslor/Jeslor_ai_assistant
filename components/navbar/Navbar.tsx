@@ -21,10 +21,22 @@ const Navbar = () => {
       console.log("navbar", navbar);
 
       if (navbar) {
-        if (window.scrollY > 0) {
-          navbar.classList.add("bg-dark/50");
+        if (window.scrollY > 90) {
+          navbar.classList.add(
+            "bg-white/5",
+            "backdrop-blur-[15px]",
+            "rounded-b-2xl",
+            "shadow-md",
+            "shadow-black/20"
+          );
         } else {
-          navbar.classList.remove("bg-dark/50");
+          navbar.classList.remove(
+            "bg-white/5",
+            "backdrop-blur-[15px]",
+            "rounded-b-2xl",
+            "shadow-md",
+            "shadow-black/20"
+          );
         }
       }
     };
@@ -35,7 +47,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between w-full p-4 fixed z-[200] top-0">
+    <nav className="flex items-center justify-between w-full p-4 fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-transparent">
       <div className=" flex items-center justify-center text-slate-200 space-x-2">
         {user?.profileImage ? (
           <Image
