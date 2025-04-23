@@ -1,5 +1,6 @@
 "use client";
 import Account from "@/components/Account";
+import Agent from "@/components/Agent/Agent";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
@@ -8,7 +9,7 @@ const page = () => {
   return (
     <main className="flex flex-col justify-start">
       <div className=" flex flex-col items-center pb-10 pt-[10vh]">
-        <div className=" text-4xl rounded-3xl  flex items-center justify-center w-fit  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center ">
+        <div className=" px-4 text-4xl rounded-3xl  flex items-center justify-center w-fit  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center ">
           <Image
             src="/media/images/logo.png"
             alt="logo"
@@ -16,7 +17,7 @@ const page = () => {
             height={50}
             className="rounded-full  object-cover"
           />
-          <span className="py-2 px-4 text-white rounded-2xl text-[22px]">
+          <span className=" text-white rounded-2xl text-[18px] cursor-pointer">
             AI Mood Assistant
           </span>
         </div>
@@ -24,6 +25,9 @@ const page = () => {
           Your Personal friend <br />
           at all times
         </h3>
+      </div>
+      <div>
+        <Agent />
       </div>
     </main>
   );

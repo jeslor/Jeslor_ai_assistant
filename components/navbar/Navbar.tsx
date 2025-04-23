@@ -16,7 +16,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between w-full p-4 fixed top-0">
+    <nav className="flex items-center justify-between w-full p-4 fixed z-[200] top-0">
       <div className=" flex items-center justify-center text-slate-200 space-x-2">
         {user?.profileImage ? (
           <Image

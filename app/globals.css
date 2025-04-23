@@ -155,7 +155,11 @@ body {
   }
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .clampTitle {
-  font-size: clamp(20px, 7vw + 1rem, 110px);
-  line-height: clamp(20px, 7vw + 2rem, 110px);
+  font-size: clamp(20px, 7vw + 1rem, 100px);
+  line-height: clamp(20px, 7vw + 2rem, 100px);
 }
