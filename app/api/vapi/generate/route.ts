@@ -7,6 +7,16 @@ export const POST = async (req: Request) => {
   try {
     const { type, role, level, techstack, totalQuestions, userid, company } =
       await req.json();
+    console.log("Received data:", {
+      type,
+      role,
+      level,
+      techstack,
+      totalQuestions,
+      userid,
+      company,
+    });
+
     const { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
       prompt: `Prepare questions for a job interview.

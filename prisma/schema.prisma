@@ -32,7 +32,7 @@ model Interview {
   level     String
   questions String[]
   techstack String[]
-  company String
+  company   String
   type      String
   finalized Boolean
   userId    String   @db.ObjectId
