@@ -104,10 +104,10 @@ const Interviews = () => {
                       className="w-full h-full rounded-full mb-2"
                     />
                   </div>
-                  <h2 className="text-primary1/65 font-bold mb-2">
+                  <h2 className="text-primary1/65 font-bold mb-2 text-[19px]">
                     {interview.role}
                   </h2>
-                  <p className="text-slate-200 font-semibold capitalize">
+                  <p className="text-primary1/30 font-semibold uppercase">
                     {interview.level}
                   </p>
                   <p className="text-slate-400 text-[12px] mb-2 opacity-60">
