@@ -53,7 +53,7 @@ const Agent = () => {
     try {
       if (status === "inactive" || status === "disconnected") {
         setStatus(AgentStatus.connecting);
-        console.log("Starting call...");
+        console.log(user);
 
         await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
           variableValues: {
