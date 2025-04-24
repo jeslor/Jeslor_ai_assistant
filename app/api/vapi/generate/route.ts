@@ -24,6 +24,7 @@ export const POST = async (req: Request) => {
         Thank you very much!!!
     `,
     });
+    console.log("Generated questions:", questions);
     const user = await prisma.user.findUnique({
       where: {
         id: userid,
@@ -44,6 +45,9 @@ export const POST = async (req: Request) => {
         finalized: false, // Assuming 'finalized' is a boolean and defaults to false
       },
     });
+
+    console.log("Interview created successfully:", interview);
+
     return NextResponse.json({
       message: "Interview created successfully",
       interview,
