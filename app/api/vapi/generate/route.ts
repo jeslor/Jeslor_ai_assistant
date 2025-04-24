@@ -7,15 +7,6 @@ export const POST = async (req: Request) => {
   try {
     const { type, role, level, techstack, totalQuestions, userid, company } =
       await req.json();
-    console.log("Received data:", {
-      type,
-      role,
-      level,
-      techstack,
-      totalQuestions,
-      userid,
-      company,
-    });
 
     const { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
@@ -41,6 +32,8 @@ export const POST = async (req: Request) => {
       },
     });
     if (!user) {
+      console.log("User not found");
+
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
     const interview = await prisma.interview.create({
@@ -63,5 +56,11 @@ export const POST = async (req: Request) => {
       interview,
       status: 200,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error creating interview:", error);
+    return NextResponse.json(
+      { message: "Internal server error", error },
+      { status: 500 }
+    );
+  }
 };

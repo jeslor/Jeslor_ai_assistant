@@ -8,7 +8,6 @@ export const findUserByEmail = async (email: string) => {
         email: email,
       },
     });
-
     if (!user) {
       return JSON.parse(
         JSON.stringify({

@@ -46,15 +46,12 @@ const Agent = () => {
       }
     });
   }, []);
-  console.log(chats);
+  console.log(user);
 
   const handleStartCall = useCallback(async () => {
-    console.log("Starting call...");
     try {
       if (status === "inactive" || status === "disconnected") {
         setStatus(AgentStatus.connecting);
-        console.log(user);
-
         await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
           variableValues: {
             username: user?.username,
