@@ -8,6 +8,12 @@ export const POST = async (req: Request) => {
     const { type, role, level, techstack, totalQuestions, userid, company } =
       await req.json();
 
+    const { text: questions2 } = await generateText({
+      model: google("gemini-2.0-flash-001"),
+      prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
+    });
+    console.log("Company URL found:", questions2);
+
     const { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
       prompt: `Prepare questions for a job interview.
@@ -24,12 +30,8 @@ export const POST = async (req: Request) => {
         Thank you very much!!!
     `,
     });
-    const { text: questions2 } = await generateText({
-      model: google("gemini-2.0-flash-001"),
-      prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
-    });
-    console.log("Questions generated:", questions);
-    console.log("Company URL found:", questions2);
+
+    console.log("Company URL found:", questions);
 
     const user = await prisma.user.findUnique({
       where: {
@@ -44,7 +46,7 @@ export const POST = async (req: Request) => {
     const interview = await prisma.interview.create({
       data: {
         userId: user.id,
-        company: JSON.parse(questions2),
+        company: questions2,
         role,
         level,
         techstack: techstack.split(","),
