@@ -14,7 +14,6 @@ export const POST = async (req: Request) => {
         The job role is ${role}.
         The job experience level is ${level}.
         The tech stack used in the job is: ${techstack}.
-        The company name is: ${company}.
         The focus between behavioural and technical questions should lean towards: ${type}.
         The amount of questions required is: ${totalQuestions}.
         Please return only the questions, without any additional text.
@@ -25,7 +24,10 @@ export const POST = async (req: Request) => {
         Thank you very much!!!
     `,
     });
-    console.log("Generated questions:", questions);
+    const { text: questions2 } = await generateText({
+      model: google("gemini-2.0-flash-001"),
+      prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
+    });
     const user = await prisma.user.findUnique({
       where: {
         id: userid,
@@ -39,7 +41,7 @@ export const POST = async (req: Request) => {
     const interview = await prisma.interview.create({
       data: {
         userId: user.id,
-        company,
+        company: questions2,
         role,
         level,
         techstack: techstack.split(","),
