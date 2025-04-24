@@ -42,7 +42,7 @@ export const POST = async (req: Request) => {
         company,
         role,
         level,
-        techstack,
+        techstack: techstack.split(","),
         type,
         questions: JSON.parse(questions),
         finalized: false, // Assuming 'finalized' is a boolean and defaults to false
