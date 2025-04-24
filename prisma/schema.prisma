@@ -23,4 +23,36 @@ model User {
   hashedPassword  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  interviews Interview[] @relation("interview")
 }
+
+model Interview {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  role      String
+  level     String
+  questions String[]
+  techstack String[]
+  company String
+  type      String
+  finalized Boolean
+  userId    String   @db.ObjectId
+  user      User     @relation("interview", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("interviews")
+  @@index([role], name: "role_index")
+  @@index([level], name: "level_index")
+  @@index([type], name: "type_index")
+  @@index([finalized], name: "finalized_index")
+}
+
+
+
+  // role String;
+  // level: string;
+  // questions: string[];
+  // techstack: string[];
+  // createdAt: string;
+  // userId: string;
+  // type: string;
+  // finalized: boolean;
