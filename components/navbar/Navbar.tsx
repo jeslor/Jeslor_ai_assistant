@@ -20,7 +20,7 @@ const Navbar = () => {
     const handleScroll = () => {
       const aiLogo = document.getElementById("aiLogo");
       if (aiLogo) {
-        if (window.scrollY > 90) {
+        if (window.scrollY > 50) {
           setShowNav(true);
         } else {
           setShowNav(false);

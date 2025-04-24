@@ -33,7 +33,9 @@ const page = () => {
           <Agent />
         </div>
       </div>
-      <Interviews />
+      <div className="pt-[100px]">
+        <Interviews />
+      </div>
     </main>
   );
 };
