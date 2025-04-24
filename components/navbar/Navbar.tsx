@@ -58,12 +58,12 @@ const Navbar = () => {
           <Image
             src={user?.profileImage}
             alt="Profile Image"
-            width={30}
-            height={30}
-            className="rounded-full"
+            width={40}
+            height={40}
+            className="rounded-full border border-white/40 shadow-md shadow-black/20"
           />
         ) : (
-          <div className="h-[30px] w-[30px] bg-primary1 rounded-full flex items-center justify-center">
+          <div className="h-[40px] w-[40px] bg-primary1 rounded-full flex items-center justify-center border border-white/40 shadow-md shadow-black/20">
             <button className="text-white text-[22px] font-extrabold capitalize cursor-pointer">
               {user?.username?.charAt(0)}
             </button>

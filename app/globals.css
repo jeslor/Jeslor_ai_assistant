@@ -13,7 +13,7 @@ body {
   --text-small: 14px;
   --text-normal: 16px;
   --animate-slow: spin 20s linear infinite;
-  --animate-slowping: ping 2s linear infinite;
+  --animate-slowping: ping 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-logAnimate: logoAnimate 2s linear infinite;
 }
 
