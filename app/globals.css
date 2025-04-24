@@ -14,6 +14,7 @@ body {
   --text-normal: 16px;
   --animate-slow: spin 20s linear infinite;
   --animate-slowping: ping 2s linear infinite;
+  --animate-logAnimate: logoAnimate 2s linear infinite;
 }
 
 @keyframes spin {
@@ -22,6 +23,25 @@ body {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes logoAnimate {
+  0% {
+    opacity: 1;
+    display: flex;
+    position: absolute;
+    left: 43%;
+  }
+  50% {
+    opacity: 1;
+    display: flex;
+    position: relative;
+  }
+  100% {
+    display: flex;
+    opacity: 1;
+    position: relative;
   }
 }
 
@@ -177,6 +197,9 @@ body {
     );
     @apply absolute h-[450%] w-[250%] -left-[75%] -top-[170%] content-[''] duration-1000 animate-slow;
   }
+  .animatedAiLogo {
+    @apply opacity-100;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -186,4 +209,11 @@ body {
 .clampTitle {
   font-size: clamp(20px, 7vw + 1rem, 100px);
   line-height: clamp(20px, 7vw + 2rem, 100px);
+}
+
+.showLogo {
+  transition: all 0.5s ease-in-out;
+  opacity: 1;
+  display: flex;
+  animation: logoAnimate 1s linear forwards;
 }

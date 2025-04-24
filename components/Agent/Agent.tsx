@@ -23,7 +23,7 @@ const Agent = () => {
                   style={{ width, height: width }}
                   className={`w-[${ring * 10}px] h-[${
                     ring * 10
-                  }px] bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/20 rounded-full animate-spin duration-[2000s] absolute`}
+                  }px] bg-gradient-to-bl from-secondary1/30 via-white/10 to-primary1/20 rounded-full absolute`}
                 ></div>
               );
             })}

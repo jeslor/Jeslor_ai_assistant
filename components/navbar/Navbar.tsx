@@ -18,9 +18,10 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const navbar = document.querySelector("nav");
-      console.log("navbar", navbar);
+      const aiLogo = document.getElementById("aiLogo");
+      const aiWord = document.getElementById("aiWord");
 
-      if (navbar) {
+      if (navbar && aiLogo && aiWord) {
         if (window.scrollY > 90) {
           navbar.classList.add(
             "bg-white/5",
@@ -29,6 +30,8 @@ const Navbar = () => {
             "shadow-md",
             "shadow-black/20"
           );
+          aiLogo.classList.add("showLogo");
+          aiWord.classList.add("hidden");
         } else {
           navbar.classList.remove(
             "bg-white/5",
@@ -37,6 +40,8 @@ const Navbar = () => {
             "shadow-md",
             "shadow-black/20"
           );
+          aiLogo.classList.remove("showLogo");
+          aiWord.classList.remove("hidden");
         }
       }
     };
@@ -47,7 +52,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between w-full p-4 fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-transparent">
+    <nav className=" flex items-center justify-between w-full p-4 fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-transparent">
       <div className=" flex items-center justify-center text-slate-200 space-x-2">
         {user?.profileImage ? (
           <Image
@@ -66,7 +71,26 @@ const Navbar = () => {
         )}
         <p className="capitalize">{user?.username}</p>
       </div>
-      <div className="flex items-center space-x-2">
+
+      <div className="flex items-center space-x-2 ">
+        <button
+          id="aiLogo"
+          className="  flex  px-4 text-4xl rounded-3xl  items-center justify-center w-fit  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center "
+        >
+          <Image
+            src="/media/images/logo.png"
+            alt="logo"
+            width={50}
+            height={50}
+            className="rounded-full  object-cover"
+          />
+          <span
+            id="aiWord"
+            className=" text-white rounded-2xl  cursor-pointer font-light text-[15px]"
+          >
+            Mood <span className="font-bold text-[18px]">AI</span> Assistant
+          </span>
+        </button>
         <AiButton
           onPress={() => {}}
           title="Try Premium"
