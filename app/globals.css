@@ -211,9 +211,6 @@ body {
   line-height: clamp(20px, 7vw + 2rem, 100px);
 }
 
-.showLogo {
-  transition: all 0.5s ease-in-out;
-  opacity: 1;
-  display: flex;
-  animation: logoAnimate 1s linear forwards;
+.repeated-grids {
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
 }

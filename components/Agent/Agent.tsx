@@ -46,7 +46,6 @@ const Agent = () => {
       }
     });
   }, []);
-  console.log(user);
 
   const handleStartCall = useCallback(async () => {
     try {
