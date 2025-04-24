@@ -28,6 +28,9 @@ export const POST = async (req: Request) => {
       model: google("gemini-2.0-flash-001"),
       prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
     });
+    console.log("Questions generated:", questions);
+    console.log("Company URL found:", questions2);
+
     const user = await prisma.user.findUnique({
       where: {
         id: userid,
@@ -41,7 +44,7 @@ export const POST = async (req: Request) => {
     const interview = await prisma.interview.create({
       data: {
         userId: user.id,
-        company: questions2,
+        company: JSON.parse(questions2),
         role,
         level,
         techstack: techstack.split(","),
