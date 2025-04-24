@@ -72,7 +72,7 @@ const Navbar = () => {
           <button
             onClick={handleScrollToTop}
             id="aiLogo"
-            className={`opacity-0 left-[44.5%]  absolute flex  h-[40px] w-[40px] text-4xl rounded-3xl  items-center justify-center  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center hover:bg-gradient-to-bl hover:from-dark/50 hover:to-primary1/50 transition-all ${
+            className={`opacity-0 left-[44.5%]  absolute flex  h-[50px] w-[50px] text-4xl rounded-3xl  items-center justify-center  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center hover:bg-gradient-to-bl hover:from-dark/50 hover:to-primary1/50 transition-all ${
               showNav ? "opacity-100 left-[50%] cursor-pointer " : "opacity-0"
             } transition-all duration-300 ease-in-out`}
           >
