@@ -8,11 +8,19 @@ export const POST = async (req: Request) => {
     const { type, role, level, techstack, totalQuestions, userid, company } =
       await req.json();
 
+    let totalQuestionsInt = parseInt(totalQuestions, 10);
+    if (
+      isNaN(totalQuestionsInt) ||
+      totalQuestionsInt <= 0 ||
+      totalQuestionsInt > 10
+    ) {
+      totalQuestionsInt = 10; // Default to 5 if invalid
+    }
+
     const { text: questions2 } = await generateText({
       model: google("gemini-2.0-flash-001"),
       prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
     });
-    console.log("Company URL found:", questions2);
 
     const { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
@@ -21,7 +29,7 @@ export const POST = async (req: Request) => {
         The job experience level is ${level}.
         The tech stack used in the job is: ${techstack}.
         The focus between behavioural and technical questions should lean towards: ${type}.
-        The amount of questions required is: ${totalQuestions}.
+        The amount of questions required is: ${totalQuestionsInt}.
         Please return only the questions, without any additional text.
         The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
         Return the questions formatted like this:
@@ -55,8 +63,6 @@ export const POST = async (req: Request) => {
         finalized: false, // Assuming 'finalized' is a boolean and defaults to false
       },
     });
-
-    console.log("Interview created successfully:", interview);
 
     return NextResponse.json({
       message: "Interview created successfully",
