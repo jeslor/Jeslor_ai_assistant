@@ -20,7 +20,8 @@ const page = () => {
               className="rounded-full  object-cover"
             />
             <span className=" text-white rounded-2xl  cursor-pointer font-light text-[15px]">
-              Mood <span className="font-bold text-[18px]">AI</span> Assistant
+              Interview <span className="font-bold text-[18px]">AI</span>{" "}
+              Assistant
             </span>
           </div>
           <h3 className=" px-4 text-center  font-normal mt-10 bg-gradient-to-b from-dark1/10 via-white/70 to-white  text-transparent bg-clip-text clampTitle">
