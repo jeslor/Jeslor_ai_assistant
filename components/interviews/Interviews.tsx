@@ -5,10 +5,12 @@ import useUserStore from "../provider/userStore";
 import { getInterViews } from "@/lib/actions/interviews";
 import Image from "next/image";
 import { refactorCompany } from "@/lib/helpers/general";
+import { toast } from "sonner";
 
 const Interviews = () => {
   const { user } = useUserStore();
   const [interviews, setInterviews] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [sections, setSections] = useState<any[]>([
     {
       id: 1,
@@ -33,15 +35,22 @@ const Interviews = () => {
   const [selectedSection, setSelectedSection] = useState<any>(sections[0]);
 
   const fetchInterviews = async () => {
-    const interviews = await getInterViews(user?.id);
-    console.log(interviews);
+    try {
+      setIsLoading(true);
+      const interviews = await getInterViews(user?.id);
+      console.log(interviews);
 
-    if (interviews.status === 200) {
-      if (interviews.data) {
-        setInterviews(interviews.data);
+      if (interviews.status === 200) {
+        if (interviews.data) {
+          setInterviews(interviews.data);
+        }
+      } else {
+        throw new Error(interviews.message);
       }
-    } else {
-      console.log("Error fetching interviews");
+    } catch (error) {
+      toast.error(`Error fetching interviews. ${error}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,7 +134,7 @@ const Interviews = () => {
                     <div className="flex items-center justify-center mt-4">
                       <AiButton
                         onPress={() => {}}
-                        title="Start Interview"
+                        title="Take Interview"
                         icon="ion:call"
                         extraClasses="bg-primary1/20 text-white"
                       />
