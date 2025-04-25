@@ -21,11 +21,15 @@ const page = async ({
         </div>
         <Agent />
         <div className="mt-5 w-full min-h-[50vh] rounded-full bg-radial-[at_50%_75%] from-primary1/20 via-dark1 to-dark1 to-90%">
-          <h2 className="font-semibold text-2xl text-center text-white pt-10">
+          <h2 className="pl-8 max-w-[800px] w-full mx-auto font-semibold text-2xl text-white pt-10">
             You are now attending{" "}
             <span className="text-primary1">{interview?.role}</span> interview
           </h2>
-          <ul className="max-w-[800px] mx-auto text-[15px]  text-white/70 mt-2 py-7 font-semibold list-disc flex flex-col gap-y-4">
+          <ul className="pl-8 max-w-[800px] w-full mx-auto text-[15px]  opacity-55 mt-2 py-7 font-semibold list-disc flex flex-col gap-y-4">
+            <li>
+              If you are ready to start the interview, please click on the{" "}
+              <span className="text-primary1">Call</span> button
+            </li>
             <li>
               This interview is for the{" "}
               <span className="">{interview?.role}</span> role.
