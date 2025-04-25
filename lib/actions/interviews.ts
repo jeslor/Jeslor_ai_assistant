@@ -34,3 +34,35 @@ export const getInterViews = async (userId: string) => {
     };
   }
 };
+
+export const getInterViewById = async (interviewId: string) => {
+  try {
+    const interview = await prisma.interview.findUnique({
+      where: {
+        id: interviewId,
+      },
+    });
+
+    if (!interview) {
+      return {
+        message: "Interview not found",
+        status: 404,
+        data: null,
+      };
+    }
+
+    return {
+      message: "Interview found",
+      status: 200,
+      data: interview,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      message: "Internal server error",
+      status: 500,
+      data: null,
+    };
+  }
+};

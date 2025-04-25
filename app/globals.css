@@ -70,6 +70,16 @@ body {
   }
 }
 
+@keyframes barBounce {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(2);
+  }
+}
+
 /* Optional fallback for browsers that don’t support @theme */
 :root {
   --color-primary1: #f35850;
