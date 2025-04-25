@@ -75,8 +75,8 @@ const Agent = () => {
   return (
     <>
       <div className="card-wrapper w-full max-w-[800px] mx-auto mt-5 ">
-        <div className="flex justify-around gap-x items-center justify-center overflow-hidden  rounded-4xl bg-black  backdrop-blur-md  px-4 py-2 shadow-xl border border-dark1/10 mx-auto relative w-[calc(100%-5px)] h-[90%] ">
-          <div className="flex flex-col items-center justify-center h-[300px] relative group">
+        <div className="flex  gap-x items-center justify-around flex-1  rounded-4xl bg-black  backdrop-blur-md  px-4 py-2 shadow-xl border border-dark1/10 mx-auto relative w-[calc(100%-5px)] h-[90%] ">
+          <div className="flex flex-col items-center justify-around h-[300px] w-[200px] relative group">
             {(status === "active" || status === "connecting") && (
               <button
                 onClick={handleEndCall}
@@ -131,8 +131,8 @@ const Agent = () => {
               </div>
             )}
           </div>
-          <CallVisualizer />
-          <div className="  flex flex-col items-center gap-y-1">
+          <CallVisualizer isTalking={isTalking} />
+          <div className="  flex flex-col items-center gap-y-1 width-[100px]">
             <div className="h-[60px] w-[60px] overflow-hidden">
               {user?.profileImage ? (
                 <img

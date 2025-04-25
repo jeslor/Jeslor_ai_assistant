@@ -20,11 +20,18 @@ const page = async ({
           <img className="opacity-[0.11]" src="/media/images/logo.png" />
         </div>
         <Agent />
-        <div className="w-full min-h-[50vh] rounded-full bg-radial-[at_50%_75%] from-primary1/20 to-black to-90%">
+        <div className="mt-5 w-full min-h-[50vh] rounded-full bg-radial-[at_50%_75%] from-primary1/20 via-dark1 to-dark1 to-90%">
           <h2 className="font-semibold text-2xl text-center text-white pt-10">
             You are now attending{" "}
             <span className="text-primary1">{interview?.role}</span> interview
           </h2>
+          <ul>
+            <li>
+              This interview is for the{" "}
+              <span className="">{interview?.role}</span> role at{" "}
+              <span className="">{interview?.company}</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

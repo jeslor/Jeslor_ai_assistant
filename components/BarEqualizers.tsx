@@ -1,21 +1,32 @@
 "use client";
 
-const CallVisualizer = () => {
+import { useMemo } from "react";
+
+const CallVisualizer = ({ isTalking }: { isTalking: boolean }) => {
+  const bars = useMemo(() => {
+    return Array.from({ length: 200 }).map(() => ({
+      height: Math.random() * 60 + 20,
+      duration: 0.4 + Math.random() * 0.8,
+      delay: Math.random() * 0.5,
+    }));
+  }, []); // ← this ensures values only generate once
+
   return (
-    <div className="flex items-end gap-1 h-32 w-full max-w-4xl mx-auto">
-      {Array.from({ length: 40 }).map((_, i) => (
-        <div
-          key={i}
-          className="w-1 bg-green-500 rounded"
-          style={{
-            height: `${Math.random() * 60 + 20}px`,
-            animation: `barBounce ${
-              0.4 + Math.random() * 0.8
-            }s ease-in-out infinite`,
-            animationDelay: `${Math.random() * 0.5}s`,
-          }}
-        />
-      ))}
+    <div className="w-[500px] overflow-hidden mr-6">
+      <div className="flex items-center gap-1 h-32  w-fit">
+        {bars.map((bar, i) => (
+          <div
+            key={i}
+            className="w-1 bg-gradient-to-b from-primary1/30 to-primary1/80 rounded-full"
+            style={{
+              height: `${bar.height}px`,
+              animation: `barBounce ${bar.duration}s ease-in-out infinite`,
+              animationDelay: `${bar.delay}s`,
+              animationPlayState: isTalking ? "running" : "paused",
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 };

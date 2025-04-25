@@ -22,7 +22,10 @@ export const getInterViews = async (userId: string) => {
     return {
       message: "Interviews found",
       status: 200,
-      data: interviews,
+      data: interviews.map((int) => ({
+        ...int,
+        questions: int.questions.length,
+      })),
     };
   } catch (error) {
     console.error(error);
