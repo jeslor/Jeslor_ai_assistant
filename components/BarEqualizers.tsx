@@ -12,7 +12,7 @@ const CallVisualizer = ({ isTalking }: { isTalking: boolean }) => {
   }, []); // ← this ensures values only generate once
 
   return (
-    <div className="w-[500px] overflow-hidden mr-6">
+    <div className="w-[500px] overflow-hidden ">
       <div className="flex items-center gap-1 h-32  w-fit">
         {bars.map((bar, i) => (
           <div

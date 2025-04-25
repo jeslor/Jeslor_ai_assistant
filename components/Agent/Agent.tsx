@@ -132,7 +132,7 @@ const Agent = () => {
             )}
           </div>
           <CallVisualizer isTalking={isTalking} />
-          <div className="  flex flex-col items-center gap-y-1 width-[100px]">
+          <div className="  flex flex-col items-center gap-y-1 w-[200px]">
             <div className="h-[60px] w-[60px] overflow-hidden">
               {user?.profileImage ? (
                 <img

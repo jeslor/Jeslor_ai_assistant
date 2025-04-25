@@ -25,11 +25,18 @@ const page = async ({
             You are now attending{" "}
             <span className="text-primary1">{interview?.role}</span> interview
           </h2>
-          <ul>
+          <ul className="max-w-[800px] mx-auto text-[15px]  text-white/70 mt-2 py-7 font-semibold list-disc flex flex-col gap-y-4">
             <li>
               This interview is for the{" "}
-              <span className="">{interview?.role}</span> role at{" "}
-              <span className="">{interview?.company}</span>
+              <span className="">{interview?.role}</span> role.
+            </li>
+            <li>
+              You will be asked a total of {interview?.questions.length} and
+              your score will be out of 100%
+            </li>
+            <li>
+              This is a {interview?.level} interview and s is a{" "}
+              {interview?.type} type of interview{" "}
             </li>
           </ul>
         </div>
