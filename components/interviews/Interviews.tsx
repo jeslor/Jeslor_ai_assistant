@@ -7,11 +7,13 @@ import Image from "next/image";
 import { refactorCompany } from "@/lib/helpers/general";
 import { toast } from "sonner";
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
+import Link from "next/link";
 
-const Interviews = () => {
+const Interviews = ({ isMain }: { isMain?: boolean }) => {
   const { user } = useUserStore();
   const [interviews, setInterviews] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
   const [sections, setSections] = useState<any[]>([
     {
       id: 1,
@@ -60,6 +62,7 @@ const Interviews = () => {
       fetchInterviews();
     }
   }, [user]);
+
   useEffect(() => {
     if (interviews.length > 0) {
       setSections((prevSections) =>
@@ -72,15 +75,51 @@ const Interviews = () => {
     }
   }, [interviews]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const aiLogo = document.querySelector(".stickyInterViewMenu");
+      if (aiLogo) {
+        if (window.scrollY > 50) {
+          setStickyInterviewMenu(true);
+        } else {
+          setStickyInterviewMenu(false);
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleSectionClick = (section: any) => {
+    const interviewContainer = document.querySelector(".interviewContainer");
     sections.find((s) => s.id === section.id)
       ? setSelectedSection(section)
       : setSelectedSection(sections[0]);
+    if (interviewContainer) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
-    <div className="py-10 bg-black  relative z-2 w-full rounded-t-[30px] ">
-      <div className="flex gap-x-4 mx-auto w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10">
+    <div
+      className={`py-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
+        isMain ? "min-h-[100vh] pt-[50px] interviewContainer" : ""
+      } `}
+    >
+      <div
+        className={`${
+          isMain ? "stickyInterViewMenu " : ""
+        } flex gap-x-4 mx-auto w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10 ${
+          stickyInterviewMenu
+            ? "fixed top-[60px] left-[50%] translate-x-[-50%] z-50 justify-center"
+            : ""
+        }`}
+      >
         {sections.map((section) => (
           <AiButton
             key={section.id}
@@ -156,6 +195,14 @@ const Interviews = () => {
           </div>
         </div>
       </div>
+      {!isMain && (
+        <Link
+          className="py-10 ml-[50%] -translate-x-[50%] inline-block text-center  font-semibold hover:text-primary1"
+          href="/interviews"
+        >
+          View all interviews
+        </Link>
+      )}
     </div>
   );
 };

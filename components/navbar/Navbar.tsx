@@ -5,8 +5,11 @@ import { useEffect, useState } from "react";
 import useUserStore from "../provider/userStore";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const path = usePathname();
+  const Router = useRouter();
   const { user, setUser } = useUserStore();
   const { data: session } = useSession();
   const [showNav, setShowNav] = useState(false);
@@ -34,10 +37,14 @@ const Navbar = () => {
   }, []);
 
   const handleScrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (path !== "/") {
+      Router.push("/");
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
@@ -73,7 +80,9 @@ const Navbar = () => {
             onClick={handleScrollToTop}
             id="aiLogo"
             className={`opacity-0 left-[44.5%]  absolute flex  h-[50px] w-[50px] text-4xl rounded-3xl  items-center justify-center  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center hover:bg-gradient-to-bl hover:from-dark/50 hover:to-primary1/50 transition-all ${
-              showNav ? "opacity-100 left-[50%] cursor-pointer " : "opacity-0"
+              showNav || path !== "/"
+                ? "opacity-100 left-[50%] cursor-pointer "
+                : "opacity-0"
             } transition-all duration-300 ease-in-out`}
           >
             <Image
