@@ -2,7 +2,10 @@ import React from "react";
 
 const InterviewSkeleton = ({ totalCards }: any) => {
   return Array.from({ length: totalCards }, (_, index) => (
-    <div className="animate-pulse bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full">
+    <div
+      key={index}
+      className="animate-pulse bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full"
+    >
       <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
         <div className="w-full h-full bg-gray-300/30 rounded-full" />
       </div>

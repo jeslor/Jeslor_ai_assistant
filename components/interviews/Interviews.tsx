@@ -42,8 +42,6 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
     try {
       setIsLoading(true);
       const interviews = await getInterViews(user?.id);
-      console.log(interviews);
-
       if (interviews.status === 200) {
         if (interviews.data) {
           setInterviews(interviews.data);
