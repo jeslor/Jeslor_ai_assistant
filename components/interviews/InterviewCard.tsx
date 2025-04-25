@@ -1,8 +1,11 @@
+"use client";
 import { refactorCompany } from "@/lib/helpers/general";
 import React from "react";
 import AiButton from "../AiButton";
+import { useRouter } from "next/navigation";
 
 const InterviewCard = ({ interview }: any) => {
+  const Router = useRouter();
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full">
       <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
@@ -37,7 +40,7 @@ const InterviewCard = ({ interview }: any) => {
         </p>
         <div className="flex items-center justify-center mt-4">
           <AiButton
-            onPress={() => {}}
+            onPress={() => Router.push(`/interviews/${interview.id}`)}
             title="Take Interview"
             icon="ion:call"
             extraClasses="bg-primary1/20 text-white"

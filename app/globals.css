@@ -15,6 +15,7 @@ body {
   --animate-slow: spin 20s linear infinite;
   --animate-slowping: ping 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-logAnimate: logoAnimate 2s linear infinite;
+  --animate-scaleInOut: callBounceInOut 1.4s linear infinite;
 }
 
 @keyframes spin {
@@ -23,6 +24,30 @@ body {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes callBounceInOut {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.9;
+  }
+  20% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(0.95);
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  80% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.9;
   }
 }
 

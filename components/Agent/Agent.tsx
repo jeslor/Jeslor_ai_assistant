@@ -106,7 +106,7 @@ const Agent = () => {
             {(status === "disconnected" || status === "inactive") && (
               <button
                 onClick={handleStartCall}
-                className={`h-[70px] w-[70px] absolute flex justify-center items-center  transition-all rounded-full cursor-pointer z-[10] hover:scale-105 bg-green-700
+                className={`h-[70px] w-[70px] absolute flex justify-center items-center  transition-all rounded-full cursor-pointer z-[10] hover:scale-105 bg-green-700 animate-scaleInOut
             `}
               >
                 <Icon icon="ion:call" className="text-2xl text-white" />
