@@ -6,6 +6,7 @@ import { getInterViews } from "@/lib/actions/interviews";
 import Image from "next/image";
 import { refactorCompany } from "@/lib/helpers/general";
 import { toast } from "sonner";
+import InterviewSkeleton from "../skeletons/InterviewSkeleton";
 
 const Interviews = () => {
   const { user } = useUserStore();
@@ -98,7 +99,9 @@ const Interviews = () => {
             {selectedSection.title}
           </h3>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
-            {interviews.length > 0 ? (
+            {isLoading ? (
+              <InterviewSkeleton totalCards={4} />
+            ) : interviews.length > 0 ? (
               interviews.map((interview) => (
                 <div
                   key={interview.id}
