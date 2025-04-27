@@ -5,6 +5,7 @@ import useUserStore from "../provider/userStore";
 import { vapi } from "@/lib/vapi.sdk";
 import { motion } from "framer-motion";
 import CallVisualizer from "../BarEqualizers";
+import { interviewer } from "@/constants";
 
 enum AgentStatus {
   disconnected = "disconnected",
@@ -13,8 +14,24 @@ enum AgentStatus {
   inactive = "inactive",
 }
 
+interface AgentProps {
+  interview?: {
+    id: string;
+    questions: string[];
+    role: string;
+    level: string;
+    type: string;
+    techstack: string[];
+    company: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  agentType: string;
+}
+
 const rings = Array.from({ length: 5 }, (_, i) => i + 1);
-const Agent = () => {
+const Agent = ({ interview, agentType }: AgentProps) => {
   const { user } = useUserStore();
   const [status, setStatus] = useState<AgentStatus>(AgentStatus.inactive);
   const [isTalking, setIsTalking] = useState(false);
@@ -52,12 +69,29 @@ const Agent = () => {
     try {
       if (status === "inactive" || status === "disconnected") {
         setStatus(AgentStatus.connecting);
-        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-          variableValues: {
-            username: user?.username,
-            userid: user?.id,
-          },
-        });
+        if (agentType === "newInterview") {
+          await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+            variableValues: {
+              username: user?.username,
+              userid: user?.id,
+            },
+          });
+        } else {
+          let questions = interview?.questions;
+          let formattedQuestions = "";
+          if (questions) {
+            formattedQuestions = questions
+              .map((question) => `- $question}`)
+              .join("\n");
+          }
+          await vapi.start(interviewer, {
+            variableValues: {
+              questions: formattedQuestions,
+              username: user?.username,
+              role: interview?.role,
+            },
+          });
+        }
       }
     } catch (error) {
       console.log("Error starting call:", error);

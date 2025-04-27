@@ -17,7 +17,7 @@ const CallVisualizer = ({ isTalking }: { isTalking: boolean }) => {
         {bars.map((bar, i) => (
           <div
             key={i}
-            className="w-1 bg-gradient-to-b from-primary1/30 to-primary1/80 rounded-full"
+            className="w-[1px] bg-gradient-to-b from-primary1/30 to-primary1/80 rounded-full"
             style={{
               height: `${bar.height}px`,
               animation: `barBounce ${bar.duration}s ease-in-out infinite`,

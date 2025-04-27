@@ -14,7 +14,7 @@ const InterviewCard = ({ interview }: any) => {
             interview.company
           )}`}
           alt={refactorCompany(interview.company)}
-          className="w-full h-full rounded-full mb-2"
+          className="w-full h-full rounded-full  object-fit"
         />
       </div>
       <h2 className="text-primary1/65 font-bold mb-2 text-[19px]">
