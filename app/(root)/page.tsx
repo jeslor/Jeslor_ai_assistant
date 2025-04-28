@@ -30,7 +30,7 @@ const page = () => {
           </h3>
         </div>
         <div>
-          <Agent />
+          <Agent agentType="newInterview" />
         </div>
       </div>
       <div className="pt-[100px]">

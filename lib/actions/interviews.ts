@@ -149,6 +149,21 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
         interviewId,
       },
     });
+    const updateUser = prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        feedbacks: {
+          create: saveFeedBack,
+        },
+      },
+    });
+    return {
+      message: "interview feed back saved",
+      status: 200,
+      data: { saveFeedBack, updateUser },
+    };
   } catch (error) {
     return {
       message: "Internal server error",

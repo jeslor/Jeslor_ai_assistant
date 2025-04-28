@@ -8,6 +8,7 @@ import CallVisualizer from "../BarEqualizers";
 import { interviewer } from "@/constants";
 import { useRouter } from "next/navigation";
 import { saveFeedBack } from "@/lib/actions/interviews";
+import { toast } from "sonner";
 
 enum AgentStatus {
   completed = "completed",
@@ -67,21 +68,12 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     });
   }, []);
 
-  useEffect(() => {
-    if (status === "completed") {
-      if (agentType === "newInterview") {
-        vapi.stop();
-        Router.push("/interviews");
-      } else {
-        handleGenerateFeedback();
-      }
-    }
-  }, [status]);
-
   const handleStartCall = useCallback(async () => {
     try {
       if (status === "inactive" || status === "completed") {
         setStatus(AgentStatus.connecting);
+        console.log(agentType);
+
         if (agentType === "newInterview") {
           await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
             variableValues: {
@@ -89,6 +81,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
               userid: user?.id,
             },
           });
+          setStatus(AgentStatus.active);
         } else {
           let questions = interview?.questions;
           let formattedQuestions = "";
@@ -97,6 +90,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
               .map((question: any) => `- ${question}`)
               .join("\n");
           }
+          alert("reached here");
           await vapi.start(interviewer, {
             variableValues: {
               questions: formattedQuestions,
@@ -120,12 +114,27 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     }
   };
 
+  useEffect(() => {
+    if (status === "completed") {
+      if (agentType === "newInterview") {
+        Router.push("/interviews");
+      } else {
+        handleGenerateFeedback;
+      }
+    }
+  }, [status]);
+
   const handleGenerateFeedback = async () => {
-    const message = await saveFeedBack({
+    const data = await saveFeedBack({
       chats,
       interviewId: interview?.id,
       userId: user?.id,
     });
+    if (data.status === 200) {
+      Router.push(`/interviews/${interview?.id}/${data.data?.saveFeedBack.id}`);
+    } else {
+      toast.error("Error generating the interview feedback");
+    }
   };
 
   return (

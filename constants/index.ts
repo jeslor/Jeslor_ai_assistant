@@ -11,7 +11,7 @@ export const interviewer: CreateAssistantDTO = {
   },
   voice: {
     provider: "11labs",
-    voiceId: "Hana",
+    voiceId: "sarah",
     stability: 0.4,
     similarityBoost: 0.8,
     speed: 0.9,
