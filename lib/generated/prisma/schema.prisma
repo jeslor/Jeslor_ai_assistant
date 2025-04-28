@@ -23,6 +23,7 @@ model User {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   interviews     Interview[] @relation("interview")
+  feedbacks      Feedback[]  @relation("feedback")
 }
 
 model Interview {
@@ -46,11 +47,24 @@ model Interview {
   @@map("interviews")
 }
 
-// role String;
-// level: string;
-// questions: string[];
-// techstack: string[];
-// createdAt: string;
-// userId: string;
-// type: string;
-// finalized: boolean;
+model Feedback {
+  id                  String                  @id @default(auto()) @map("_id") @db.ObjectId
+  userId              String                  @db.ObjectId
+  interviewId         String                  @db.ObjectId
+  totalScore          Float
+  strengths           String[]
+  areasForImprovement String[]
+  finalAssessment     String
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  user                User                    @relation("feedback", fields: [userId], references: [id], onDelete: Cascade)
+  categoryScores      CategoryScoreEmbedded[]
+
+  @@map("feedbacks")
+}
+
+type CategoryScoreEmbedded {
+  name    String
+  score   Float
+  comment String
+}

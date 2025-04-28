@@ -74,27 +74,28 @@ export const getInterViewById = async (interviewId: string) => {
 };
 
 export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
-  const transformedScript = chats
-    .map(
-      (sentence: { role: string; text: string }) =>
-        `-${sentence.role}: ${sentence.text} \n`
-    )
-    .join("");
+  try {
+    const transformedScript = chats
+      .map(
+        (sentence: { role: string; text: string }) =>
+          `-${sentence.role}: ${sentence.text} \n`
+      )
+      .join("");
 
-  const {
-    object: {
-      totalScore,
-      categoryScores,
-      strengths,
-      areasForImprovement,
-      finalAssessment,
-    },
-  } = await generateObject({
-    model: google("gemini-2.0-flash-001", {
-      structuredOutputs: false,
-    }),
-    schema: feedbackSchema,
-    prompt: `
+    const {
+      object: {
+        totalScore,
+        categoryScores,
+        strengths,
+        areasForImprovement,
+        finalAssessment,
+      },
+    } = await generateObject({
+      model: google("gemini-2.0-flash-001", {
+        structuredOutputs: false,
+      }),
+      schema: feedbackSchema,
+      prompt: `
         You are an AI interviewer agent analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be thorough and detailed in your analysis. Don't be lenient with the candidate. If there are mistakes or areas for improvement, point them out.
         Transcript:
         ${transformedScript}
@@ -115,15 +116,44 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
         - **Attention to Detail: Ability to produce precise, accurate, and thorough work.
 
         `,
-    system:
-      "You are a professional interviewer analyzing a sample interview. Your task is to evaluate the candidate based on structured categories",
-  });
+      system:
+        "You are a professional interviewer analyzing a sample interview. Your task is to evaluate the candidate based on structured categories",
+    });
 
-  const feedback = {
-    totalScore,
-    categoryScores,
-    strengths,
-    areasForImprovement,
-    finalAssessment,
-  };
+    const feedback = {
+      totalScore,
+      categoryScores: categoryScores.map((score: any) => ({
+        create: {
+          name: score.name,
+          score: score.score,
+          comment: score.comment,
+        },
+      })),
+      strengths,
+      areasForImprovement,
+      finalAssessment,
+    };
+
+    const saveFeedBack = await prisma.feedback.create({
+      data: {
+        totalScore: feedback.totalScore,
+        categoryScores: feedback.categoryScores.map((score: any) => ({
+          name: score.name,
+          score: score.score,
+          comment: score.comment,
+        })),
+        strengths: feedback.strengths,
+        areasForImprovement: feedback.areasForImprovement,
+        finalAssessment: feedback.finalAssessment,
+        user: { connect: { id: userId } },
+        interviewId,
+      },
+    });
+  } catch (error) {
+    return {
+      message: "Internal server error",
+      status: 500,
+      data: null,
+    };
+  }
 };
