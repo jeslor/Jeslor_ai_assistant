@@ -24,6 +24,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   interviews Interview[] @relation("interview")
+  feedbacks  Feedback[]  @relation("feedback")
 }
 
 model Interview {
@@ -39,6 +40,7 @@ model Interview {
   user      User     @relation("interview", fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  feedbacks Feedback[] @relation("feedback")
   @@map("interviews")
   @@index([role], name: "role_index")
   @@index([level], name: "level_index")
@@ -46,13 +48,31 @@ model Interview {
   @@index([finalized], name: "finalized_index")
 }
 
+model Feedback {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String   @db.ObjectId
+  interviewId           String   @db.ObjectId
+  totalScore            Float
+  strengths             String[]
+  areasForImprovement   String[]
+  finalAssessment       String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
+  user       User       @relation("feedback", fields: [userId], references: [id], onDelete: Cascade)
+  interview  Interview  @relation("feedback", fields: [interviewId], references: [id], onDelete: Cascade)
+  categoryScores CategoryScore[]
 
-  // role String;
-  // level: string;
-  // questions: string[];
-  // techstack: string[];
-  // createdAt: string;
-  // userId: string;
-  // type: string;
-  // finalized: boolean;
+  @@map("feedbacks")
+}
+
+model CategoryScore {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  feedbackId  String    @db.ObjectId
+  name        String    // e.g., "Communication Skills", etc.
+  score       Float
+  comment     String
+  feedback    Feedback  @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+
+  @@map("category_scores")
+}
