@@ -8,7 +8,7 @@ import CallVisualizer from "../BarEqualizers";
 import { interviewer } from "@/constants";
 
 enum AgentStatus {
-  disconnected = "disconnected",
+  completed = "completed",
   connecting = "connecting",
   active = "active",
   inactive = "inactive",
@@ -42,12 +42,12 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       setStatus(AgentStatus.active);
       setChats([]);
     };
-    const onCallEnd = () => setStatus(AgentStatus.disconnected);
+    const onCallEnd = () => setStatus(AgentStatus.completed);
     const onTalkingStart = () => setIsTalking(true);
     const onTalkingEnd = () => setIsTalking(false);
     const onError = (error: any) => {
       console.error("Error:", error);
-      setStatus(AgentStatus.disconnected);
+      setStatus(AgentStatus.completed);
     };
 
     vapi.on("call-start", onCallStart);
@@ -67,7 +67,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
 
   const handleStartCall = useCallback(async () => {
     try {
-      if (status === "inactive" || status === "disconnected") {
+      if (status === "inactive" || status === "completed") {
         setStatus(AgentStatus.connecting);
         if (agentType === "newInterview") {
           await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
@@ -81,7 +81,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
           let formattedQuestions = "";
           if (questions) {
             formattedQuestions = questions
-              .map((question) => `- $question}`)
+              .map((question) => `- ${question}`)
               .join("\n");
           }
           await vapi.start(interviewer, {
@@ -100,7 +100,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   const handleEndCall = async () => {
     console.log("Ending call...");
     if (status === "active" || status === "connecting") {
-      setStatus(AgentStatus.disconnected);
+      setStatus(AgentStatus.completed);
       setIsTalking(false);
       await vapi.stop();
     }
@@ -138,7 +138,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
                 />
               </button>
             )}
-            {(status === "disconnected" || status === "inactive") && (
+            {(status === "completed" || status === "inactive") && (
               <button
                 onClick={handleStartCall}
                 className={`h-[70px] w-[70px] absolute flex justify-center items-center  transition-all rounded-full cursor-pointer z-[10] hover:scale-105 bg-green-700 animate-scaleInOut
