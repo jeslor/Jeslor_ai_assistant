@@ -6,6 +6,8 @@ import { vapi } from "@/lib/vapi.sdk";
 import { motion } from "framer-motion";
 import CallVisualizer from "../BarEqualizers";
 import { interviewer } from "@/constants";
+import { useRouter } from "next/navigation";
+import { saveFeedBack } from "@/lib/actions/interviews";
 
 enum AgentStatus {
   completed = "completed",
@@ -27,11 +29,12 @@ interface AgentProps {
     createdAt: string;
     updatedAt: string;
   };
-  agentType: string;
+  agentType?: string;
 }
 
 const rings = Array.from({ length: 5 }, (_, i) => i + 1);
 const Agent = ({ interview, agentType }: AgentProps) => {
+  const Router = useRouter();
   const { user } = useUserStore();
   const [status, setStatus] = useState<AgentStatus>(AgentStatus.inactive);
   const [isTalking, setIsTalking] = useState(false);
@@ -49,7 +52,6 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       console.error("Error:", error);
       setStatus(AgentStatus.completed);
     };
-
     vapi.on("call-start", onCallStart);
     vapi.on("call-end", onCallEnd);
     vapi.on("speech-start", onTalkingStart);
@@ -64,6 +66,17 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (status === "completed") {
+      if (agentType === "newInterview") {
+        vapi.stop();
+        Router.push("/interviews");
+      } else {
+        handleGenerateFeedback();
+      }
+    }
+  }, [status]);
 
   const handleStartCall = useCallback(async () => {
     try {
@@ -81,7 +94,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
           let formattedQuestions = "";
           if (questions) {
             formattedQuestions = questions
-              .map((question) => `- ${question}`)
+              .map((question: any) => `- ${question}`)
               .join("\n");
           }
           await vapi.start(interviewer, {
@@ -97,6 +110,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       console.log("Error starting call:", error);
     }
   }, [status, user]);
+
   const handleEndCall = async () => {
     console.log("Ending call...");
     if (status === "active" || status === "connecting") {
@@ -104,6 +118,14 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       setIsTalking(false);
       await vapi.stop();
     }
+  };
+
+  const handleGenerateFeedback = async () => {
+    const message = await saveFeedBack({
+      chats,
+      interviewId: interview?.id,
+      userId: user?.id,
+    });
   };
 
   return (

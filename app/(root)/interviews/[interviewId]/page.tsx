@@ -10,7 +10,6 @@ const page = async ({
   };
 }) => {
   const { interviewId } = params;
-
   const { data: interview } = await getInterViewById(interviewId);
 
   return (
@@ -20,7 +19,15 @@ const page = async ({
         <div className="absolute">
           <img className="opacity-[0.11]" src="/media/images/logo.png" />
         </div>
-        <Agent interview={interview} />
+        {interview && (
+          <Agent
+            interview={{
+              ...interview,
+              createdAt: interview.createdAt.toISOString(),
+              updatedAt: interview.updatedAt.toISOString(),
+            }}
+          />
+        )}
         <div className="mt-5 w-full min-h-[50vh] rounded-full bg-radial-[at_50%_75%] from-primary1/20 via-dark1 to-dark1 to-90%">
           <h2 className="pl-6 max-w-[800px] w-full mx-auto font-semibold text-2xl text-white pt-10">
             You are now attending a sample{" "}
