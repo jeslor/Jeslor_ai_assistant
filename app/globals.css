@@ -80,6 +80,18 @@ body {
   }
 }
 
+@keyframes stickyTop {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 /* Optional fallback for browsers that don’t support @theme */
 :root {
   --color-primary1: #f35850;
@@ -248,4 +260,13 @@ body {
 
 .repeated-grids {
   grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+}
+
+.gradient-primary-hold {
+  background: linear-gradient(
+    to bottom,
+    var(--color-primary1) 0%,
+    var(--color-primary1) 1%,
+    var(--color-dark1) 100%
+  );
 }
