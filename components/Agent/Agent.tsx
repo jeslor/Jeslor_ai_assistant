@@ -42,6 +42,8 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   const [chats, setChats] = useState<any[]>([]);
 
   useEffect(() => {
+    let lastTranscript = "";
+
     const onCallStart = () => {
       setStatus(AgentStatus.active);
       setChats([]);
@@ -60,10 +62,15 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     vapi.on("error", onError);
     vapi.on("message", (message: any) => {
       if (message.type === "transcript") {
+        const currentTranscript = message.transcript?.trim();
+        if (!currentTranscript || currentTranscript === lastTranscript) {
+          return;
+        }
         setChats((prev) => [
           ...prev,
-          { role: message.role, content: message.transcript },
+          { role: message.role, content: currentTranscript },
         ]);
+        lastTranscript = currentTranscript;
       }
     });
   }, []);

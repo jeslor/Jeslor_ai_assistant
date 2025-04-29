@@ -77,8 +77,8 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
   try {
     const transformedScript = chats
       .map(
-        (sentence: { role: string; text: string }) =>
-          `-${sentence.role}: ${sentence.text} \n`
+        (sentence: { role: string; content: string }) =>
+          `-${sentence.role}: ${sentence.content} \n`
       )
       .join("");
 
@@ -120,19 +120,27 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
         "You are a professional interviewer analyzing a sample interview. Your task is to evaluate the candidate based on structured categories",
     });
 
+    console.log("Generated feedback:", {
+      totalScore,
+      categoryScores,
+      strengths,
+      areasForImprovement,
+      finalAssessment,
+    });
+
     const feedback = {
       totalScore,
       categoryScores: categoryScores.map((score: any) => ({
-        create: {
-          name: score.name,
-          score: score.score,
-          comment: score.comment,
-        },
+        name: score.name,
+        score: score.score,
+        comment: score.comment,
       })),
       strengths,
       areasForImprovement,
       finalAssessment,
     };
+
+    console.log("Feedback generated:", feedback);
 
     const saveFeedBack = await prisma.feedback.create({
       data: {
@@ -149,6 +157,7 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
         interviewId,
       },
     });
+
     const updateUser = prisma.user.update({
       where: {
         id: userId,
@@ -165,6 +174,8 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
       data: { saveFeedBack, updateUser },
     };
   } catch (error) {
+    console.log("Error saving feedback:", error);
+
     return {
       message: "Internal server error",
       status: 500,

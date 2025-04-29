@@ -3,7 +3,7 @@ import { getInterViewById } from "@/lib/actions/interviews";
 import React from "react";
 
 const page = async ({ params }: any) => {
-  const { interviewId } = params;
+  const { interviewId } = await params;
   const { data: interview } = await getInterViewById(interviewId);
 
   return (
