@@ -7,6 +7,9 @@ export const findUserByEmail = async (email: string) => {
       where: {
         email: email,
       },
+      include: {
+        feedbacks: true,
+      },
     });
     if (!user) {
       return JSON.parse(

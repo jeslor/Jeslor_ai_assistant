@@ -131,13 +131,15 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   }, [status]);
 
   const handleGenerateFeedback = async (chats: any) => {
-    const data = await saveFeedBack({
+    const response = await saveFeedBack({
       chats,
       interviewId: interview?.id,
       userId: user?.id,
     });
-    if (data.status === 200) {
-      Router.push(`/interviews/${interview?.id}/${data.data?.saveFeedBack.id}`);
+    if (response.status === 200) {
+      Router.push(
+        `/interviews/${interview?.id}/feedbacks/${response.data?.id}`
+      );
     } else {
       toast.error("Error generating the interview feedback");
     }

@@ -11,6 +11,8 @@ const Navbar = () => {
   const path = usePathname();
   const Router = useRouter();
   const { user, setUser } = useUserStore();
+  console.log(user);
+
   const { data: session } = useSession();
   const [showNav, setShowNav] = useState(false);
   useEffect(() => {

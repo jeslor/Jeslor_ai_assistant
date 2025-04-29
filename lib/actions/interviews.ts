@@ -117,15 +117,7 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
 
         `,
       system:
-        "You are a professional interviewer analyzing a sample interview. Your task is to evaluate the candidate based on structured categories",
-    });
-
-    console.log("Generated feedback:", {
-      totalScore,
-      categoryScores,
-      strengths,
-      areasForImprovement,
-      finalAssessment,
+        "You are a professional interviewer analyzing a sample interview. Your task is to evaluate the candidate based on structured categories and let the total score be the sum of the scores of all categories divide by 100. Be thorough and detailed in your analysis. Don't be lenient with the candidate. If there are mistakes or areas for improvement, point them out.",
     });
 
     const feedback = {
@@ -140,16 +132,10 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
       finalAssessment,
     };
 
-    console.log("Feedback generated:", feedback);
-
     const saveFeedBack = await prisma.feedback.create({
       data: {
         totalScore: feedback.totalScore,
-        categoryScores: feedback.categoryScores.map((score: any) => ({
-          name: score.name,
-          score: score.score,
-          comment: score.comment,
-        })),
+        categoryScores: feedback.categoryScores,
         strengths: feedback.strengths,
         areasForImprovement: feedback.areasForImprovement,
         finalAssessment: feedback.finalAssessment,
@@ -158,20 +144,10 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
       },
     });
 
-    const updateUser = prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        feedbacks: {
-          create: saveFeedBack,
-        },
-      },
-    });
     return {
       message: "interview feed back saved",
       status: 200,
-      data: { saveFeedBack, updateUser },
+      data: saveFeedBack,
     };
   } catch (error) {
     console.log("Error saving feedback:", error);
