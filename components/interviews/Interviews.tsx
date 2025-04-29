@@ -1,20 +1,32 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
-import { getInterViews } from "@/lib/actions/interviews";
-import Image from "next/image";
-import { refactorCompany } from "@/lib/helpers/general";
+import {
+  getInterviewsByUser,
+  getInterviewsNotByUser,
+} from "@/lib/actions/interviews";
 import { toast } from "sonner";
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
 import Link from "next/link";
 import InterviewCard from "./InterviewCard";
+import Loading from "../ui/loading";
+import { useInView } from "react-intersection-observer";
 
-const Interviews = ({ isMain }: { isMain?: boolean }) => {
+const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
   const { user } = useUserStore();
-  const [interviews, setInterviews] = useState<any[]>([]);
+  const [userInterviews, setUserInterviews] = useState<any[]>([]);
+  const [notUserInterviews, setNotUserInterviews] = useState<any[]>([]);
+  const [interviews, setInterviews] = useState<any[]>(userInterviews);
   const [isLoading, setIsLoading] = useState(false);
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
+  const [limit, setLimit] = useState({
+    userLimit: 4,
+    notUserLimit: 4,
+  });
   const [sections, setSections] = useState<any[]>([
     {
       id: 1,
@@ -41,13 +53,31 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
   const fetchInterviews = async () => {
     try {
       setIsLoading(true);
-      const interviews = await getInterViews(user?.id);
-      if (interviews.status === 200) {
-        if (interviews.data) {
-          setInterviews(interviews.data);
+      if (selectedSection.id === 1) {
+        const userInterviewsResponse = await getInterviewsByUser(
+          user?.id,
+          limit.userLimit
+        );
+        if (userInterviewsResponse.status === 200) {
+          setUserInterviews(
+            userInterviewsResponse.data ? userInterviewsResponse.data : []
+          );
+        } else {
+          toast.error(userInterviewsResponse.message);
         }
       } else {
-        throw new Error(interviews.message);
+        const notUserInterviewsResponse = await getInterviewsNotByUser(
+          user?.id,
+          limit.notUserLimit
+        );
+
+        if (notUserInterviewsResponse.status === 200) {
+          setNotUserInterviews(
+            notUserInterviewsResponse.data ? notUserInterviewsResponse.data : []
+          );
+        } else {
+          toast.error(notUserInterviewsResponse.message);
+        }
       }
     } catch (error) {
       toast.error(`Error fetching interviews. ${error}`);
@@ -61,6 +91,18 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
       fetchInterviews();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (selectedSection.id === 1) {
+      setInterviews(userInterviews);
+    }
+    if (selectedSection.id === 2) {
+      setInterviews(notUserInterviews);
+    }
+    if (selectedSection.id === 3) {
+      setInterviews([]);
+    }
+  }, [selectedSection.id, userInterviews, notUserInterviews]);
 
   useEffect(() => {
     if (interviews.length > 0) {
@@ -103,6 +145,8 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
       });
     }
   };
+
+  console.log("inside interview", inView);
 
   return (
     <div
@@ -159,8 +203,13 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
           View all interviews
         </Link>
       )}
+      {isMain && (
+        <div className="py-10 flex items-center justify-center">
+          <Loading ref={ref} />
+        </div>
+      )}
     </div>
   );
-};
+});
 
 export default Interviews;

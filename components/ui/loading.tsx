@@ -1,12 +1,15 @@
 const Loading = ({
   size = 24,
   color = "gray",
+  ref = null,
 }: {
   size?: number;
   color?: string;
+  ref?: React.Ref<HTMLSpanElement>;
 }) => {
   return (
     <span
+      ref={ref}
       style={{
         height: size,
         width: size,

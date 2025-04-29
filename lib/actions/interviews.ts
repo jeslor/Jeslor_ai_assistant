@@ -4,7 +4,7 @@ import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { feedbackSchema } from "../validators/feedback.validator";
 
-export const getInterViews = async (userId: string) => {
+export const getInterviewsByUser = async (userId: string, limit: number) => {
   console.log("Fetching interviews for user:", userId);
 
   try {
@@ -12,6 +12,47 @@ export const getInterViews = async (userId: string) => {
       where: {
         userId,
       },
+      take: limit,
+    });
+
+    if (interviews.length === 0) {
+      return {
+        message: "Interviews not found",
+        status: 404,
+        data: null,
+      };
+    }
+
+    return {
+      message: "Interviews found",
+      status: 200,
+      data: interviews.map((int) => ({
+        ...int,
+        questions: int.questions.length,
+      })),
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      message: "Internal server error",
+      status: 500,
+      data: null,
+    };
+  }
+};
+
+export const getInterviewsNotByUser = async (userId: string, limit: number) => {
+  console.log("Fetching interviews not by user:", userId);
+
+  try {
+    const interviews = await prisma.interview.findMany({
+      where: {
+        NOT: {
+          userId,
+        },
+      },
+      take: limit,
     });
 
     if (interviews.length === 0) {
