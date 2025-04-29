@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, memo } from "react";
 import useUserStore from "./provider/userStore";
+import Link from "next/link";
 
 type ScoreCircleProps = {
   size?: number;
@@ -13,6 +14,7 @@ type ScoreCircleProps = {
 const ScoreCircle: React.FC<ScoreCircleProps> = memo(
   ({ size = 120, strokeWidth = 10, duration = 1000, interviewId }) => {
     const [progress, setProgress] = useState(0);
+    const [feedback, setFeedback] = useState<any>(null);
     const [score, setScore] = useState(0);
     const { user } = useUserStore();
 
@@ -27,6 +29,7 @@ const ScoreCircle: React.FC<ScoreCircleProps> = memo(
             (feedback: any) => feedback.interviewId === interviewId
           );
           if (interviewFeedback) {
+            setFeedback(interviewFeedback);
             userScore = interviewFeedback.totalScore;
           } else {
             userScore = 0;
@@ -54,33 +57,43 @@ const ScoreCircle: React.FC<ScoreCircleProps> = memo(
     const offset = circumference - (progress / 100) * circumference;
 
     return (
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size}>
-          <circle
-            className="stroke-primary1/20"
-            fill="transparent"
-            strokeWidth={strokeWidth}
-            r={radius}
-            cx={size / 2}
-            cy={size / 2}
-          />
-          <circle
-            className="stroke-primary1"
-            fill="transparent"
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            r={radius}
-            cx={size / 2}
-            cy={size / 2}
-            style={{ transition: "stroke-dashoffset 0.3s" }}
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold text-gray-700">
-          {Math.round(progress)}%
+      <>
+        <div className="relative" style={{ width: size, height: size }}>
+          <svg width={size} height={size}>
+            <circle
+              className="stroke-primary1/20"
+              fill="transparent"
+              strokeWidth={strokeWidth}
+              r={radius}
+              cx={size / 2}
+              cy={size / 2}
+            />
+            <circle
+              className="stroke-primary1"
+              fill="transparent"
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+              r={radius}
+              cx={size / 2}
+              cy={size / 2}
+              style={{ transition: "stroke-dashoffset 0.3s" }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold text-gray-700">
+            {Math.round(progress)}%
+          </div>
         </div>
-      </div>
+        {feedback && (
+          <Link
+            className="my-6 block text-primary1/65 text-center font-semibold underline "
+            href={`/interviews/${interviewId}/feedbacks/${feedback?.id}`}
+          >
+            View feedback
+          </Link>
+        )}
+      </>
     );
   }
 );

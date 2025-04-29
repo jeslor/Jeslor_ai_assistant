@@ -7,6 +7,7 @@ import useUserStore from "../provider/userStore";
 
 const InterviewCard = ({ interview }: any) => {
   const { user } = useUserStore();
+  const [feedback, setFeedback] = useState<any>(null);
   const [totalScore, setTotalScore] = useState(0);
   const Router = useRouter();
 
@@ -16,6 +17,7 @@ const InterviewCard = ({ interview }: any) => {
         (feedback: any) => feedback.interviewId === interview.id
       );
       if (interviewFeedback) {
+        setFeedback(interviewFeedback);
         setTotalScore(interviewFeedback.totalScore);
       } else {
         setTotalScore(0);
@@ -61,7 +63,19 @@ const InterviewCard = ({ interview }: any) => {
           You have not completed this interview yet. To take the test, please
           click the button below.{" "}
         </p>
-        <div className="flex items-center justify-center mt-4">
+        <div className="flex items-center justify-center mt-4 gap-x-3">
+          {feedback && (
+            <AiButton
+              onPress={() =>
+                Router.push(
+                  `/interviews/${interview.id}/feedbacks/${feedback.id}`
+                )
+              }
+              title="View feedback"
+              icon=""
+              extraClasses="bg-primary1/20 text-white"
+            />
+          )}
           <AiButton
             onPress={() => Router.push(`/interviews/${interview.id}`)}
             title={totalScore > 0 ? "Retake interview" : "Take interview"}
