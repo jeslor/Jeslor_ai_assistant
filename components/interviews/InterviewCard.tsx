@@ -1,11 +1,28 @@
 "use client";
 import { refactorCompany } from "@/lib/helpers/general";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import { useRouter } from "next/navigation";
+import useUserStore from "../provider/userStore";
 
 const InterviewCard = ({ interview }: any) => {
+  const { user } = useUserStore();
+  const [totalScore, setTotalScore] = useState(0);
   const Router = useRouter();
+
+  useEffect(() => {
+    if (user?.feedbacks) {
+      const interviewFeedback = user.feedbacks.find(
+        (feedback: any) => feedback.interviewId === interview.id
+      );
+      if (interviewFeedback) {
+        setTotalScore(interviewFeedback.totalScore);
+      } else {
+        setTotalScore(0);
+      }
+    }
+  }, [user, interview.id]);
+
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full">
       <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
@@ -28,7 +45,9 @@ const InterviewCard = ({ interview }: any) => {
       </p>
       <p className="flex flex-col justify-between  font-bold flex-wrap gap-2 opacity-80 py-3">
         <span className="">Total questions: {interview.questions}</span>
-        <span className="font-bold">Your score: __/100%</span>
+        <span className="font-bold">
+          Your score: {totalScore > 0 ? totalScore : "__"}/100%
+        </span>
       </p>
       <h4 className="text-center font-extrabold opacity-15 text-[28px] my-5">
         {interview.type}
@@ -41,7 +60,7 @@ const InterviewCard = ({ interview }: any) => {
         <div className="flex items-center justify-center mt-4">
           <AiButton
             onPress={() => Router.push(`/interviews/${interview.id}`)}
-            title="Take Interview"
+            title={totalScore > 0 ? "Retake interview" : "Take interview"}
             icon="ion:call"
             extraClasses="bg-primary1/20 text-white"
           />
