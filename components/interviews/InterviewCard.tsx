@@ -34,8 +34,12 @@ const InterviewCard = ({ interview }: any) => {
           className="w-full h-full rounded-full  object-fit"
         />
       </div>
-      <h2 className="text-primary1/90 font-bold mb-2 text-[22px]">
-        {interview.role}
+      <h2 className="text-primary1/90 font-bold mb-2 text-[22px] capitalize">
+        {interview.role.toLowerCase().includes("front end")
+          ? interview.role.replace("front end", "Frontend")
+          : interview.role.toLowerCase().includes("back end")
+          ? interview.role.replace("back end", "Backend")
+          : interview.role}
       </h2>
       <p className="text-primary1/50 font-semibold uppercase text-[12px] mb-2">
         {interview.level}
