@@ -90,7 +90,6 @@ const Agent = ({ interview, agentType }: AgentProps) => {
               .map((question: any) => `- ${question}`)
               .join("\n");
           }
-          alert("reached here");
           await vapi.start(interviewer, {
             variableValues: {
               questions: formattedQuestions,
@@ -119,12 +118,12 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       if (agentType === "newInterview") {
         Router.push("/interviews");
       } else {
-        handleGenerateFeedback;
+        handleGenerateFeedback(chats);
       }
     }
   }, [status]);
 
-  const handleGenerateFeedback = async () => {
+  const handleGenerateFeedback = async (chats: any) => {
     const data = await saveFeedBack({
       chats,
       interviewId: interview?.id,
@@ -215,7 +214,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
           </div>
         </div>
       </div>
-      {chats.length > 0 && (
+      {chats.length > 0 ? (
         <motion.p
           className="max-w-[800px] mx-auto text-center text-[15px] font-light text-white/70 mt-2 mb-[100px] bg-primary1/20 rounded-3xl px-4 py-2 shadow-xl border border-dark1/10"
           initial={{ opacity: 0, y: 20 }}
@@ -227,6 +226,11 @@ const Agent = ({ interview, agentType }: AgentProps) => {
         >
           {chats[chats.length - 1].content}
         </motion.p>
+      ) : (
+        <p className="max-w-[800px] mx-auto text-center text-[15px] font-light text-white/70 mt-2 mb-[100px] bg-primary1/20 rounded-3xl px-4 py-2 shadow-xl border border-dark1/10">
+          You can click the call button to create your own interview or you can
+          take any of the interviews below.
+        </p>
       )}
     </>
   );

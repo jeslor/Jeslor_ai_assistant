@@ -6,7 +6,7 @@ const CallVisualizer = ({ isTalking }: { isTalking: boolean }) => {
   const bars = useMemo(() => {
     return Array.from({ length: 200 }).map(() => ({
       height: Math.random() * 60 + 20,
-      duration: 0.4 + Math.random() * 0.8,
+      duration: 0.4 + Math.random() * 0.2,
       delay: Math.random() * 0.5,
     }));
   }, []); // ← this ensures values only generate once
