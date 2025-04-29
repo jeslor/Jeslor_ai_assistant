@@ -138,7 +138,7 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
           <h3 className="text-white text-2xl font-semibold">
             {selectedSection.title}
           </h3>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
             {isLoading ? (
               <InterviewSkeleton totalCards={4} />
             ) : interviews.length > 0 ? (

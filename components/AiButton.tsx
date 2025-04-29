@@ -17,7 +17,7 @@ const AiButton = ({ onPress, title, icon, extraClasses }: ButtonProps) => {
       <span className="text-[13px] font-medium flex items-center gap-x-2">
         {title}
 
-        {icon && <Icon icon={icon} className="ml-2 size-[20px]" />}
+        {icon && <Icon icon={icon} className="ml-0 size-[20px]" />}
       </span>
     </button>
   );

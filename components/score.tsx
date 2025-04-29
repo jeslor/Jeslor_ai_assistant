@@ -2,6 +2,8 @@
 import React, { useEffect, useState, memo } from "react";
 import useUserStore from "./provider/userStore";
 import Link from "next/link";
+import AiButton from "./AiButton";
+import { useRouter } from "next/navigation";
 
 type ScoreCircleProps = {
   size?: number;
@@ -13,6 +15,7 @@ type ScoreCircleProps = {
 
 const ScoreCircle: React.FC<ScoreCircleProps> = memo(
   ({ size = 120, strokeWidth = 10, duration = 1000, interviewId }) => {
+    const Router = useRouter();
     const [progress, setProgress] = useState(0);
     const [feedback, setFeedback] = useState<any>(null);
     const [score, setScore] = useState(0);
@@ -86,12 +89,14 @@ const ScoreCircle: React.FC<ScoreCircleProps> = memo(
           </div>
         </div>
         {feedback && (
-          <Link
-            className="my-6 block text-primary1/65 text-center font-semibold underline "
-            href={`/interviews/${interviewId}/feedbacks/${feedback?.id}`}
-          >
-            View feedback
-          </Link>
+          <AiButton
+            onPress={() =>
+              Router.push(`/interviews/${interviewId}/feedbacks/${feedback.id}`)
+            }
+            title="View feedback"
+            icon="si:arrow-right-fill"
+            extraClasses="bg-primary1/20 text-white mt-4"
+          />
         )}
       </>
     );

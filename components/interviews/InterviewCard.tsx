@@ -71,8 +71,8 @@ const InterviewCard = ({ interview }: any) => {
                   `/interviews/${interview.id}/feedbacks/${feedback.id}`
                 )
               }
-              title="View feedback"
-              icon=""
+              title="Feedback"
+              icon="si:arrow-right-fill"
               extraClasses="bg-primary1/20 text-white"
             />
           )}
