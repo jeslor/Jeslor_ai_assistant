@@ -1,18 +1,16 @@
 "use client";
 import { signOut } from "next-auth/react";
 import AiButton from "../AiButton";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import useUserStore from "../provider/userStore";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
-const Navbar = () => {
+const Navbar = memo(() => {
   const path = usePathname();
   const Router = useRouter();
   const { user, setUser } = useUserStore();
-  console.log(user);
-
   const { data: session } = useSession();
   const [showNav, setShowNav] = useState(false);
   useEffect(() => {
@@ -111,6 +109,6 @@ const Navbar = () => {
       </div>
     </nav>
   );
-};
+});
 
 export default Navbar;

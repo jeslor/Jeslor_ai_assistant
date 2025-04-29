@@ -1,19 +1,24 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 const CallVisualizer = ({ isTalking }: { isTalking: boolean }) => {
-  const bars = useMemo(() => {
-    return Array.from({ length: 200 }).map(() => ({
+  const [bars, setBars] = useState<
+    { height: number; duration: number; delay: number }[]
+  >([]);
+
+  useEffect(() => {
+    const generatedBars = Array.from({ length: 200 }).map(() => ({
       height: Math.random() * 60 + 20,
       duration: 0.4 + Math.random() * 0.2,
       delay: Math.random() * 0.5,
     }));
-  }, []); // ← this ensures values only generate once
+    setBars(generatedBars);
+  }, []);
 
   return (
-    <div className="w-[500px] overflow-hidden ">
-      <div className="flex items-center gap-1 h-32  w-fit">
+    <div className="w-[500px] overflow-hidden">
+      <div className="flex items-center gap-1 h-32 w-fit">
         {bars.map((bar, i) => (
           <div
             key={i}
