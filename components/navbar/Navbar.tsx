@@ -49,9 +49,9 @@ const Navbar = memo(() => {
 
   return (
     <nav
-      className={`w-full fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-transparent ${
+      className={`w-full fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-dark1/60 ${
         showNav
-          ? "bg-[#363636] backdrop-blur-[15px] rounded-b-2xl shadow-md shadow-black/20"
+          ? "bg-dark1/60 backdrop-blur-[15px] rounded-b-2xl shadow-md shadow-black/20"
           : ""
       }`}
     >

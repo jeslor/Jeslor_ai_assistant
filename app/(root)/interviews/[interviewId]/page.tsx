@@ -8,7 +8,7 @@ const page = async ({ params }: any) => {
   const { data: interview } = await getInterViewById(interviewId);
 
   return (
-    <div className="py-10 w-full">
+    <div className="py-10 w-full bg-gradient-to-b from-primary1/50 to-dark/20 ">
       <div className="flex flex-col w-full">
         <div className=""></div>
         <div className="absolute">
@@ -23,7 +23,7 @@ const page = async ({ params }: any) => {
             }}
           />
         )}
-        <div className="mt-5 w-full rounded-full bg-radial-[at_50%_75%] from-primary1/20 via-dark1 to-dark1 to-90%">
+        <div className="mt-5 w-full rounded-full ">
           <div className="grid place-content-start  md:grid-cols-[250px_1fr] gap-4 w-full max-w-[1320px] mx-auto px-4 h-full  min-h-[50vh]">
             <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full h-full flex flex-col items-center">
               <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">

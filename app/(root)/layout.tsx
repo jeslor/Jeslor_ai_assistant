@@ -10,7 +10,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <div className="overflow-x-hidden flex flex-col items-center pt-[50px]  bg-gradient-to-br from-dark1/95 via-black-900 to-dark1">
+    <div className="flex flex-col items-center pt-[60px]  bg-gradient-to-br from-dark1/95 via-black-900 to-dark1 relative">
       <Navbar />
       {children}
       <div className="absolute  -right-10 w-32 h-32 bg-primary1/45 rounded-full filter blur-3xl opacity-40 animate-spin-slow"></div>

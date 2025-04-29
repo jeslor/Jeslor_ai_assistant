@@ -78,7 +78,7 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
     const handleScroll = () => {
       const aiLogo = document.querySelector(".stickyInterViewMenu");
       if (aiLogo) {
-        if (window.scrollY > 50) {
+        if (window.scrollY > 70) {
           setStickyInterviewMenu(true);
         } else {
           setStickyInterviewMenu(false);
@@ -107,15 +107,17 @@ const Interviews = ({ isMain }: { isMain?: boolean }) => {
   return (
     <div
       className={`py-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
-        isMain ? "min-h-[100vh] pt-[50px] interviewContainer" : ""
+        isMain
+          ? "min-h-[100vh] pt-[50px] interviewContainer sticky top-[60px] mx-auto"
+          : ""
       } `}
     >
       <div
         className={`${
-          isMain ? "stickyInterViewMenu " : ""
-        } flex gap-x-4 mx-auto w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10 ${
+          isMain ? "  sticky top-[60px] z-50" : ""
+        } flex gap-x-4 mx-auto w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10  ${
           stickyInterviewMenu
-            ? "fixed top-[60px] left-[50%] translate-x-[-50%] z-50 justify-center"
+            ? "top-0 left-[50%] translate-x-[-50%]  justify-center"
             : ""
         }`}
       >
