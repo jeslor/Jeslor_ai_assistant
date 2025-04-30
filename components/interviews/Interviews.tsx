@@ -102,7 +102,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     if (user?.id) {
       fetchInterviews();
     }
-  }, [user]);
+  }, [user, selectedSection.id]);
 
   useEffect(() => {
     if (selectedSection.id === 1) {
@@ -117,11 +117,16 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   }, [selectedSection.id, userInterviews, notUserInterviews]);
 
   useEffect(() => {
-    if (interviews.length > 0) {
+    if (userInterviews.length > 0 || notUserInterviews.length > 0) {
       setSections((prevSections) =>
         prevSections.map((section) =>
           section.id === 1
-            ? { ...section, title: `My Interviews (${interviews.length})` }
+            ? { ...section, title: `My Interviews (${userInterviews.length})` }
+            : section.id === 2
+            ? {
+                ...section,
+                title: `Other Interviews (${notUserInterviews.length})`,
+              }
             : section
         )
       );
@@ -159,6 +164,10 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   };
 
   console.log("inside interview", inView);
+  console.log("selectedSection", selectedSection.id);
+  console.log("interviews", interviews);
+  console.log("userInterviews", userInterviews);
+  console.log("notUserInterviews", notUserInterviews);
 
   return (
     <div
@@ -228,12 +237,12 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
       {!isMain && interviews.length && (
         <Link
           className="py-10 ml-[50%] -translate-x-[50%] inline-block text-center  font-semibold hover:text-primary1"
-          href="/interviews"
+          href={`/interviews?id=${selectedSection.id}`}
         >
           View all interviews
         </Link>
       )}
-      {isMain && (
+      {isMain && interviews.length > 0 && (
         <div className="py-10 flex items-center justify-center">
           <Loading ref={ref} />
         </div>
