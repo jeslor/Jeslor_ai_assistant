@@ -12,6 +12,7 @@ import Link from "next/link";
 import InterviewCard from "./InterviewCard";
 import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
+import LottieAnimation from "../LottieAnimation";
 
 const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   const { ref, inView, entry } = useInView({
@@ -23,6 +24,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   const [interviews, setInterviews] = useState<any[]>(userInterviews);
   const [isLoading, setIsLoading] = useState(false);
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
+  const [isAllInterviews, setIsAllInterviews] = useState(false);
   const [limit, setLimit] = useState({
     userLimit: 4,
     notUserLimit: 4,
@@ -59,9 +61,19 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
           limit.userLimit
         );
         if (userInterviewsResponse.status === 200) {
-          setUserInterviews(
-            userInterviewsResponse.data ? userInterviewsResponse.data : []
-          );
+          if (userInterviewsResponse.data) {
+            setUserInterviews(
+              userInterviewsResponse.data ? userInterviewsResponse.data : []
+            );
+            if (isMain) {
+              setLimit({
+                ...limit,
+                userLimit: limit.userLimit + 4,
+              });
+            }
+          } else {
+            setIsAllInterviews(true);
+          }
         } else {
           toast.error(userInterviewsResponse.message);
         }
@@ -150,7 +162,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
 
   return (
     <div
-      className={`py-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
+      className={`pt-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
         isMain
           ? "min-h-[100vh] pt-[50px] interviewContainer sticky top-[60px] mx-auto"
           : ""
@@ -182,17 +194,21 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
           <h3 className="text-white text-2xl font-semibold">
             {selectedSection.title}
           </h3>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
-            {isLoading ? (
+          {isLoading ? (
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               <InterviewSkeleton totalCards={4} />
-            ) : interviews.length > 0 ? (
-              interviews.map((interview) => (
+            </div>
+          ) : interviews.length > 0 ? (
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+              {interviews.map((interview) => (
                 <InterviewCard key={interview.id} interview={interview} />
-              ))
-            ) : (
-              <p className="text-gray-400">No interviews found</p>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center w-full h-[200px]">
+              <LottieAnimation path="/media/animations/noInterviewFound.json" />
+            </div>
+          )}
         </div>
       </div>
       {!isMain && (

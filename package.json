@@ -13,6 +13,7 @@
   "dependencies": {
     "@ai-sdk/google": "^1.2.13",
     "@hookform/resolvers": "^5.0.1",
+    "@lottiefiles/dotlottie-react": "^0.13.5",
     "@prisma/client": "^6.6.0",
     "@prisma/extension-accelerate": "^1.3.0",
     "@radix-ui/react-label": "^2.1.4",

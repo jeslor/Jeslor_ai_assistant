@@ -8,7 +8,7 @@ const page = async ({ params }: any) => {
   const { data: interview } = await getInterViewById(interviewId);
 
   return (
-    <div className="py-10 w-full bg-gradient-to-b from-primary1/50 via-dark1/50  to-dark1 relative">
+    <div className="pb-10 pt-[100px] mt-[-60px] w-full bg-gradient-to-b from-primary1/50 via-dark1/50  to-dark1 relative">
       <div className="flex flex-col w-full">
         <div className=""></div>
         <div className="absolute">
