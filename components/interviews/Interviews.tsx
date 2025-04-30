@@ -22,7 +22,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   const [userInterviews, setUserInterviews] = useState<any[]>([]);
   const [notUserInterviews, setNotUserInterviews] = useState<any[]>([]);
   const [interviews, setInterviews] = useState<any[]>(userInterviews);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
   const [isAllInterviews, setIsAllInterviews] = useState(false);
   const [limit, setLimit] = useState({
@@ -198,20 +198,34 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               <InterviewSkeleton totalCards={4} />
             </div>
-          ) : interviews.length > 0 ? (
+          ) : interviews.length === 0 && !isLoading ? (
+            <div className="flex flex-col items-center justify-center w-full ">
+              <LottieAnimation path="/media/animations/noInterviewFound.json" />
+              <p className="text-slate-200/50 text-center text-[14px]">
+                No interviews found. Please check back later.
+              </p>
+              <AiButton
+                onPress={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+                title="generate an interview"
+                icon=""
+                extraClasses="mt-4"
+              />
+            </div>
+          ) : (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               {interviews.map((interview) => (
                 <InterviewCard key={interview.id} interview={interview} />
               ))}
             </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center w-full h-[200px]">
-              <LottieAnimation path="/media/animations/noInterviewFound.json" />
-            </div>
           )}
         </div>
       </div>
-      {!isMain && (
+      {!isMain && interviews.length && (
         <Link
           className="py-10 ml-[50%] -translate-x-[50%] inline-block text-center  font-semibold hover:text-primary1"
           href="/interviews"
