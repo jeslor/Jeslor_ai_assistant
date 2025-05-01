@@ -13,11 +13,14 @@ import InterviewCard from "./InterviewCard";
 import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
+import { useSearchParams } from "next/navigation";
 
 const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   const { ref, inView, entry } = useInView({
     threshold: 0,
   });
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const { user } = useUserStore();
   const [userInterviews, setUserInterviews] = useState<any[]>([]);
   const [notUserInterviews, setNotUserInterviews] = useState<any[]>([]);
@@ -53,7 +56,9 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     },
   ]);
 
-  const [selectedSection, setSelectedSection] = useState<any>(sections[0]);
+  const [selectedSection, setSelectedSection] = useState<any>(
+    id ? sections.find((section) => section.id === Number(id)) : sections[0]
+  );
 
   const fetchInterviews = async () => {
     try {
