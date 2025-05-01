@@ -188,6 +188,51 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
         interviewId,
       },
     });
+    const userAlreadyHasFeedback = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        feedbacks: {
+          where: {
+            interviewId,
+          },
+        },
+      },
+    });
+    if (userAlreadyHasFeedback?.feedbacks.length) {
+      const oldFeedback = userAlreadyHasFeedback.feedbacks[0].id;
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          feedbacks: {
+            disconnect: {
+              id: oldFeedback,
+            },
+          },
+        },
+      });
+
+      await prisma.feedback.delete({
+        where: {
+          id: oldFeedback,
+        },
+      });
+    }
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        feedbacks: {
+          connect: {
+            id: saveFeedBack.id,
+          },
+        },
+      },
+    });
 
     return {
       message: "interview feed back saved",
