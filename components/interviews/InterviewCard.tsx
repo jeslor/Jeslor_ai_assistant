@@ -26,39 +26,41 @@ const InterviewCard = ({ interview }: any) => {
   }, [user, interview.id]);
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full">
-      <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
-        <img
-          src={`https://logo.clearbit.com/${refactorCompany(
-            interview.company
-          )}`}
-          alt={refactorCompany(interview.company)}
-          className="w-full h-full rounded-full  object-fit"
-        />
-      </div>
-      <h2 className="text-primary1/90 font-bold mb-2 text-[22px] capitalize">
-        {interview.role.toLowerCase().includes("front end")
-          ? interview.role.replace("front end", "Frontend")
-          : interview.role.toLowerCase().includes("back end")
-          ? interview.role.replace("back end", "Backend")
-          : interview.role}
-      </h2>
-      <p className="text-primary1/50 font-semibold uppercase text-[12px] mb-2">
-        {interview.level}
-      </p>
-      <p className="text-slate-400 text-[12px] mb-2 opacity-60">
-        {interview.techstack.join(", ")}
-      </p>
-      <p className="flex flex-col justify-between  font-bold flex-wrap gap-2 opacity-80 py-3">
-        <span className="">Total questions: {interview.questions}</span>
-        <span className="font-bold">
-          Your score: {totalScore > 0 ? totalScore : "__"}/100%
-        </span>
-      </p>
-      <h4 className="text-center font-extrabold opacity-15 text-[28px] my-5">
-        {interview.type}
-      </h4>
+    <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full flex flex-col ">
       <div>
+        <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
+          <img
+            src={`https://logo.clearbit.com/${refactorCompany(
+              interview.company
+            )}`}
+            alt={refactorCompany(interview.company)}
+            className="w-full h-full rounded-full  object-fit"
+          />
+        </div>
+        <h2 className="text-primary1/90 font-bold mb-2 text-[22px] capitalize">
+          {interview.role.toLowerCase().includes("front end")
+            ? interview.role.replace("front end", "Frontend")
+            : interview.role.toLowerCase().includes("back end")
+            ? interview.role.replace("back end", "Backend")
+            : interview.role}
+        </h2>
+        <p className="text-primary1/50 font-semibold uppercase text-[12px] mb-2">
+          {interview.level}
+        </p>
+        <p className="text-slate-400 text-[12px] mb-2 opacity-60">
+          {interview.techstack.join(", ")}
+        </p>
+        <p className="flex flex-col justify-between  font-bold flex-wrap gap-2 opacity-80 py-3">
+          <span className="">Total questions: {interview.questions}</span>
+          <span className="font-bold">
+            Your score: {totalScore > 0 ? totalScore : "__"}/100%
+          </span>
+        </p>
+        <h4 className="text-center font-extrabold opacity-15 text-[28px] my-5">
+          {interview.type}
+        </h4>
+      </div>
+      <div className="flex-1 justify-between flex flex-col">
         <p className="text-slate-400 text-[15px] mb-2 opacity-50">
           You have not completed this interview yet. To take the test, please
           click the button below.{" "}

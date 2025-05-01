@@ -1,5 +1,5 @@
 "use client";
-import React, { memo, use, useEffect, useState } from "react";
+import React, { memo, use, useCallback, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
 import {
@@ -20,7 +20,6 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     threshold: 0,
   });
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
   const { user } = useUserStore();
   const [userInterviews, setUserInterviews] = useState<any[]>([]);
   const [notUserInterviews, setNotUserInterviews] = useState<any[]>([]);
@@ -56,11 +55,14 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     },
   ]);
 
-  const [selectedSection, setSelectedSection] = useState<any>(
-    id ? sections.find((section) => section.id === Number(id)) : sections[0]
-  );
+  console.log("rerendered");
 
-  const fetchInterviews = async () => {
+  const id = searchParams.get("id");
+  const initialSection =
+    sections.find((section) => section.id === Number(id)) || sections[0];
+  const [selectedSection, setSelectedSection] = useState<any>(initialSection);
+
+  const fetchInterviews = useCallback(async () => {
     try {
       setIsLoading(true);
       if (selectedSection.id === 1) {
@@ -88,7 +90,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
             });
           }
         } else {
-          toast.error(userInterviewsResponse.message);
+          toast.warning(userInterviewsResponse.message);
           setIsAllInterviews({
             ...isAllInterviews,
             user: true,
@@ -132,54 +134,66 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    selectedSection.id,
+    user?.id,
+    page.userPage,
+    page.notUserPage,
+    isMain,
+    userInterviews,
+    notUserInterviews,
+    isAllInterviews,
+  ]);
 
   useEffect(() => {
     if (user?.id) {
-      if (!isMain) {
-        if (
-          selectedSection.id === 1 &&
-          userInterviews.length === 0 &&
-          !isAllInterviews.user
-        ) {
-          fetchInterviews();
-        } else if (
-          selectedSection.id === 2 &&
-          notUserInterviews.length === 0 &&
-          !isAllInterviews.notUser
-        ) {
-          fetchInterviews();
-        }
+      if (
+        selectedSection.id === 1 &&
+        userInterviews.length === 0 &&
+        !isAllInterviews.user
+      ) {
+        fetchInterviews();
+      } else if (
+        selectedSection.id === 2 &&
+        notUserInterviews.length === 0 &&
+        !isAllInterviews.notUser
+      ) {
+        fetchInterviews();
       }
     }
-  }, [inView, selectedSection.id, user?.id]);
+  }, [
+    selectedSection.id,
+    userInterviews.length,
+    notUserInterviews.length,
+    isAllInterviews,
+    user?.id,
+  ]);
 
   useEffect(() => {
-    if (user?.id) {
+    if (user) {
       if (isMain) {
-        while (inView) {
+        if (inView) {
           if (selectedSection.id === 1 && !isAllInterviews.user) {
             fetchInterviews();
           } else if (selectedSection.id === 2 && !isAllInterviews.notUser) {
             fetchInterviews();
           }
-          break;
         }
       }
     }
-  }, [userInterviews, notUserInterviews, inView, selectedSection.id]);
+  }, [userInterviews, notUserInterviews, inView, selectedSection]);
 
   useEffect(() => {
-    if (selectedSection.id === 1) {
+    if (selectedSection?.id === 1) {
       setInterviews(userInterviews);
     }
-    if (selectedSection.id === 2) {
+    if (selectedSection?.id === 2) {
       setInterviews(notUserInterviews);
     }
-    if (selectedSection.id === 3) {
+    if (selectedSection?.id === 3) {
       setInterviews([]);
     }
-  }, [selectedSection.id, userInterviews, notUserInterviews]);
+  }, [userInterviews.length, notUserInterviews.length, selectedSection.id]);
 
   useEffect(() => {
     if (userInterviews.length > 0 || notUserInterviews.length > 0) {
@@ -196,7 +210,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
         )
       );
     }
-  }, [userInterviews, notUserInterviews]);
+  }, [userInterviews.length, notUserInterviews.length]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -254,7 +268,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
                 title={section.title}
                 icon={section.icon}
                 extraClasses={
-                  section.id === selectedSection.id ? "bg-primary1" : ""
+                  section.id === selectedSection?.id ? "bg-primary1" : ""
                 }
               />
             )
@@ -265,7 +279,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
               title={section.title}
               icon={section.icon}
               extraClasses={
-                section.id === selectedSection.id ? "bg-primary1" : ""
+                section.id === selectedSection?.id ? "bg-primary1" : ""
               }
             />
           )
@@ -274,7 +288,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
       <div>
         <div className="flex flex-col items-center justify-center mt-10">
           <h3 className="text-white text-2xl font-semibold">
-            {selectedSection.title}
+            {selectedSection?.title}
           </h3>
           {isLoading ? (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
@@ -316,8 +330,8 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
         </Link>
       )}
       {isMain &&
-        ((selectedSection.id === 1 && !isAllInterviews.user) ||
-          (selectedSection.id === 2 && !isAllInterviews.notUser)) && (
+        ((selectedSection?.id === 1 && !isAllInterviews.user) ||
+          (selectedSection?.id === 2 && !isAllInterviews.notUser)) && (
           <div className="py-10 flex items-center justify-center">
             <Loading ref={ref} />
           </div>

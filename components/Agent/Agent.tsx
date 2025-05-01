@@ -41,12 +41,6 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   const [isTalking, setIsTalking] = useState(false);
   const [chats, setChats] = useState<any[]>([]);
 
-  console.log("status", status);
-  console.log("isTalking", isTalking);
-  console.log("chats", chats);
-  console.log("agentType", agentType);
-  console.log("interview", interview);
-
   useEffect(() => {
     let lastTranscript = "";
 
@@ -71,6 +65,8 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     vapi.on("speech-end", onTalkingEnd);
     vapi.on("error", onError);
     vapi.on("message", (message: any) => {
+      console.log("message", message);
+
       if (message.type === "transcript") {
         const currentTranscript = message.transcript?.trim();
         if (!currentTranscript || currentTranscript === lastTranscript) {
@@ -135,7 +131,8 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       if (agentType === "newInterview") {
         Router.push("/interviews");
       } else {
-        handleGenerateFeedback(chats);
+        console.log("chats", chats);
+        // handleGenerateFeedback(chats);
       }
     }
   }, [status]);
