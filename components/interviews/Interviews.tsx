@@ -245,17 +245,31 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
             : ""
         }`}
       >
-        {sections.map((section) => (
-          <AiButton
-            key={section.id}
-            onPress={() => handleSectionClick(section)}
-            title={section.title}
-            icon={section.icon}
-            extraClasses={
-              section.id === selectedSection.id ? "bg-primary1" : ""
-            }
-          />
-        ))}
+        {sections.map((section) =>
+          isMain ? (
+            section.id !== 3 && (
+              <AiButton
+                key={section.id}
+                onPress={() => handleSectionClick(section)}
+                title={section.title}
+                icon={section.icon}
+                extraClasses={
+                  section.id === selectedSection.id ? "bg-primary1" : ""
+                }
+              />
+            )
+          ) : (
+            <AiButton
+              key={section.id}
+              onPress={() => handleSectionClick(section)}
+              title={section.title}
+              icon={section.icon}
+              extraClasses={
+                section.id === selectedSection.id ? "bg-primary1" : ""
+              }
+            />
+          )
+        )}
       </div>
       <div>
         <div className="flex flex-col items-center justify-center mt-10">
