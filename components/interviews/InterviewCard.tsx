@@ -25,6 +25,10 @@ const InterviewCard = ({ interview }: any) => {
     }
   }, [user, interview.id]);
 
+  const retakeInterview = user?.feedbacks?.some(
+    (feedback: any) => feedback.interviewId === interview.id
+  );
+
   return (
     <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full flex flex-col ">
       <div>
@@ -53,7 +57,7 @@ const InterviewCard = ({ interview }: any) => {
         <p className="flex flex-col justify-between  font-bold flex-wrap gap-2 opacity-80 py-3">
           <span className="">Total questions: {interview.questions}</span>
           <span className="font-bold">
-            Your score: {totalScore > 0 ? totalScore : "__"}/100%
+            Your score: {retakeInterview ? totalScore : "__"}/100%
           </span>
         </p>
         <h4 className="text-center font-extrabold opacity-15 text-[28px] my-5">
@@ -80,7 +84,7 @@ const InterviewCard = ({ interview }: any) => {
           )}
           <AiButton
             onPress={() => Router.push(`/interviews/${interview.id}`)}
-            title={totalScore > 0 ? "Retake interview" : "Take interview"}
+            title={retakeInterview ? "Retake interview" : "Take interview"}
             icon="ion:call"
             extraClasses="bg-primary1/20 text-white"
           />

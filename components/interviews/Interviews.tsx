@@ -55,8 +55,6 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     },
   ]);
 
-  console.log("rerendered");
-
   const id = searchParams.get("id");
   const initialSection =
     sections.find((section) => section.id === Number(id)) || sections[0];
@@ -122,7 +120,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
             });
           }
         } else {
-          toast.error(notUserInterviewsResponse.message);
+          toast.warning(notUserInterviewsResponse.message);
           setIsAllInterviews({
             ...isAllInterviews,
             notUser: true,
@@ -241,6 +239,9 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
       });
     }
   };
+
+  console.log(user?.feedbacks);
+  console.log(interviews);
 
   return (
     <div
