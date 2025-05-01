@@ -146,14 +146,23 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
           fetchInterviews();
         }
       }
-      if (inView && selectedSection.id === 1 && !isAllInterviews.user) {
-        fetchInterviews();
-      }
-      if (inView && selectedSection.id === 2 && !isAllInterviews.notUser) {
-        fetchInterviews();
-      }
     }
   }, [inView, selectedSection.id, user?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      if (isMain) {
+        while (inView) {
+          if (selectedSection.id === 1 && !isAllInterviews.user) {
+            fetchInterviews();
+          } else if (selectedSection.id === 2 && !isAllInterviews.notUser) {
+            fetchInterviews();
+          }
+          break;
+        }
+      }
+    }
+  }, [userInterviews, notUserInterviews, inView, selectedSection.id]);
 
   useEffect(() => {
     if (selectedSection.id === 1) {
@@ -213,12 +222,6 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
       });
     }
   };
-
-  console.log("inside interview", inView);
-  console.log("selectedSection", selectedSection.id);
-  console.log("interviews", interviews);
-  console.log("userInterviews", userInterviews);
-  console.log("notUserInterviews", notUserInterviews);
 
   return (
     <div
@@ -293,11 +296,13 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
           View all interviews
         </Link>
       )}
-      {isMain && (!isAllInterviews.notUser || !isAllInterviews.user) && (
-        <div className="py-10 flex items-center justify-center">
-          <Loading ref={ref} />
-        </div>
-      )}
+      {isMain &&
+        ((selectedSection.id === 1 && !isAllInterviews.user) ||
+          (selectedSection.id === 2 && !isAllInterviews.notUser)) && (
+          <div className="py-10 flex items-center justify-center">
+            <Loading ref={ref} />
+          </div>
+        )}
     </div>
   );
 });
