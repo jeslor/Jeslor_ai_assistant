@@ -1,5 +1,5 @@
 "use client";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, use, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
 import {
@@ -24,10 +24,13 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   const [interviews, setInterviews] = useState<any[]>(userInterviews);
   const [isLoading, setIsLoading] = useState(true);
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
-  const [isAllInterviews, setIsAllInterviews] = useState(false);
-  const [limit, setLimit] = useState({
-    userLimit: 4,
-    notUserLimit: 4,
+  const [isAllInterviews, setIsAllInterviews] = useState({
+    user: false,
+    notUser: false,
+  });
+  const [page, setPage] = useState({
+    userPage: 0,
+    notUserPage: 0,
   });
   const [sections, setSections] = useState<any[]>([
     {
@@ -58,37 +61,65 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
       if (selectedSection.id === 1) {
         const userInterviewsResponse = await getInterviewsByUser(
           user?.id,
-          limit.userLimit
+          page.userPage
         );
         if (userInterviewsResponse.status === 200) {
           if (userInterviewsResponse.data) {
             setUserInterviews(
-              userInterviewsResponse.data ? userInterviewsResponse.data : []
+              userInterviewsResponse.data
+                ? [...userInterviews, ...userInterviewsResponse.data]
+                : []
             );
             if (isMain) {
-              setLimit({
-                ...limit,
-                userLimit: limit.userLimit + 4,
+              setPage({
+                ...page,
+                userPage: page.userPage + 1,
               });
             }
           } else {
-            setIsAllInterviews(true);
+            setIsAllInterviews({
+              ...isAllInterviews,
+              user: true,
+            });
           }
         } else {
           toast.error(userInterviewsResponse.message);
+          setIsAllInterviews({
+            ...isAllInterviews,
+            user: true,
+          });
         }
       } else {
         const notUserInterviewsResponse = await getInterviewsNotByUser(
           user?.id,
-          limit.notUserLimit
+          page.notUserPage
         );
 
         if (notUserInterviewsResponse.status === 200) {
-          setNotUserInterviews(
-            notUserInterviewsResponse.data ? notUserInterviewsResponse.data : []
-          );
+          if (notUserInterviewsResponse.data) {
+            setNotUserInterviews(
+              notUserInterviewsResponse.data
+                ? [...notUserInterviews, ...notUserInterviewsResponse.data]
+                : []
+            );
+            if (isMain) {
+              setPage({
+                ...page,
+                notUserPage: page.notUserPage + 1,
+              });
+            }
+          } else {
+            setIsAllInterviews({
+              ...isAllInterviews,
+              notUser: true,
+            });
+          }
         } else {
           toast.error(notUserInterviewsResponse.message);
+          setIsAllInterviews({
+            ...isAllInterviews,
+            notUser: true,
+          });
         }
       }
     } catch (error) {
@@ -100,9 +131,29 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
 
   useEffect(() => {
     if (user?.id) {
-      fetchInterviews();
+      if (!isMain) {
+        if (
+          selectedSection.id === 1 &&
+          userInterviews.length === 0 &&
+          !isAllInterviews.user
+        ) {
+          fetchInterviews();
+        } else if (
+          selectedSection.id === 2 &&
+          notUserInterviews.length === 0 &&
+          !isAllInterviews.notUser
+        ) {
+          fetchInterviews();
+        }
+      }
+      if (inView && selectedSection.id === 1 && !isAllInterviews.user) {
+        fetchInterviews();
+      }
+      if (inView && selectedSection.id === 2 && !isAllInterviews.notUser) {
+        fetchInterviews();
+      }
     }
-  }, [user, selectedSection.id]);
+  }, [inView, selectedSection.id, user?.id]);
 
   useEffect(() => {
     if (selectedSection.id === 1) {
@@ -131,7 +182,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
         )
       );
     }
-  }, [interviews]);
+  }, [userInterviews, notUserInterviews]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -171,7 +222,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
 
   return (
     <div
-      className={`pt-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
+      className={`py-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
         isMain
           ? "min-h-[100vh] pt-[50px] interviewContainer sticky top-[60px] mx-auto"
           : ""
@@ -242,7 +293,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
           View all interviews
         </Link>
       )}
-      {isMain && interviews.length > 0 && (
+      {isMain && (!isAllInterviews.notUser || !isAllInterviews.user) && (
         <div className="py-10 flex items-center justify-center">
           <Loading ref={ref} />
         </div>

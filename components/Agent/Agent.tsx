@@ -1,6 +1,6 @@
 "use client";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import useUserStore from "../provider/userStore";
 import { vapi } from "@/lib/vapi.sdk";
 import { motion } from "framer-motion";
@@ -41,6 +41,12 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   const [isTalking, setIsTalking] = useState(false);
   const [chats, setChats] = useState<any[]>([]);
 
+  console.log("status", status);
+  console.log("isTalking", isTalking);
+  console.log("chats", chats);
+  console.log("agentType", agentType);
+  console.log("interview", interview);
+
   useEffect(() => {
     let lastTranscript = "";
 
@@ -48,7 +54,11 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       setStatus(AgentStatus.active);
       setChats([]);
     };
-    const onCallEnd = () => setStatus(AgentStatus.completed);
+    const onCallEnd = () => {
+      setStatus(AgentStatus.completed);
+      setIsTalking(false);
+      setChats([]);
+    };
     const onTalkingStart = () => setIsTalking(true);
     const onTalkingEnd = () => setIsTalking(false);
     const onError = (error: any) => {
@@ -75,7 +85,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     });
   }, []);
 
-  const handleStartCall = useCallback(async () => {
+  const handleStartCall = async () => {
     try {
       if (status === "inactive" || status === "completed") {
         setStatus(AgentStatus.connecting);
@@ -109,7 +119,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     } catch (error) {
       console.log("Error starting call:", error);
     }
-  }, [status, user]);
+  };
 
   const handleEndCall = async () => {
     console.log("Ending call...");
