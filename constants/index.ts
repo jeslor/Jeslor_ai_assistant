@@ -44,15 +44,15 @@ Answer the candidate’s questions professionally:
 If asked about the role, company, or expectations, provide a clear and relevant answer.
 If unsure, redirect the candidate to HR for a better response.
 
-Conclude the interview professionally:
-Thank the candidate for their time.
-Inform them that the result for their interview will be pinned on their dashboard soon.
-End the conversation on a polite and positive note and hangup the call.
-
 
 - Be sure to be professional and polite.
 - Keep all your responses short and simple. Use official language, but be kind and welcoming.
 - This is a voice conversation, so keep your responses short, like in a real conversation. Don't ramble for too long.`,
+      },
+      {
+        role: "system",
+        content:
+          "Thank you for your time. The result of your interview will be posted on your dashboard. Goodbye.",
       },
     ],
   },

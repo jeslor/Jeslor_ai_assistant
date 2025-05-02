@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 import CallVisualizer from "../BarEqualizers";
 import { interviewer } from "@/constants";
 import { useRouter } from "next/navigation";
-import { saveFeedBack } from "@/lib/actions/interviews";
 import { toast } from "sonner";
+import { saveFeedBack } from "@/lib/actions/feedback.actions";
 
 enum AgentStatus {
   completed = "completed",
@@ -65,7 +65,14 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     vapi.on("speech-end", onTalkingEnd);
     vapi.on("error", onError);
     vapi.on("message", (message: any) => {
-      console.log("message", message);
+      if (agentType !== "newInterview") {
+        if (
+          message.role === "system" &&
+          message.content.includes("Goodbye") // or your custom phrase
+        ) {
+          vapi.stop(); // trigger call end
+        }
+      }
 
       if (message.type === "transcript") {
         const currentTranscript = message.transcript?.trim();

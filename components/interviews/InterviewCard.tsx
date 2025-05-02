@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import useUserStore from "../provider/userStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useModalStore from "../provider/modalStore";
-import { deleteInterview } from "@/lib/actions/interviews";
 import { toast } from "sonner";
+import { spawn } from "child_process";
+import { deleteInterview } from "@/lib/actions/interview.actions";
 
 const InterviewCard = ({ interview }: any) => {
   const { user } = useUserStore();
@@ -114,7 +115,13 @@ const InterviewCard = ({ interview }: any) => {
         <p className="flex flex-col justify-between  font-bold flex-wrap gap-2 opacity-80 py-3">
           <span className="">Total questions: {interview.questions}</span>
           <span className="font-bold">
-            Your score: {retakeInterview ? totalScore : "__"}/100%
+            Your score:{" "}
+            {retakeInterview ? (
+              <span className="text-primary1/70">{totalScore}</span>
+            ) : (
+              "__"
+            )}
+            /100%
           </span>
         </p>
         <h4 className="text-center font-extrabold opacity-15 text-[28px] my-5">

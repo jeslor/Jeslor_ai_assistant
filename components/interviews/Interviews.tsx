@@ -2,10 +2,7 @@
 import React, { memo, use, useCallback, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
-import {
-  getInterviewsByUser,
-  getInterviewsNotByUser,
-} from "@/lib/actions/interviews";
+
 import { toast } from "sonner";
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
 import Link from "next/link";
@@ -14,6 +11,10 @@ import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
+import {
+  getInterviewsByUser,
+  getInterviewsNotByUser,
+} from "@/lib/actions/interview.actions";
 
 const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   const { ref, inView, entry } = useInView({
