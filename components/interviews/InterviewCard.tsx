@@ -4,9 +4,12 @@ import React, { useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import { useRouter } from "next/navigation";
 import useUserStore from "../provider/userStore";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import useModalStore from "../provider/modalStore";
 
 const InterviewCard = ({ interview }: any) => {
   const { user } = useUserStore();
+  const { openModal, closeModal } = useModalStore();
   const [feedback, setFeedback] = useState<any>(null);
   const [totalScore, setTotalScore] = useState(0);
   const Router = useRouter();
@@ -29,8 +32,47 @@ const InterviewCard = ({ interview }: any) => {
     (feedback: any) => feedback.interviewId === interview.id
   );
 
+  const handleOpenDeleteModal = () => {
+    openModal(
+      <div className="flex flex-col items-center justify-center p-4 ">
+        <h2 className="text-lg font-bold mb-4 text-slate-900">
+          Are you sure you want to delete this interview?
+        </h2>
+        <p className="text-sm text-gray-500 mb-4">
+          This action cannot be undone.
+        </p>
+        <div className="flex gap-x-4">
+          <AiButton
+            onPress={() => {
+              // Call the delete function here
+              Router.push(`/interviews/${interview.id}/delete`);
+            }}
+            title="Delete"
+            icon="ion:trash"
+            extraClasses="bg-red-500 text-white"
+          />
+          <AiButton
+            onPress={() => closeModal()}
+            title="Cancel"
+            icon="ion:close"
+            extraClasses=" bg-dark1/70 text-white"
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full flex flex-col ">
+    <div
+      className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full flex flex-col 
+    "
+    >
+      <button
+        onClick={handleOpenDeleteModal}
+        className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300 cursor-pointer"
+      >
+        <Icon icon="ion:close" />
+      </button>
       <div>
         <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
           <img

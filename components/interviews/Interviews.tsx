@@ -314,7 +314,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               {interviews.map((interview) => (
                 <InterviewCard key={interview.id} interview={interview} />
               ))}

@@ -225,3 +225,27 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
     };
   }
 };
+
+export const deleteInterview = async (interviewId: string) => {
+  try {
+    const interview = await prisma.interview.delete({
+      where: {
+        id: interviewId,
+      },
+    });
+
+    return {
+      message: "Interview deleted",
+      status: 200,
+      data: interview,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      message: "Internal server error",
+      status: 500,
+      data: null,
+    };
+  }
+};
