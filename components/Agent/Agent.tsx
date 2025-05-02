@@ -118,7 +118,6 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   };
 
   const handleEndCall = async () => {
-    console.log("Ending call...");
     if (status === "active" || status === "connecting") {
       setStatus(AgentStatus.completed);
       setIsTalking(false);
@@ -131,8 +130,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       if (agentType === "newInterview") {
         Router.push("/interviews");
       } else {
-        console.log("chats", chats);
-        // handleGenerateFeedback(chats);
+        handleGenerateFeedback(chats);
       }
     }
   }, [status]);

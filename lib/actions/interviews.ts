@@ -176,18 +176,6 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
       areasForImprovement,
       finalAssessment,
     };
-
-    const saveFeedBack = await prisma.feedback.create({
-      data: {
-        totalScore: feedback.totalScore,
-        categoryScores: feedback.categoryScores,
-        strengths: feedback.strengths,
-        areasForImprovement: feedback.areasForImprovement,
-        finalAssessment: feedback.finalAssessment,
-        user: { connect: { id: userId } },
-        interviewId,
-      },
-    });
     const userAlreadyHasFeedback = await prisma.user.findUnique({
       where: {
         id: userId,
@@ -200,37 +188,25 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
         },
       },
     });
+
     if (userAlreadyHasFeedback?.feedbacks.length) {
       const oldFeedback = userAlreadyHasFeedback.feedbacks[0].id;
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          feedbacks: {
-            disconnect: {
-              id: oldFeedback,
-            },
-          },
-        },
-      });
-
       await prisma.feedback.delete({
         where: {
           id: oldFeedback,
         },
       });
     }
-    await prisma.user.update({
-      where: {
-        id: userId,
-      },
+
+    const saveFeedBack = await prisma.feedback.create({
       data: {
-        feedbacks: {
-          connect: {
-            id: saveFeedBack.id,
-          },
-        },
+        totalScore: feedback.totalScore,
+        categoryScores: feedback.categoryScores,
+        strengths: feedback.strengths,
+        areasForImprovement: feedback.areasForImprovement,
+        finalAssessment: feedback.finalAssessment,
+        user: { connect: { id: userId } },
+        interviewId,
       },
     });
 
