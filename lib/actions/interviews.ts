@@ -227,7 +227,16 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
 };
 
 export const deleteInterview = async (interviewId: string) => {
+  console.log("interviewId", interviewId);
+
   try {
+    const deleteAllFeedBacks = await prisma.feedback.deleteMany({
+      where: {
+        interviewId,
+      },
+    });
+    console.log("deleteAllFeedBacks", deleteAllFeedBacks);
+
     const interview = await prisma.interview.delete({
       where: {
         id: interviewId,

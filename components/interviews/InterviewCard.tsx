@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import useUserStore from "../provider/userStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useModalStore from "../provider/modalStore";
+import { deleteInterview } from "@/lib/actions/interviews";
+import { toast } from "sonner";
 
 const InterviewCard = ({ interview }: any) => {
   const { user } = useUserStore();
@@ -32,6 +34,20 @@ const InterviewCard = ({ interview }: any) => {
     (feedback: any) => feedback.interviewId === interview.id
   );
 
+  const handleDeleteInterview = async () => {
+    try {
+      const deleteInterView = await deleteInterview(interview.id);
+      if (deleteInterView.status === 200) {
+        Router.push("/interviews");
+      } else {
+        toast.error("Error deleting interview. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error deleting interview:", error);
+      toast.error("Error deleting interview. Please try again later.");
+    }
+  };
+
   const handleOpenDeleteModal = () => {
     openModal(
       <div className="flex flex-col items-center justify-center p-4 ">
@@ -43,10 +59,7 @@ const InterviewCard = ({ interview }: any) => {
         </p>
         <div className="flex gap-x-4">
           <AiButton
-            onPress={() => {
-              // Call the delete function here
-              Router.push(`/interviews/${interview.id}/delete`);
-            }}
+            onPress={handleDeleteInterview}
             title="Delete"
             icon="ion:trash"
             extraClasses="bg-red-500 text-white"
@@ -67,12 +80,14 @@ const InterviewCard = ({ interview }: any) => {
       className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full flex flex-col 
     "
     >
-      <button
-        onClick={handleOpenDeleteModal}
-        className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300 cursor-pointer"
-      >
-        <Icon icon="ion:close" />
-      </button>
+      {interview.userId === user?.id && (
+        <button
+          onClick={handleOpenDeleteModal}
+          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300 cursor-pointer"
+        >
+          <Icon icon="ion:close" />
+        </button>
+      )}
       <div>
         <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
           <img
