@@ -15,6 +15,8 @@ interface InterViewStore {
 
 const useInterViewStore = create<InterViewStore>((set) => ({
   interviews: [],
+  setUserInterviews: (interviews) => set({ userInterviews: interviews }),
+  setNotUserInterviews: (interviews) => set({ notUserInterviews: interviews }),
   setInterviews: (interviews) => set({ interviews }),
   createInterview: (interview) =>
     set((state) => ({ interviews: [...state.interviews, interview] })),
@@ -30,6 +32,6 @@ const useInterViewStore = create<InterViewStore>((set) => ({
   },
   userInterviews: [],
   notUserInterviews: [],
-  setUserInterviews: (interviews) => set({ userInterviews: interviews }),
-  setNotUserInterviews: (interviews) => set({ notUserInterviews: interviews }),
 }));
+
+export default useInterViewStore;

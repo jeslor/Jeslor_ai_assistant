@@ -146,18 +146,20 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
 
   useEffect(() => {
     if (user?.id) {
-      if (
-        selectedSection.id === 1 &&
-        userInterviews.length === 0 &&
-        !isAllInterviews.user
-      ) {
-        fetchInterviews();
-      } else if (
-        selectedSection.id === 2 &&
-        notUserInterviews.length === 0 &&
-        !isAllInterviews.notUser
-      ) {
-        fetchInterviews();
+      if (!isMain) {
+        if (
+          selectedSection.id === 1 &&
+          userInterviews.length === 0 &&
+          !isAllInterviews.user
+        ) {
+          fetchInterviews();
+        } else if (
+          selectedSection.id === 2 &&
+          notUserInterviews.length === 0 &&
+          !isAllInterviews.notUser
+        ) {
+          fetchInterviews();
+        }
       }
     }
   }, [
@@ -166,21 +168,31 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     notUserInterviews.length,
     isAllInterviews,
     user?.id,
+    isMain,
   ]);
 
   useEffect(() => {
     if (user) {
       if (isMain) {
-        if (inView) {
+        if (inView && userInterviews.length > 0) {
           if (selectedSection.id === 1 && !isAllInterviews.user) {
             fetchInterviews();
-          } else if (selectedSection.id === 2 && !isAllInterviews.notUser) {
+          } else if (
+            selectedSection.id === 2 &&
+            notUserInterviews.length > 0 &&
+            !isAllInterviews.notUser
+          ) {
             fetchInterviews();
           }
         }
       }
     }
-  }, [userInterviews, notUserInterviews, inView, selectedSection]);
+  }, [
+    userInterviews.length,
+    notUserInterviews.length,
+    inView,
+    selectedSection,
+  ]);
 
   useEffect(() => {
     if (selectedSection?.id === 1) {
