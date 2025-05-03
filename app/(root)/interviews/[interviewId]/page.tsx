@@ -1,6 +1,6 @@
 import Agent from "@/components/Agent/Agent";
 import ScoreCircle from "@/components/score";
-import { getInterViewById } from "@/lib/actions/interviews";
+import { getInterViewById } from "@/lib/actions/interview.actions";
 import { refactorCompany } from "@/lib/helpers/general";
 
 const page = async ({ params }: any) => {
