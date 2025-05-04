@@ -22,11 +22,5 @@ const useUserStore = create<UserStore>((set) => ({
   },
   clearUser: () => set({ user: null }),
 }));
-export default useUserStore;
-export const useUser = () => {
-  const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
-  const clearUser = useUserStore((state) => state.clearUser);
 
-  return { user, setUser, clearUser };
-};
+export default useUserStore;

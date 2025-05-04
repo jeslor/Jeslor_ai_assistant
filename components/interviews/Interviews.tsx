@@ -2,6 +2,7 @@
 import React, { memo, use, useCallback, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
+import useInterviewStore from "@/components/provider/interviewStore";
 
 import { toast } from "sonner";
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
@@ -22,9 +23,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   });
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const [userInterviews, setUserInterviews] = useState<any[]>([]);
-  const [notUserInterviews, setNotUserInterviews] = useState<any[]>([]);
-  const [interviews, setInterviews] = useState<any[]>(userInterviews);
+  const { interviews, setInterviews, setCurrentPage } = useInterviewStore();
   const [isLoading, setIsLoading] = useState(true);
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
   const [isAllInterviews, setIsAllInterviews] = useState({
@@ -61,183 +60,9 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
     sections.find((section) => section.id === Number(id)) || sections[0];
   const [selectedSection, setSelectedSection] = useState<any>(initialSection);
 
-  const fetchInterviews = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      if (selectedSection.id === 1) {
-        const userInterviewsResponse = await getInterviewsByUser(
-          user?.id,
-          page.userPage
-        );
-        if (userInterviewsResponse.status === 200) {
-          if (userInterviewsResponse.data) {
-            setUserInterviews(
-              userInterviewsResponse.data
-                ? [...userInterviews, ...userInterviewsResponse.data]
-                : []
-            );
-            if (isMain) {
-              setPage({
-                ...page,
-                userPage: page.userPage + 1,
-              });
-            }
-          } else {
-            setIsAllInterviews({
-              ...isAllInterviews,
-              user: true,
-            });
-          }
-        } else {
-          toast.warning(userInterviewsResponse.message);
-          setIsAllInterviews({
-            ...isAllInterviews,
-            user: true,
-          });
-        }
-      } else {
-        const notUserInterviewsResponse = await getInterviewsNotByUser(
-          user?.id,
-          page.notUserPage
-        );
-
-        if (notUserInterviewsResponse.status === 200) {
-          if (notUserInterviewsResponse.data) {
-            setNotUserInterviews(
-              notUserInterviewsResponse.data
-                ? [...notUserInterviews, ...notUserInterviewsResponse.data]
-                : []
-            );
-            if (isMain) {
-              setPage({
-                ...page,
-                notUserPage: page.notUserPage + 1,
-              });
-            }
-          } else {
-            setIsAllInterviews({
-              ...isAllInterviews,
-              notUser: true,
-            });
-          }
-        } else {
-          toast.warning(notUserInterviewsResponse.message);
-          setIsAllInterviews({
-            ...isAllInterviews,
-            notUser: true,
-          });
-        }
-      }
-    } catch (error) {
-      toast.error(`Error fetching interviews. ${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [
-    selectedSection.id,
-    user?.id,
-    page.userPage,
-    page.notUserPage,
-    isMain,
-    userInterviews,
-    notUserInterviews,
-    isAllInterviews,
-  ]);
-
   useEffect(() => {
-    if (user?.id) {
-      if (!isMain) {
-        if (
-          selectedSection.id === 1 &&
-          userInterviews.length === 0 &&
-          !isAllInterviews.user
-        ) {
-          fetchInterviews();
-        } else if (
-          selectedSection.id === 2 &&
-          notUserInterviews.length === 0 &&
-          !isAllInterviews.notUser
-        ) {
-          fetchInterviews();
-        }
-      }
-    }
-  }, [
-    selectedSection.id,
-    userInterviews.length,
-    notUserInterviews.length,
-    isAllInterviews,
-    user?.id,
-    isMain,
-  ]);
-
-  useEffect(() => {
-    if (user) {
-      if (isMain) {
-        if (inView && userInterviews.length > 0) {
-          if (selectedSection.id === 1 && !isAllInterviews.user) {
-            fetchInterviews();
-          } else if (
-            selectedSection.id === 2 &&
-            notUserInterviews.length > 0 &&
-            !isAllInterviews.notUser
-          ) {
-            fetchInterviews();
-          }
-        }
-      }
-    }
-  }, [
-    userInterviews.length,
-    notUserInterviews.length,
-    inView,
-    selectedSection,
-  ]);
-
-  useEffect(() => {
-    if (selectedSection?.id === 1) {
-      setInterviews(userInterviews);
-    }
-    if (selectedSection?.id === 2) {
-      setInterviews(notUserInterviews);
-    }
-    if (selectedSection?.id === 3) {
-      setInterviews([]);
-    }
-  }, [userInterviews.length, notUserInterviews.length, selectedSection.id]);
-
-  useEffect(() => {
-    if (userInterviews.length > 0 || notUserInterviews.length > 0) {
-      setSections((prevSections) =>
-        prevSections.map((section) =>
-          section.id === 1
-            ? { ...section, title: `My Interviews (${userInterviews.length})` }
-            : section.id === 2
-            ? {
-                ...section,
-                title: `Other Interviews (${notUserInterviews.length})`,
-              }
-            : section
-        )
-      );
-    }
-  }, [userInterviews.length, notUserInterviews.length]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const aiLogo = document.querySelector(".stickyInterViewMenu");
-      if (aiLogo) {
-        if (window.scrollY > 70) {
-          setStickyInterviewMenu(true);
-        } else {
-          setStickyInterviewMenu(false);
-        }
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    setCurrentPage(0);
+    setInterviews(selectedSection);
   }, []);
 
   const handleSectionClick = (section: any) => {
@@ -252,9 +77,6 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
       });
     }
   };
-
-  console.log(user?.feedbacks);
-  console.log(interviews);
 
   return (
     <div
@@ -328,7 +150,7 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
             </div>
           ) : (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
-              {interviews.map((interview) => (
+              {interviews.map((interview: any) => (
                 <InterviewCard key={interview.id} interview={interview} />
               ))}
             </div>
