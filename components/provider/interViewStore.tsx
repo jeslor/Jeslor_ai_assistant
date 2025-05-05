@@ -19,6 +19,7 @@ interface InterviewStore {
   };
   setUserInterview: () => void;
   setNotUserInterview: () => void;
+  setUpdatedInterviews: (interview: any, sectionId: number) => void;
   clearInterview: () => void;
 }
 const useInterviewStore = create<InterviewStore>((set, get) => ({
@@ -97,6 +98,24 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
     } catch (error) {
       console.error("Error fetching interviews:", error);
       set({ notUserInterviews: [] });
+    }
+  },
+  setUpdatedInterviews: (interview, sectionId) => {
+    const { userInterviews, notUserInterviews } = get();
+    console.log("reached the interview store");
+
+    if (sectionId === 1) {
+      set({
+        userInterviews: userInterviews.filter(
+          (item) => item.id !== interview[0].id
+        ),
+      });
+    } else {
+      set({
+        notUserInterviews: notUserInterviews.filter(
+          (item) => item.id !== interview[0].id
+        ),
+      });
     }
   },
   clearInterview: () => set({ notUserInterviews: [], userInterviews: [] }),

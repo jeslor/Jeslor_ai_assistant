@@ -15,6 +15,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
   const { user } = useUserStore();
   const { openModal, closeModal } = useModalStore();
   const [feedback, setFeedback] = useState<any>(null);
+  const { setUpdatedInterviews } = useInterviewStore();
   const [totalScore, setTotalScore] = useState(0);
   const Router = useRouter();
 
@@ -40,6 +41,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
     try {
       const deleteInterView = await deleteInterview(interview.id);
       if (deleteInterView.status === 200) {
+        setUpdatedInterviews(interview, sectionId);
       } else {
         toast.error("Error deleting interview. Please try again later.");
       }

@@ -8,6 +8,8 @@ export const POST = async (req: Request) => {
     const { type, role, level, techstack, totalQuestions, userid, company } =
       await req.json();
 
+    console.log(totalQuestions);
+
     let totalQuestionsInt = parseInt(totalQuestions, 10);
     if (
       isNaN(totalQuestionsInt) ||
@@ -15,6 +17,8 @@ export const POST = async (req: Request) => {
       totalQuestionsInt > 10
     ) {
       totalQuestionsInt = 10; // Default to 5 if invalid
+    } else {
+      totalQuestionsInt = Math.min(totalQuestionsInt, 10); // Limit to a maximum of 10
     }
 
     const { text: questions2 } = await generateText({
