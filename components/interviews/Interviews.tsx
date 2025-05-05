@@ -11,44 +11,41 @@ import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
 
+const sectionsData = [
+  {
+    id: 1,
+    title: "My Interviews",
+    icon: "",
+    extraClasses: "",
+  },
+  {
+    id: 2,
+    title: "Other Interviews",
+    icon: "",
+    extraClasses: "",
+  },
+  {
+    id: 3,
+    title: "How to use",
+    icon: "",
+    extraClasses: "",
+  },
+];
+
 const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   const { ref, inView, entry } = useInView({
     threshold: 0,
   });
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const { interviews, setInterviews, isLoading, setIsMain } =
+  const { interviews, setInterviews, isLoading, setIsMain, isAllInterviews } =
     useInterviewStore();
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
-  const [isAllInterviews, setIsAllInterviews] = useState({
-    user: false,
-    notUser: false,
-  });
-
-  const [sections, setSections] = useState<any[]>([
-    {
-      id: 1,
-      title: "My Interviews",
-      icon: "",
-      extraClasses: "",
-    },
-    {
-      id: 2,
-      title: "Other Interviews",
-      icon: "",
-      extraClasses: "",
-    },
-    {
-      id: 3,
-      title: "How to use",
-      icon: "",
-      extraClasses: "",
-    },
-  ]);
 
   const id = searchParams.get("id");
   const initialSection =
-    sections.find((section) => section.id === Number(id)) || sections[0];
+    sectionsData.find((section) => section.id === Number(id)) ||
+    sectionsData[0];
   const [selectedSection, setSelectedSection] = useState<any>(initialSection);
 
   useEffect(() => {
@@ -57,21 +54,15 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
 
   useEffect(() => {
     if (user) {
-      if (!isMain) {
-        setInterviews(selectedSection);
-      } else {
-        if (inView) {
-          setInterviews(selectedSection);
-        }
-      }
+      setInterviews(selectedSection);
     }
   }, [user, selectedSection.id, inView]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");
-    sections.find((s) => s.id === section.id)
+    sectionsData.find((s) => s.id === section.id)
       ? setSelectedSection(section)
-      : setSelectedSection(sections[0]);
+      : setSelectedSection(sectionsData[0]);
     if (interviewContainer) {
       window.scrollTo({
         top: 0,
@@ -79,6 +70,14 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (isMain) {
+      setStickyInterviewMenu(true);
+    } else {
+      setStickyInterviewMenu(false);
+    }
+  }, [isMain]);
 
   return (
     <div
@@ -97,7 +96,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
             : ""
         }`}
       >
-        {sections.map((section) =>
+        {sectionsData.map((section) =>
           isMain ? (
             section.id !== 3 && (
               <AiButton
@@ -168,8 +167,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
         </Link>
       )}
       {isMain &&
-        ((selectedSection?.id === 1 && !isAllInterviews.user) ||
-          (selectedSection?.id === 2 && !isAllInterviews.notUser)) && (
+        ((selectedSection?.id === 1 && !isAllInterviews.isAllUser) ||
+          (selectedSection?.id === 2 && !isAllInterviews.isAllNotUser)) && (
           <div className="py-10 flex items-center justify-center">
             <Loading ref={ref} />
           </div>

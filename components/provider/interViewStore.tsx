@@ -13,6 +13,10 @@ interface InterviewStore {
     notUserPage: number;
   };
   isInView: boolean;
+  isAllInterviews: {
+    isAllUser: boolean;
+    isAllNotUser: boolean;
+  };
   isMainPage: boolean;
   isLoading: boolean;
   interviews: any;
@@ -33,6 +37,10 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
   isMainPage: false,
   isLoading: true,
   isInView: false,
+  isAllInterviews: {
+    isAllUser: false,
+    isAllNotUser: false,
+  },
   interviews: [],
   userInterviews: [],
   notUserInterviews: [],
@@ -42,18 +50,33 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
   },
   setUserInterviews: async () => {
     try {
-      const { currentPage, userInterviews, isInView } = get();
+      const { currentPage, userInterviews, isInView, isAllInterviews } = get();
       const user = useUserStore.getState().user;
-      if (userInterviews.length < 4 && !isInView) {
+      if (
+        userInterviews.length < 4 &&
+        !isInView &&
+        !isAllInterviews.isAllUser
+      ) {
         const response: any = await getInterviewsByUser(
           user.id,
           currentPage.userPage
         );
         if (response.status === 200) {
-          set({ userInterviews: [...userInterviews, ...response.data] });
-          set({
-            currentPage: { ...currentPage, userPage: currentPage.userPage + 1 },
-          });
+          if (response.data.length === 0) {
+            set({
+              isAllInterviews: { ...get().isAllInterviews, isAllUser: true },
+            });
+          } else {
+            set({
+              userInterviews: [...userInterviews, ...response.data],
+            });
+            set({
+              currentPage: {
+                ...currentPage,
+                userPage: currentPage.userPage + 1,
+              },
+            });
+          }
         } else {
           throw new Error(response.message);
         }
@@ -73,13 +96,21 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
           currentPage.notUserPage
         );
         if (response.status === 200) {
-          set({ notUserInterviews: [...notUserInterviews, ...response.data] });
-          set({
-            currentPage: {
-              ...currentPage,
-              notUserPage: currentPage.notUserPage + 1,
-            },
-          });
+          if (response.data.length === 0) {
+            set({
+              isAllInterviews: { ...get().isAllInterviews, isAllNotUser: true },
+            });
+          } else {
+            set({
+              notUserInterviews: [...notUserInterviews, ...response.data],
+            });
+            set({
+              currentPage: {
+                ...currentPage,
+                notUserPage: currentPage.notUserPage + 1,
+              },
+            });
+          }
         } else {
           throw new Error(response.message);
         }

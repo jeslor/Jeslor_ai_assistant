@@ -20,8 +20,8 @@ export const getInterviewsByUser = async (userId: string, page: number) => {
     if (interviews.length === 0) {
       return {
         message: "You have not generated any interviews yet or they are empty",
-        status: 404,
-        data: null,
+        status: 200,
+        data: [],
       };
     }
 
@@ -62,8 +62,8 @@ export const getInterviewsNotByUser = async (userId: string, page: number) => {
     if (interviews.length === 0) {
       return {
         message: "Thats all we have for now",
-        status: 404,
-        data: null,
+        status: 200,
+        data: [],
       };
     }
 
