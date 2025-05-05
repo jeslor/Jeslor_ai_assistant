@@ -7,8 +7,16 @@ import {
 import { toast } from "sonner";
 
 interface InterviewStore {
-  userInterviews: any[] | null;
-  notUserInterviews: any[] | null;
+  userInterviews: any[];
+  notUserInterviews: any[];
+  isAllInterviews: {
+    user: boolean;
+    notUser: boolean;
+  };
+  pages: {
+    user: number;
+    notUser: number;
+  };
   setUserInterview: () => void;
   setNotUserInterview: () => void;
   clearInterview: () => void;
@@ -16,6 +24,14 @@ interface InterviewStore {
 const useInterviewStore = create<InterviewStore>((set, get) => ({
   userInterviews: [],
   notUserInterviews: [],
+  isAllInterviews: {
+    user: false,
+    notUser: false,
+  },
+  pages: {
+    user: 0,
+    notUser: 0,
+  },
 
   setUserInterview: async () => {
     try {
@@ -23,13 +39,21 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       if (!user) {
         return;
       }
-      const response: any = await getInterviewsByUser(user.id, 0);
+      const { pages } = get();
+      const response: any = await getInterviewsByUser(user.id, pages.user);
       if (response.status === 200) {
+        const { userInterviews } = get();
         if (response.data.length > 0) {
-          set({ userInterviews: response.data });
+          set({
+            userInterviews: [...userInterviews, ...response.data],
+            pages: { ...pages, user: pages.user + 1 },
+          });
         } else {
           toast.error("No interviews found");
-          set({ userInterviews: [] });
+          set({
+            userInterviews,
+            isAllInterviews: { ...get().isAllInterviews, user: true },
+          });
         }
       } else {
         set({ userInterviews: [] });
@@ -47,9 +71,26 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       if (!user) {
         return;
       }
-      const response = await getInterviewsNotByUser(user.id, 0);
+      const { pages } = get();
+      const response: any = await getInterviewsNotByUser(
+        user.id,
+        pages.notUser
+      );
       if (response.status === 200) {
-        set({ notUserInterviews: response.data });
+        const { notUserInterviews } = get();
+        if (response.data.length > 0) {
+          set({
+            notUserInterviews: [...notUserInterviews, ...response.data],
+            pages: { ...pages, notUser: pages.notUser + 1 },
+          });
+        } else {
+          const { isAllInterviews } = get();
+          toast.error("No interviews found");
+          set({
+            notUserInterviews,
+            isAllInterviews: { ...isAllInterviews, notUser: true },
+          });
+        }
       } else {
         set({ notUserInterviews: [] });
       }
@@ -58,6 +99,6 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       set({ notUserInterviews: [] });
     }
   },
-  clearInterview: () => set({ notUserInterviews: null, userInterviews: null }),
+  clearInterview: () => set({ notUserInterviews: [], userInterviews: [] }),
 }));
 export default useInterviewStore;

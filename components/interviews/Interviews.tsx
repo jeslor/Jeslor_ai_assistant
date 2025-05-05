@@ -42,6 +42,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   const {
     userInterviews,
     setUserInterview,
+    isAllInterviews,
     notUserInterviews,
     setNotUserInterview,
   } = useInterviewStore();
@@ -69,7 +70,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
 
   useEffect(() => {
     if (user) {
-      if (!userInterviews?.length || !notUserInterviews?.length) {
+      if (userInterviews.length === 0 || notUserInterviews.length === 0) {
         fetchInterviews();
       }
       setIsLoading(false);
@@ -78,20 +79,33 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
 
   useEffect(() => {
     if (selectedSection.id === 1) {
-      if (Array.isArray(userInterviews) && userInterviews.length === 0) {
-        fetchInterviews();
+      if (userInterviews.length > 0) {
+        !isMain
+          ? setInterviews(userInterviews.slice(0, 4))
+          : setInterviews(userInterviews);
       } else {
-        setInterviews(userInterviews);
+        fetchInterviews();
       }
     }
     if (selectedSection.id === 2) {
-      if (notUserInterviews?.length === 0) {
-        fetchInterviews();
+      if (notUserInterviews.length > 0) {
+        !isMain
+          ? setInterviews(notUserInterviews.slice(0, 4))
+          : setInterviews(notUserInterviews);
       } else {
-        setInterviews(notUserInterviews);
+        fetchInterviews();
       }
     }
   }, [userInterviews, notUserInterviews, selectedSection.id]);
+
+  useEffect(() => {
+    if (
+      (inView && !isAllInterviews.user) ||
+      (inView && !isAllInterviews.notUser)
+    ) {
+      fetchInterviews();
+    }
+  }, [inView]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");
@@ -195,13 +209,13 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           View all interviews
         </Link>
       )}
-      {/* {isMain &&
-        ((selectedSection?.id === 1 && !isAllInterviews.isAllUser) ||
-          (selectedSection?.id === 2 && !isAllInterviews.isAllNotUser)) && (
+      {isMain &&
+        ((selectedSection?.id === 1 && !isAllInterviews.user) ||
+          (selectedSection?.id === 2 && !isAllInterviews.notUser)) && (
           <div className="pb-10 pt-[50px] flex items-center justify-center">
             <Loading ref={ref} />
           </div>
-        )} */}
+        )}
     </div>
   );
 });

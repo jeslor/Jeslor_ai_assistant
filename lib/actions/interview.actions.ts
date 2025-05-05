@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma/prisma";
 export const getInterviewsByUser = async (userId: string, page: number) => {
   console.log("this code ran");
 
-  const limit = 4;
+  const limit = 12;
   const skip = page * limit;
 
   try {
@@ -45,8 +45,8 @@ export const getInterviewsByUser = async (userId: string, page: number) => {
 
 export const getInterviewsNotByUser = async (userId: string, page: number) => {
   console.log("this code ran not by user");
-  const limit = 4;
-  const skip = page * 4;
+  const limit = 12;
+  const skip = page * limit;
 
   try {
     const interviews = await prisma.interview.findMany({
