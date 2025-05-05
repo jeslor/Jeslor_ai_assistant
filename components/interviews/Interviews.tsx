@@ -77,10 +77,6 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     }
   }, [user]);
 
-  const setPageInterviews = (updatedInterviews: any) => {
-    setInterviews((prevInterviews: any) => [...updatedInterviews]);
-  };
-
   useEffect(() => {
     if (selectedSection.id === 1) {
       if (userInterviews.length > 0) {
@@ -202,8 +198,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
                 <InterviewCard
                   key={interview.id}
                   interview={interview}
-                  setPageInterviews={setPageInterviews}
-                  interviews={interviews}
+                  sectionId={selectedSection.id}
                 />
               ))}
             </div>

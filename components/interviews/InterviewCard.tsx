@@ -11,9 +11,8 @@ import { spawn } from "child_process";
 import { deleteInterview } from "@/lib/actions/interview.actions";
 import useInterviewStore from "../provider/interViewStore";
 
-const InterviewCard = ({ interview, interviews, setPageInterviews }: any) => {
+const InterviewCard = ({ interview, sectionId }: any) => {
   const { user } = useUserStore();
-  const { userInterviews, notUserInterviews } = useInterviewStore();
   const { openModal, closeModal } = useModalStore();
   const [feedback, setFeedback] = useState<any>(null);
   const [totalScore, setTotalScore] = useState(0);
@@ -41,7 +40,6 @@ const InterviewCard = ({ interview, interviews, setPageInterviews }: any) => {
     try {
       const deleteInterView = await deleteInterview(interview.id);
       if (deleteInterView.status === 200) {
-        setPageInterviews(interviews.filter((i: any) => i.id !== interview.id));
       } else {
         toast.error("Error deleting interview. Please try again later.");
       }
