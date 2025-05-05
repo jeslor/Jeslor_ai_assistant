@@ -1,10 +1,9 @@
 "use server";
 import prisma from "@/lib/prisma/prisma";
-import { google } from "@ai-sdk/google";
-import { generateObject } from "ai";
-import { feedbackSchema } from "../validators/feedback.validator";
 
 export const getInterviewsByUser = async (userId: string, page: number) => {
+  console.log("this code ran");
+
   const limit = 4;
   const skip = page * limit;
 
@@ -45,6 +44,7 @@ export const getInterviewsByUser = async (userId: string, page: number) => {
 };
 
 export const getInterviewsNotByUser = async (userId: string, page: number) => {
+  console.log("this code ran not by user");
   const limit = 4;
   const skip = page * 4;
 

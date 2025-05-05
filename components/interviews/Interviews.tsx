@@ -1,5 +1,5 @@
 "use client";
-import React, { memo, use, useCallback, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
 
@@ -40,15 +40,15 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   const searchParams = useSearchParams();
   const { user } = useUserStore();
   const {
-    interviews,
-    setInterviews,
-    isLoading,
-    setIsMain,
-    isAllInterviews,
-    setIsInview,
-    isInView,
+    userInterviews,
+    setUserInterview,
+    notUserInterviews,
+    setNotUserInterview,
   } = useInterviewStore();
+
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
+  const [interviews, setInterviews] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const id = searchParams.get("id");
   const initialSection =
@@ -56,24 +56,42 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     sectionsData[0];
   const [selectedSection, setSelectedSection] = useState<any>(initialSection);
 
-  useEffect(() => {
-    setIsMain(isMain);
-    setIsInview(inView);
-  }, [inView]);
+  const fetchInterviews = async () => {
+    setIsLoading(true);
+    if (selectedSection.id === 1) {
+      await setUserInterview();
+    } else {
+      await setNotUserInterview();
+    }
+
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     if (user) {
-      setInterviews(selectedSection);
+      if (!userInterviews?.length || !notUserInterviews?.length) {
+        fetchInterviews();
+      }
+      setIsLoading(false);
     }
-  }, [user, selectedSection.id]);
+  }, [user]);
 
   useEffect(() => {
-    console.log("interview in view", isInView);
-
-    if (isInView) {
-      setInterviews(selectedSection);
+    if (selectedSection.id === 1) {
+      if (Array.isArray(userInterviews) && userInterviews.length === 0) {
+        fetchInterviews();
+      } else {
+        setInterviews(userInterviews);
+      }
     }
-  }, [isInView]);
+    if (selectedSection.id === 2) {
+      if (notUserInterviews?.length === 0) {
+        fetchInterviews();
+      } else {
+        setInterviews(notUserInterviews);
+      }
+    }
+  }, [userInterviews, notUserInterviews, selectedSection.id]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");
@@ -136,11 +154,12 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           <h3 className="text-white text-2xl font-semibold">
             {selectedSection?.title}
           </h3>
-          {isLoading ? (
+          {isLoading && (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               <InterviewSkeleton totalCards={4} />
             </div>
-          ) : interviews.length === 0 && !isLoading ? (
+          )}
+          {interviews?.length === 0 && !isLoading && (
             <div className="flex flex-col items-center justify-center w-full ">
               <LottieAnimation path="/media/animations/noInterviewFound.json" />
               <p className="text-slate-200/50 text-center text-[14px]">
@@ -158,16 +177,17 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
                 extraClasses="mt-4"
               />
             </div>
-          ) : (
+          )}{" "}
+          {interviews?.length && (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
-              {interviews.map((interview: any) => (
+              {interviews?.map((interview: any) => (
                 <InterviewCard key={interview.id} interview={interview} />
               ))}
             </div>
           )}
         </div>
       </div>
-      {!isMain && interviews.length && (
+      {!isMain && interviews?.length && (
         <Link
           className="py-10 ml-[50%] -translate-x-[50%] inline-block text-center  font-semibold hover:text-primary1"
           href={`/interviews?id=${selectedSection.id}`}
@@ -175,13 +195,13 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           View all interviews
         </Link>
       )}
-      {isMain &&
+      {/* {isMain &&
         ((selectedSection?.id === 1 && !isAllInterviews.isAllUser) ||
           (selectedSection?.id === 2 && !isAllInterviews.isAllNotUser)) && (
           <div className="pb-10 pt-[50px] flex items-center justify-center">
             <Loading ref={ref} />
           </div>
-        )}
+        )} */}
     </div>
   );
 });
