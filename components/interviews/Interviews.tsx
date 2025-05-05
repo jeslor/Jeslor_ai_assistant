@@ -77,6 +77,10 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     }
   }, [user]);
 
+  const setPageInterviews = (updatedInterviews: any) => {
+    setInterviews((prevInterviews: any) => [...updatedInterviews]);
+  };
+
   useEffect(() => {
     if (selectedSection.id === 1) {
       if (userInterviews.length > 0) {
@@ -195,7 +199,12 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           {interviews?.length && (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               {interviews?.map((interview: any) => (
-                <InterviewCard key={interview.id} interview={interview} />
+                <InterviewCard
+                  key={interview.id}
+                  interview={interview}
+                  setPageInterviews={setPageInterviews}
+                  interviews={interviews}
+                />
               ))}
             </div>
           )}
