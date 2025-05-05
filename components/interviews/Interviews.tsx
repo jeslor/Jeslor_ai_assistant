@@ -10,7 +10,7 @@ import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
-import useInterviewStore from "../provider/interviewStore";
+import useInterviewStore from "../provider/interViewStore";
 
 const sectionsData = [
   {
