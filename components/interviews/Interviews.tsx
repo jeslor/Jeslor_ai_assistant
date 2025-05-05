@@ -2,7 +2,7 @@
 import React, { memo, use, useCallback, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
-import useInterviewStore from "@/components/provider/interviewStore";
+
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
 import Link from "next/link";
 import InterviewCard from "./InterviewCard";
@@ -10,6 +10,7 @@ import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
+import useInterviewStore from "../provider/interviewStore";
 
 const sectionsData = [
   {
