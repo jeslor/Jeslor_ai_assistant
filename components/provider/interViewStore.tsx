@@ -13,6 +13,7 @@ interface InterviewStore {
     notUserPage: number;
   };
   isInView: boolean;
+  setIsInview: (isInView: boolean) => void;
   isAllInterviews: {
     isAllUser: boolean;
     isAllNotUser: boolean;
@@ -37,6 +38,9 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
   isMainPage: false,
   isLoading: true,
   isInView: false,
+  setIsInview: (inView: boolean) => {
+    set({ isInView: inView });
+  },
   isAllInterviews: {
     isAllUser: false,
     isAllNotUser: false,
@@ -52,10 +56,11 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
     try {
       const { currentPage, userInterviews, isInView, isAllInterviews } = get();
       const user = useUserStore.getState().user;
+      console.log("is in view", isInView);
+
       if (
-        userInterviews.length < 4 &&
-        !isInView &&
-        !isAllInterviews.isAllUser
+        (userInterviews.length < 4 && !isAllInterviews.isAllUser) ||
+        (userInterviews.length > 4 && isInView)
       ) {
         const response: any = await getInterviewsByUser(
           user.id,
@@ -89,8 +94,21 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
   setNotUserInterviews: async () => {
     try {
       const user = useUserStore.getState().user;
-      const { currentPage, notUserInterviews, isInView } = get();
-      if (notUserInterviews.length < 4 && !isInView) {
+      const { currentPage, notUserInterviews, isInView, isAllInterviews } =
+        get();
+      console.log("is in view", isInView);
+      console.log("not user interviews", currentPage.notUserPage);
+      console.log(
+        notUserInterviews.length < 4 && !isAllInterviews.isAllNotUser,
+        notUserInterviews.length > 4 && isInView
+      );
+
+      if (
+        (notUserInterviews.length < 4 && !isAllInterviews.isAllNotUser) ||
+        isInView
+      ) {
+        console.log("fetching not user interviews");
+
         const response: any = await getInterviewsNotByUser(
           user.id,
           currentPage.notUserPage

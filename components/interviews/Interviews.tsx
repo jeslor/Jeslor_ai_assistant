@@ -38,8 +38,15 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   });
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const { interviews, setInterviews, isLoading, setIsMain, isAllInterviews } =
-    useInterviewStore();
+  const {
+    interviews,
+    setInterviews,
+    isLoading,
+    setIsMain,
+    isAllInterviews,
+    setIsInview,
+    isInView,
+  } = useInterviewStore();
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
 
   const id = searchParams.get("id");
@@ -50,13 +57,22 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
 
   useEffect(() => {
     setIsMain(isMain);
-  }, []);
+    setIsInview(inView);
+  }, [inView]);
 
   useEffect(() => {
     if (user) {
       setInterviews(selectedSection);
     }
-  }, [user, selectedSection.id, inView]);
+  }, [user, selectedSection.id]);
+
+  useEffect(() => {
+    console.log("interview in view", isInView);
+
+    if (isInView) {
+      setInterviews(selectedSection);
+    }
+  }, [isInView]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");
@@ -70,14 +86,6 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       });
     }
   };
-
-  useEffect(() => {
-    if (isMain) {
-      setStickyInterviewMenu(true);
-    } else {
-      setStickyInterviewMenu(false);
-    }
-  }, [isMain]);
 
   return (
     <div
@@ -169,7 +177,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       {isMain &&
         ((selectedSection?.id === 1 && !isAllInterviews.isAllUser) ||
           (selectedSection?.id === 2 && !isAllInterviews.isAllNotUser)) && (
-          <div className="py-10 flex items-center justify-center">
+          <div className="pb-10 pt-[50px] flex items-center justify-center">
             <Loading ref={ref} />
           </div>
         )}
