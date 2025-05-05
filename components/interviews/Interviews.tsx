@@ -3,8 +3,6 @@ import React, { memo, use, useCallback, useEffect, useState } from "react";
 import AiButton from "../AiButton";
 import useUserStore from "../provider/userStore";
 import useInterviewStore from "@/components/provider/interviewStore";
-
-import { toast } from "sonner";
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
 import Link from "next/link";
 import InterviewCard from "./InterviewCard";
@@ -12,28 +10,21 @@ import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
-import {
-  getInterviewsByUser,
-  getInterviewsNotByUser,
-} from "@/lib/actions/interview.actions";
 
-const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
+const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   const { ref, inView, entry } = useInView({
     threshold: 0,
   });
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const { interviews, setInterviews, setCurrentPage } = useInterviewStore();
-  const [isLoading, setIsLoading] = useState(true);
+  const { interviews, setInterviews, isLoading, setIsMain } =
+    useInterviewStore();
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
   const [isAllInterviews, setIsAllInterviews] = useState({
     user: false,
     notUser: false,
   });
-  const [page, setPage] = useState({
-    userPage: 0,
-    notUserPage: 0,
-  });
+
   const [sections, setSections] = useState<any[]>([
     {
       id: 1,
@@ -61,9 +52,20 @@ const Interviews = memo(({ isMain }: { isMain?: boolean }) => {
   const [selectedSection, setSelectedSection] = useState<any>(initialSection);
 
   useEffect(() => {
-    setCurrentPage(0);
-    setInterviews(selectedSection);
+    setIsMain(isMain);
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      if (!isMain) {
+        setInterviews(selectedSection);
+      } else {
+        if (inView) {
+          setInterviews(selectedSection);
+        }
+      }
+    }
+  }, [user, selectedSection.id, inView]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");

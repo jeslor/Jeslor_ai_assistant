@@ -6,69 +6,109 @@ import {
   getInterviewsNotByUser,
 } from "@/lib/actions/interview.actions";
 import { toast } from "sonner";
-import page from "@/app/(root)/page";
 
 interface InterviewStore {
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
+  currentPage: {
+    userPage: number;
+    notUserPage: number;
+  };
+  isInView: boolean;
+  isMainPage: boolean;
+  isLoading: boolean;
   interviews: any;
   userInterviews: any;
   isMainInterviews: boolean;
   setIsMain: (isMain: boolean) => void;
-  setUserInterviews: (userInterviews: any) => void;
+  setUserInterviews: () => void;
   notUserInterviews: any;
-  setNotUserInterviews: (notUserInterviews: any) => void;
-  setInterviews: (interview: any) => void;
+  setNotUserInterviews: () => void;
+  setInterviews: (section: any) => void;
 }
 
 const useInterviewStore = create<InterviewStore>((set, get) => ({
-  currentPage: 0,
+  currentPage: {
+    userPage: 0,
+    notUserPage: 0,
+  },
+  isMainPage: false,
+  isLoading: true,
+  isInView: false,
   interviews: [],
   userInterviews: [],
   notUserInterviews: [],
   isMainInterviews: false,
-  setCurrentPage: (page: number) => {
-    set({ currentPage: page });
-  },
   setIsMain: (isMain: boolean) => {
     set({ isMainInterviews: isMain });
   },
   setUserInterviews: async () => {
-    const user = useUserStore.getState().user;
-    const currentPage = get().currentPage;
-    const response = await getInterviewsByUser(user.id, currentPage);
-    if (response.status === 200) {
-      set({ userInterviews: response.data });
-    } else {
+    try {
+      const { currentPage, userInterviews, isInView } = get();
+      const user = useUserStore.getState().user;
+      if (userInterviews.length < 4 && !isInView) {
+        const response: any = await getInterviewsByUser(
+          user.id,
+          currentPage.userPage
+        );
+        if (response.status === 200) {
+          set({ userInterviews: [...userInterviews, ...response.data] });
+          set({
+            currentPage: { ...currentPage, userPage: currentPage.userPage + 1 },
+          });
+        } else {
+          throw new Error(response.message);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user interviews:", error);
       toast.error("Error fetching user interviews");
     }
   },
   setNotUserInterviews: async () => {
-    const user = useUserStore.getState().user;
-    const currentPage = get().currentPage;
-    const response = await getInterviewsNotByUser(user.id, currentPage);
-    console.log("response", response);
-
-    if (response.status === 200) {
-      set({ notUserInterviews: response.data });
-    } else {
+    try {
+      const user = useUserStore.getState().user;
+      const { currentPage, notUserInterviews, isInView } = get();
+      if (notUserInterviews.length < 4 && !isInView) {
+        const response: any = await getInterviewsNotByUser(
+          user.id,
+          currentPage.notUserPage
+        );
+        if (response.status === 200) {
+          set({ notUserInterviews: [...notUserInterviews, ...response.data] });
+          set({
+            currentPage: {
+              ...currentPage,
+              notUserPage: currentPage.notUserPage + 1,
+            },
+          });
+        } else {
+          throw new Error(response.message);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching not user interviews:", error);
       toast.error("Error fetching not user interviews");
     }
   },
-  setInterviews: (section: any) => {
-    const userInterviews = get().userInterviews;
-    const notUserInterviews = get().notUserInterviews;
-    const setUserInterviews = get().setUserInterviews;
-    const setNotUserInterviews = get().setNotUserInterviews;
-    const currentPage = get().currentPage;
-    if (section.id === 1) {
-      setUserInterviews(currentPage);
-      set({ interviews: { ...userInterviews } });
-    } else if (section.id === 2) {
-      setNotUserInterviews(currentPage);
-      set({ interviews: { ...notUserInterviews } });
-    } else {
-      set({ interviews: null });
+
+  setInterviews: async (section: any) => {
+    const user = useUserStore.getState().user;
+    if (user) {
+      if (section.id === 1) {
+        set({ interviews: [] });
+        set({ isLoading: true });
+        await get().setUserInterviews();
+        const { userInterviews } = get();
+        set({ interviews: userInterviews });
+        set({ isLoading: false });
+      }
+      if (section.id === 2) {
+        set({ interviews: [] });
+        set({ isLoading: true });
+        await get().setNotUserInterviews();
+        const { notUserInterviews } = get();
+        set({ interviews: notUserInterviews });
+        set({ isLoading: false });
+      }
     }
   },
 }));
