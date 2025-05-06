@@ -95,9 +95,30 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     }
   }, [user, selectedSection, userInterviews, otherInterviews]);
 
+  useEffect(() => {
+    if (isMain) {
+      document.addEventListener("scroll", () => {
+        if (window.scrollY > 60) {
+          setStickyInterviewMenu(true);
+        } else {
+          setStickyInterviewMenu(false);
+        }
+      });
+    }
+    return () => {
+      document.removeEventListener("scroll", () => {
+        if (window.scrollY > 60) {
+          setStickyInterviewMenu(true);
+        } else {
+          setStickyInterviewMenu(false);
+        }
+      });
+    };
+  }, [isMain]);
+
   return (
     <div
-      className={`py-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
+      className={`py-10 bg-black  z-2 w-full rounded-t-[30px] pt-[100px]  ${
         isMain
           ? "min-h-[100vh] pt-[50px] interviewContainer sticky top-[60px] mx-auto"
           : ""
@@ -105,11 +126,11 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     >
       <div
         className={`${
-          isMain ? "  sticky top-[60px] z-50" : ""
+          isMain ? "   top-[60px] z-50" : "-mt-[40px]"
         } flex gap-x-4 mx-auto w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10  ${
           stickyInterviewMenu
-            ? "top-0 left-[50%] translate-x-[-50%]  justify-center"
-            : ""
+            ? "top-0 left-[50%] translate-x-[-50%]  justify-center fixed"
+            : "absolute left-[50%] translate-x-[-50%]"
         }`}
       >
         {sectionsData.map((section) =>
