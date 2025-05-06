@@ -12,6 +12,12 @@ interface InterviewStore {
   otherInterviews: any[];
   fetchUserInterviews: () => Promise<void>;
   fetchNotUserInterviews: () => Promise<void>;
+  fetchMoreUserInterviews: () => Promise<void>;
+  fetchMoreNotUserInterviews: () => Promise<void>;
+  isAllInterviews: {
+    user: boolean;
+    other: boolean;
+  };
   pages: {
     user: number;
     other: number;
@@ -24,6 +30,10 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
   pages: {
     user: 0,
     other: 0,
+  },
+  isAllInterviews: {
+    user: false,
+    other: false,
   },
 
   fetchUserInterviews: async () => {
@@ -55,6 +65,51 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
     } catch (error) {
       toast.error("Error fetching interviews. Please try again later.");
       console.log("Error fetching interviews:", error);
+    }
+  },
+  fetchMoreUserInterviews: async () => {
+    try {
+      const user = useUserStore.getState().user;
+      const currentPage = get().pages.user + 1;
+      const interviews: any = await getInterviewsByUser(user.id, currentPage);
+      if (interviews.data.length) {
+        set((state) => ({
+          userInterviews: [...state.userInterviews, ...interviews.data],
+          pages: { ...state.pages, user: currentPage },
+        }));
+      } else {
+        set((state) => ({
+          isAllInterviews: { ...state.isAllInterviews, user: true },
+        }));
+      }
+    } catch (error) {
+      toast.error(
+        "Error fetching more user interviews. Please try again later."
+      );
+      console.log("Error fetching more user interviews:", error);
+    }
+  },
+  fetchMoreNotUserInterviews: async () => {
+    try {
+      const user = useUserStore.getState().user;
+      const currentPage = get().pages.other + 1;
+      const interviews: any = await getInterviewsNotByUser(
+        user.id,
+        currentPage
+      );
+      if (interviews.data.length) {
+        set((state) => ({
+          otherInterviews: [...state.otherInterviews, ...interviews.data],
+          pages: { ...state.pages, other: currentPage },
+        }));
+      } else {
+        set((state) => ({
+          isAllInterviews: { ...state.isAllInterviews, other: true },
+        }));
+      }
+    } catch (error) {
+      toast.error("Error fetching more interviews. Please try again later.");
+      console.log("Error fetching more interviews:", error);
     }
   },
 }));

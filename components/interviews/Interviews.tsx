@@ -11,6 +11,7 @@ import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
 import useInterviewStore from "../provider/interViewStore";
 import { getInterviewsByUser } from "@/lib/actions/interview.actions";
+import Loading from "../ui/loading";
 
 const sectionsData = [
   {
@@ -67,6 +68,9 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     userInterviews,
     fetchUserInterviews,
     fetchNotUserInterviews,
+    isAllInterviews,
+    fetchMoreUserInterviews,
+    fetchMoreNotUserInterviews,
   } = useInterviewStore();
 
   const fetchInterviews = async () => {
@@ -115,6 +119,17 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       });
     };
   }, [isMain]);
+
+  useEffect(() => {
+    if (inView) {
+      if (selectedSection.id === 1) {
+        fetchMoreUserInterviews();
+      }
+      if (selectedSection.id === 2) {
+        fetchMoreNotUserInterviews();
+      }
+    }
+  }, [inView, selectedSection]);
 
   return (
     <div
@@ -209,13 +224,13 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           View all interviews
         </Link>
       )}
-      {/* {isMain &&
+      {isMain &&
         ((selectedSection?.id === 1 && !isAllInterviews.user) ||
-          (selectedSection?.id === 2 && !isAllInterviews.notUser)) && (
+          (selectedSection?.id === 2 && !isAllInterviews.other)) && (
           <div className="pb-10 pt-[50px] flex items-center justify-center">
             <Loading ref={ref} />
           </div>
-        )} */}
+        )}
     </div>
   );
 });
