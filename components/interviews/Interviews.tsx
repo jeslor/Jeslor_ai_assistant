@@ -6,11 +6,11 @@ import useUserStore from "../provider/userStore";
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
 import Link from "next/link";
 import InterviewCard from "./InterviewCard";
-import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
 import useInterviewStore from "../provider/interViewStore";
+import { getInterviewsByUser } from "@/lib/actions/interview.actions";
 
 const sectionsData = [
   {
@@ -39,16 +39,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   });
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const {
-    userInterviews,
-    setUserInterview,
-    isAllInterviews,
-    notUserInterviews,
-    setNotUserInterview,
-  } = useInterviewStore();
 
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
-  const [interviews, setInterviews] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const id = searchParams.get("id");
@@ -56,56 +48,6 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     sectionsData.find((section) => section.id === Number(id)) ||
     sectionsData[0];
   const [selectedSection, setSelectedSection] = useState<any>(initialSection);
-
-  const fetchInterviews = async () => {
-    setIsLoading(true);
-    if (selectedSection.id === 1) {
-      await setUserInterview();
-    } else {
-      await setNotUserInterview();
-    }
-
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    if (user) {
-      if (userInterviews.length === 0 || notUserInterviews.length === 0) {
-        fetchInterviews();
-      }
-      setIsLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedSection.id === 1) {
-      if (userInterviews.length > 0) {
-        !isMain
-          ? setInterviews(userInterviews.slice(0, 4))
-          : setInterviews(userInterviews);
-      } else {
-        fetchInterviews();
-      }
-    }
-    if (selectedSection.id === 2) {
-      if (notUserInterviews.length > 0) {
-        !isMain
-          ? setInterviews(notUserInterviews.slice(0, 4))
-          : setInterviews(notUserInterviews);
-      } else {
-        fetchInterviews();
-      }
-    }
-  }, [userInterviews, notUserInterviews, selectedSection.id]);
-
-  useEffect(() => {
-    if (
-      (inView && !isAllInterviews.user) ||
-      (inView && !isAllInterviews.notUser)
-    ) {
-      fetchInterviews();
-    }
-  }, [inView]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");
@@ -119,6 +61,29 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       });
     }
   };
+  const {
+    interviews,
+    setInterviews,
+    fetchUserInterviews,
+    fetchNotUserInterviews,
+  } = useInterviewStore();
+
+  const fetchInterviews = async () => {
+    setIsLoading(true);
+    if (selectedSection.id === 1) {
+      await fetchUserInterviews();
+    } else {
+      await fetchNotUserInterviews();
+    }
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    if (user) {
+      fetchInterviews();
+    }
+  }, [user, selectedSection]);
+
+  console.log("Interviews:", interviews);
 
   return (
     <div
@@ -213,13 +178,13 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           View all interviews
         </Link>
       )}
-      {isMain &&
+      {/* {isMain &&
         ((selectedSection?.id === 1 && !isAllInterviews.user) ||
           (selectedSection?.id === 2 && !isAllInterviews.notUser)) && (
           <div className="pb-10 pt-[50px] flex items-center justify-center">
             <Loading ref={ref} />
           </div>
-        )}
+        )} */}
     </div>
   );
 });
