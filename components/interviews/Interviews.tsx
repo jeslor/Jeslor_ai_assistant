@@ -48,6 +48,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     sectionsData.find((section) => section.id === Number(id)) ||
     sectionsData[0];
   const [selectedSection, setSelectedSection] = useState<any>(initialSection);
+  const [interviews, setInterviews] = useState<any>([]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");
@@ -62,8 +63,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     }
   };
   const {
-    interviews,
-    setInterviews,
+    otherInterviews,
+    userInterviews,
     fetchUserInterviews,
     fetchNotUserInterviews,
   } = useInterviewStore();
@@ -83,7 +84,16 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     }
   }, [user, selectedSection]);
 
-  console.log("Interviews:", interviews);
+  useEffect(() => {
+    if (user) {
+      if (selectedSection.id === 1) {
+        setInterviews(isMain ? userInterviews : userInterviews.slice(0, 4));
+      }
+      if (selectedSection.id === 2) {
+        setInterviews(isMain ? otherInterviews : otherInterviews.slice(0, 4));
+      }
+    }
+  }, [user, selectedSection, userInterviews, otherInterviews]);
 
   return (
     <div

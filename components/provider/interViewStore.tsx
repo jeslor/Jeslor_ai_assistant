@@ -8,8 +8,8 @@ import useUserStore from "./userStore";
 import { toast } from "sonner";
 
 interface InterviewStore {
-  interviews: any;
-  setInterviews: (interview: any) => void;
+  userInterviews: any[];
+  otherInterviews: any[];
   fetchUserInterviews: () => Promise<void>;
   fetchNotUserInterviews: () => Promise<void>;
   pages: {
@@ -19,18 +19,22 @@ interface InterviewStore {
 }
 
 const useInterviewStore = create<InterviewStore>((set, get) => ({
-  interviews: null,
+  userInterviews: [],
+  otherInterviews: [],
   pages: {
     user: 0,
     other: 0,
   },
-  setInterviews: (interviews) => set({ interviews }),
+
   fetchUserInterviews: async () => {
     try {
-      const user = useUserStore.getState().user;
-      const currentPage = get().pages.user;
-      const interviews = await getInterviewsByUser(user.id, currentPage);
-      set({ interviews: interviews.data });
+      const userInterviews = get().userInterviews;
+      if (!userInterviews.length) {
+        const user = useUserStore.getState().user;
+        const currentPage = get().pages.user;
+        const interviews: any = await getInterviewsByUser(user.id, currentPage);
+        set({ userInterviews: interviews.data });
+      }
     } catch (error) {
       toast.error("Error fetching user interviews. Please try again later.");
       console.log("Error fetching user interviews:", error);
@@ -38,10 +42,16 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
   },
   fetchNotUserInterviews: async () => {
     try {
-      const user = useUserStore.getState().user;
-      const currentPage = get().pages.other;
-      const interviews = await getInterviewsNotByUser(user.id, currentPage);
-      set({ interviews: interviews.data });
+      const otherInterviews = get().otherInterviews;
+      if (!otherInterviews.length) {
+        const user = useUserStore.getState().user;
+        const currentPage = get().pages.other;
+        const interviews: any = await getInterviewsNotByUser(
+          user.id,
+          currentPage
+        );
+        set({ otherInterviews: interviews.data });
+      }
     } catch (error) {
       toast.error("Error fetching interviews. Please try again later.");
       console.log("Error fetching interviews:", error);
