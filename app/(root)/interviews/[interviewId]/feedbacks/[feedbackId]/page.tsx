@@ -30,13 +30,12 @@ const page = () => {
   }, [user]);
 
   const status = feedback?.totalScore > 60 ? "Passed" : "Failed";
-  console.log("feedback", feedback);
 
   return (
     <div className="pb-10 pt-[100px] mt-[-60px] w-full bg-gradient-to-b from-primary1/50 via-dark1/50  to-dark1 relative">
       <div className="min-h-[50vh] w-full flex ">
         {feedback && (
-          <div className="max-w-[1300px] w-full flex flex-col items-center justify-center bg-dark1/90 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 mx-auto px-8 py-[30px]">
+          <div className="max-w-[1300px] w-full flex flex-col items-center justify-center bg-dark1/90 backdrop-blur-md rounded-3xl px-2 shadow-xl border border-dark1/10 mx-auto sm:px-8 py-[30px]">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -48,19 +47,19 @@ const page = () => {
               </h2>
 
               <div className="flex flex-col md:flex-row justify-between items-center mb-8 opacity-60">
-                <div className="mb-4 flex gap-x-1 md:mb-0 ">
+                <div className="mb-2 flex gap-x-1 md:mb-0 ">
                   <p className="text-lg font-semibold">Candidate:</p>
                   <p className="text-2xl font-bold capitalize">
                     {user?.username}
                   </p>
                 </div>
-                <div className="mb-4 flex gap-x-1 md:mb-0">
+                <div className="mb-2 flex gap-x-1 md:mb-0">
                   <p className="text-lg font-semibold">Status:</p>
                   <p className={`text-2xl font-bold text-primary1/80`}>
                     {status}
                   </p>
                 </div>
-                <div className="mb-4 flex gap-x-1 md:mb-0">
+                <div className="mb-2 flex gap-x-1 md:mb-0">
                   <p className="text-lg font-semibold">Score:</p>
                   <p className="text-2xl font-bold">
                     {feedback.totalScore} / 100

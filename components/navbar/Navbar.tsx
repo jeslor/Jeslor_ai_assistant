@@ -52,8 +52,25 @@ const Navbar = memo(() => {
     setShowSubMenu((prev) => !prev);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const navbar = document.getElementById("navbar");
+      if (navbar && !navbar.contains(e.target as Node)) {
+        setShowSubMenu(false);
+      }
+    };
+
+    if (showSubMenu) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showSubMenu]);
+
   return (
     <nav
+      id="navbar"
       className={`w-full fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-dark1/60 ${
         showNav
           ? "bg-dark1/60 backdrop-blur-[15px] sm:rounded-b-2xl sm:shadow-md shadow-black/20"
@@ -146,9 +163,18 @@ const Navbar = memo(() => {
           <p className="capitalize">{user?.username}</p>
         </div>
         <AiButton
+          onPress={() => {
+            setShowSubMenu(false);
+            return Router.push("/");
+          }}
+          title="Home"
+          icon=""
+          extraClasses=" w-full max-w-[300px] "
+        />
+        <AiButton
           onPress={() => {}}
           title="Try Premium"
-          icon="mingcute:mic-ai-fill"
+          icon=""
           extraClasses=" w-full max-w-[300px] "
         />
         <AiButton

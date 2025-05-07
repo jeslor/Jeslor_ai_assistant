@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components//ui/sonner";
@@ -20,12 +20,18 @@ export const metadata: Metadata = {
   description: "Create Intervirews with Jeslor Voice Assistant",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session: any = await auth();
   return (
     <html lang="en">
       <SessionProvider session={session}>
