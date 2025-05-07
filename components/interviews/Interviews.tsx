@@ -169,7 +169,9 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
                 title={section.title}
                 icon={section.icon}
                 extraClasses={
-                  section.id === selectedSection?.id ? "bg-primary1" : ""
+                  section.id === selectedSection?.id
+                    ? "bg-primary1"
+                    : "bg-gradient-to-bl from-dark/30 to-primary1/10 backdrop-blur-md"
                 }
               />
             )
