@@ -8,7 +8,7 @@ import React from "react";
 const page = () => {
   return (
     <main className=" w-full pt-4">
-      <div>
+      <div className="overflow-hidden relative ">
         <DottedCanvas />
         <div className=" flex flex-col items-center pb-10 ">
           <div className=" px-4 text-4xl rounded-3xl  flex items-center justify-center w-fit  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center ">
