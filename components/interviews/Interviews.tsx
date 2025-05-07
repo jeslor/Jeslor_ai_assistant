@@ -6,11 +6,12 @@ import useUserStore from "../provider/userStore";
 import InterviewSkeleton from "../skeletons/InterviewSkeleton";
 import Link from "next/link";
 import InterviewCard from "./InterviewCard";
-import Loading from "../ui/loading";
 import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
 import useInterviewStore from "../provider/interViewStore";
+import { getInterviewsByUser } from "@/lib/actions/interview.actions";
+import Loading from "../ui/loading";
 
 const sectionsData = [
   {
@@ -39,16 +40,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   });
   const searchParams = useSearchParams();
   const { user } = useUserStore();
-  const {
-    userInterviews,
-    setUserInterview,
-    isAllInterviews,
-    notUserInterviews,
-    setNotUserInterview,
-  } = useInterviewStore();
 
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
-  const [interviews, setInterviews] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const id = searchParams.get("id");
@@ -56,56 +49,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     sectionsData.find((section) => section.id === Number(id)) ||
     sectionsData[0];
   const [selectedSection, setSelectedSection] = useState<any>(initialSection);
-
-  const fetchInterviews = async () => {
-    setIsLoading(true);
-    if (selectedSection.id === 1) {
-      await setUserInterview();
-    } else {
-      await setNotUserInterview();
-    }
-
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    if (user) {
-      if (userInterviews.length === 0 || notUserInterviews.length === 0) {
-        fetchInterviews();
-      }
-      setIsLoading(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (selectedSection.id === 1) {
-      if (userInterviews.length > 0) {
-        !isMain
-          ? setInterviews(userInterviews.slice(0, 4))
-          : setInterviews(userInterviews);
-      } else {
-        fetchInterviews();
-      }
-    }
-    if (selectedSection.id === 2) {
-      if (notUserInterviews.length > 0) {
-        !isMain
-          ? setInterviews(notUserInterviews.slice(0, 4))
-          : setInterviews(notUserInterviews);
-      } else {
-        fetchInterviews();
-      }
-    }
-  }, [userInterviews, notUserInterviews, selectedSection.id]);
-
-  useEffect(() => {
-    if (
-      (inView && !isAllInterviews.user) ||
-      (inView && !isAllInterviews.notUser)
-    ) {
-      fetchInterviews();
-    }
-  }, [inView]);
+  const [interviews, setInterviews] = useState<any>([]);
 
   const handleSectionClick = (section: any) => {
     const interviewContainer = document.querySelector(".interviewContainer");
@@ -119,10 +63,89 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       });
     }
   };
+  const {
+    otherInterviews,
+    userInterviews,
+    fetchUserInterviews,
+    fetchNotUserInterviews,
+    isAllInterviews,
+    fetchMoreUserInterviews,
+    fetchMoreNotUserInterviews,
+  } = useInterviewStore();
+
+  const fetchInterviews = async () => {
+    setIsLoading(true);
+    if (selectedSection.id === 1) {
+      await fetchUserInterviews();
+    } else {
+      await fetchNotUserInterviews();
+    }
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    if (user) {
+      fetchInterviews();
+    }
+  }, [user, selectedSection]);
+
+  useEffect(() => {
+    if (user) {
+      if (selectedSection.id === 1) {
+        setInterviews(
+          isMain
+            ? [...new Set(userInterviews)]
+            : [...new Set(userInterviews.slice(0, 4))]
+        );
+      }
+      if (selectedSection.id === 2) {
+        setInterviews(
+          isMain
+            ? [...new Set(otherInterviews)]
+            : [...new Set(otherInterviews.slice(0, 4))]
+        );
+      }
+    }
+  }, [user, selectedSection, userInterviews, otherInterviews]);
+
+  useEffect(() => {
+    if (isMain) {
+      document.addEventListener("scroll", () => {
+        if (window.scrollY > 60) {
+          setStickyInterviewMenu(true);
+        } else {
+          setStickyInterviewMenu(false);
+        }
+      });
+    }
+    return () => {
+      document.removeEventListener("scroll", () => {
+        if (window.scrollY > 60) {
+          setStickyInterviewMenu(true);
+        } else {
+          setStickyInterviewMenu(false);
+        }
+      });
+    };
+  }, [isMain]);
+
+  useEffect(() => {
+    if (inView) {
+      if (selectedSection.id === 1) {
+        if (!isAllInterviews.user) {
+          fetchMoreUserInterviews();
+        }
+      }
+      if (selectedSection.id === 2) {
+        if (!isAllInterviews.other) {
+          fetchMoreNotUserInterviews();
+        }
+      }
+    }
+  }, [inView, selectedSection, isAllInterviews]);
 
   return (
     <div
-      className={`py-10 bg-black  relative z-2 w-full rounded-t-[30px]  ${
+      className={`py-10 bg-black  z-2 w-full rounded-t-[30px] pt-[100px]  ${
         isMain
           ? "min-h-[100vh] pt-[50px] interviewContainer sticky top-[60px] mx-auto"
           : ""
@@ -130,11 +153,11 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     >
       <div
         className={`${
-          isMain ? "  sticky top-[60px] z-50" : ""
-        } flex gap-x-4 mx-auto w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10  ${
+          isMain ? "   top-[60px] z-50" : "-mt-[40px]"
+        } flex gap-x-4 mx-auto w-full overflow-x-scroll sm:w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10  ${
           stickyInterviewMenu
-            ? "top-0 left-[50%] translate-x-[-50%]  justify-center"
-            : ""
+            ? "top-0 left-[50%] translate-x-[-50%]  justify-center fixed"
+            : "absolute left-[50%] translate-x-[-50%]"
         }`}
       >
         {sectionsData.map((section) =>
@@ -156,9 +179,10 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
               onPress={() => handleSectionClick(section)}
               title={section.title}
               icon={section.icon}
-              extraClasses={
-                section.id === selectedSection?.id ? "bg-primary1" : ""
-              }
+              extraClasses={`
+                whitespace-nowrap
+               ${section.id === selectedSection?.id ? "bg-primary1" : ""}
+                `}
             />
           )
         )}
@@ -168,8 +192,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           <h3 className="text-white text-2xl font-semibold">
             {selectedSection?.title}
           </h3>
-          {isLoading && (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+          {isLoading && interviews.length === 0 && (
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               <InterviewSkeleton totalCards={4} />
             </div>
           )}
@@ -193,7 +217,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
             </div>
           )}{" "}
           {interviews?.length && (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               {interviews?.map((interview: any) => (
                 <InterviewCard
                   key={interview.id}
@@ -215,7 +239,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       )}
       {isMain &&
         ((selectedSection?.id === 1 && !isAllInterviews.user) ||
-          (selectedSection?.id === 2 && !isAllInterviews.notUser)) && (
+          (selectedSection?.id === 2 && !isAllInterviews.other)) && (
           <div className="pb-10 pt-[50px] flex items-center justify-center">
             <Loading ref={ref} />
           </div>

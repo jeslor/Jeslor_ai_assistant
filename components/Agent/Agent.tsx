@@ -67,10 +67,12 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     vapi.on("message", (message: any) => {
       if (agentType !== "newInterview") {
         if (
-          message.role === "system" &&
           message.content.includes("Goodbye") // or your custom phrase
         ) {
-          vapi.stop(); // trigger call end
+          alert("Call ended");
+          vapi.stop();
+          setStatus(AgentStatus.completed);
+          setIsTalking(false); // trigger call end
         }
       }
 
@@ -199,7 +201,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
               </button>
             )}
 
-            {(isTalking || status === "connecting") && (
+            {(status === "active" || status === "connecting") && (
               <div className=" flex items-center justify-center w-full h-full animate-slowping ">
                 {rings.map((ring) => {
                   const width = ring * 20 + 40;
@@ -248,7 +250,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
           {chats[chats.length - 1].content}
         </motion.p>
       ) : (
-        <p className="max-w-[800px] mx-auto text-center text-[15px] font-light text-white/70 mt-2 mb-[100px] bg-primary1/20 rounded-3xl px-4 py-2 shadow-xl border border-dark1/10">
+        <p className="max-w-[800px] mx-auto text-center text-[12px] sm:text-[15px] font-light text-white/70 mt-2 mb-[100px] bg-primary1/20 rounded-3xl px-4 py-2 shadow-xl border border-dark1/10">
           You can click the call button to create your own interview or you can
           take any of the interviews below.
         </p>

@@ -1,104 +1,121 @@
-import { create } from "zustand";
-import useUserStore from "./userStore";
+"use client";
 import {
   getInterviewsByUser,
   getInterviewsNotByUser,
 } from "@/lib/actions/interview.actions";
+import { create } from "zustand";
+import useUserStore from "./userStore";
 import { toast } from "sonner";
 
 interface InterviewStore {
   userInterviews: any[];
-  notUserInterviews: any[];
+  otherInterviews: any[];
+  fetchUserInterviews: () => Promise<void>;
+  fetchNotUserInterviews: () => Promise<void>;
+  fetchMoreUserInterviews: () => Promise<void>;
+  fetchMoreNotUserInterviews: () => Promise<void>;
   isAllInterviews: {
     user: boolean;
-    notUser: boolean;
+    other: boolean;
   };
   pages: {
     user: number;
-    notUser: number;
+    other: number;
   };
-  setUserInterview: () => void;
-  setNotUserInterview: () => void;
-  clearInterview: () => void;
 }
+
 const useInterviewStore = create<InterviewStore>((set, get) => ({
   userInterviews: [],
-  notUserInterviews: [],
-  isAllInterviews: {
-    user: false,
-    notUser: false,
-  },
+  otherInterviews: [],
   pages: {
     user: 0,
-    notUser: 0,
+    other: 0,
+  },
+  isAllInterviews: {
+    user: false,
+    other: false,
   },
 
-  setUserInterview: async () => {
+  fetchUserInterviews: async () => {
     try {
-      const user = useUserStore.getState().user;
-      if (!user) {
-        return;
-      }
-      const { pages } = get();
-      const response: any = await getInterviewsByUser(user.id, pages.user);
-      if (response.status === 200) {
-        const { userInterviews } = get();
-        if (response.data.length > 0) {
-          set({
-            userInterviews: [...userInterviews, ...response.data],
-            pages: { ...pages, user: pages.user + 1 },
-          });
-        } else {
-          toast.error("No interviews found");
-          set({
-            userInterviews,
-            isAllInterviews: { ...get().isAllInterviews, user: true },
-          });
-        }
-      } else {
-        set({ userInterviews: [] });
-      }
-    } catch (error: any) {
-      console.error("Error fetching interviews:", error);
-      toast.error(error.message);
-      set({ userInterviews: [] });
-    }
-  },
-
-  setNotUserInterview: async () => {
-    try {
-      const user = useUserStore.getState().user;
-      if (!user) {
-        return;
-      }
-      const { pages } = get();
-      const response: any = await getInterviewsNotByUser(
-        user.id,
-        pages.notUser
-      );
-      if (response.status === 200) {
-        const { notUserInterviews } = get();
-        if (response.data.length > 0) {
-          set({
-            notUserInterviews: [...notUserInterviews, ...response.data],
-            pages: { ...pages, notUser: pages.notUser + 1 },
-          });
-        } else {
-          const { isAllInterviews } = get();
-          toast.error("No interviews found");
-          set({
-            notUserInterviews,
-            isAllInterviews: { ...isAllInterviews, notUser: true },
-          });
-        }
-      } else {
-        set({ notUserInterviews: [] });
+      const userInterviews = get().userInterviews;
+      if (!userInterviews.length) {
+        const user = useUserStore.getState().user;
+        const currentPage = get().pages.user;
+        const interviews: any = await getInterviewsByUser(user.id, currentPage);
+        set({ userInterviews: interviews.data });
       }
     } catch (error) {
-      console.error("Error fetching interviews:", error);
-      set({ notUserInterviews: [] });
+      toast.error("Error fetching user interviews. Please try again later.");
+      console.log("Error fetching user interviews:", error);
     }
   },
-  clearInterview: () => set({ notUserInterviews: [], userInterviews: [] }),
+  fetchNotUserInterviews: async () => {
+    try {
+      const otherInterviews = get().otherInterviews;
+      if (!otherInterviews.length) {
+        const user = useUserStore.getState().user;
+        const currentPage = get().pages.other;
+        const interviews: any = await getInterviewsNotByUser(
+          user.id,
+          currentPage
+        );
+        set({ otherInterviews: interviews.data });
+      }
+    } catch (error) {
+      toast.error("Error fetching interviews. Please try again later.");
+      console.log("Error fetching interviews:", error);
+    }
+  },
+  fetchMoreUserInterviews: async () => {
+    try {
+      const user = useUserStore.getState().user;
+      const currentPage = get().pages.user + 1;
+      const interviews: any = await getInterviewsByUser(user.id, currentPage);
+      if (interviews.data.length) {
+        set((state) => ({
+          userInterviews: [
+            ...new Set([...state.userInterviews, ...interviews.data]),
+          ],
+          pages: { ...state.pages, user: currentPage },
+        }));
+      } else {
+        set((state) => ({
+          isAllInterviews: { ...state.isAllInterviews, user: true },
+        }));
+      }
+    } catch (error) {
+      toast.error(
+        "Error fetching more user interviews. Please try again later."
+      );
+      console.log("Error fetching more user interviews:", error);
+    }
+  },
+  fetchMoreNotUserInterviews: async () => {
+    try {
+      const user = useUserStore.getState().user;
+      const currentPage = get().pages.other + 1;
+      const interviews: any = await getInterviewsNotByUser(
+        user.id,
+        currentPage
+      );
+      if (interviews.data.length) {
+        set((state) => ({
+          otherInterviews: [
+            ...new Set([...state.otherInterviews, ...interviews.data]),
+          ],
+          pages: { ...state.pages, other: currentPage },
+        }));
+      } else {
+        set((state) => ({
+          isAllInterviews: { ...state.isAllInterviews, other: true },
+        }));
+      }
+    } catch (error) {
+      toast.error("Error fetching more interviews. Please try again later.");
+      console.log("Error fetching more interviews:", error);
+    }
+  },
 }));
+
 export default useInterviewStore;

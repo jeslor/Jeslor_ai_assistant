@@ -7,10 +7,7 @@ import useUserStore from "../provider/userStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import useModalStore from "../provider/modalStore";
 import { toast } from "sonner";
-import { spawn } from "child_process";
 import { deleteInterview } from "@/lib/actions/interview.actions";
-import useInterviewStore from "../provider/interViewStore";
-
 const InterviewCard = ({ interview, sectionId }: any) => {
   const { user } = useUserStore();
   const { openModal, closeModal } = useModalStore();
@@ -133,7 +130,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
           You have not completed this interview yet. To take the test, please
           click the button below.{" "}
         </p>
-        <div className="flex items-center justify-center mt-4 gap-x-3">
+        <div className="flex flex-wrap items-center justify-center mt-4 gap-3">
           {feedback && (
             <AiButton
               onPress={() =>
