@@ -53,22 +53,18 @@ const Navbar = memo(() => {
   };
 
   useEffect(() => {
-    const navbar = document.getElementById("navbar");
+    const handleClickOutside = (e: MouseEvent) => {
+      const navbar = document.getElementById("navbar");
+      if (navbar && !navbar.contains(e.target as Node)) {
+        setShowSubMenu(false);
+      }
+    };
+
     if (showSubMenu) {
-      document.addEventListener("click", (e) => {
-        const target = e.target as HTMLElement;
-        if (navbar && !navbar.contains(target)) {
-          setShowSubMenu(false);
-        }
-      });
+      document.addEventListener("click", handleClickOutside);
     }
     return () => {
-      document.removeEventListener("click", (e) => {
-        const target = e.target as HTMLElement;
-        if (showSubMenu && navbar && !navbar.contains(target)) {
-          setShowSubMenu(false);
-        }
-      });
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [showSubMenu]);
 
@@ -167,7 +163,10 @@ const Navbar = memo(() => {
           <p className="capitalize">{user?.username}</p>
         </div>
         <AiButton
-          onPress={() => {}}
+          onPress={() => {
+            setShowSubMenu(false);
+            return Router.push("/");
+          }}
           title="Home"
           icon=""
           extraClasses=" w-full max-w-[300px] "

@@ -30,7 +30,6 @@ const page = () => {
   }, [user]);
 
   const status = feedback?.totalScore > 60 ? "Passed" : "Failed";
-  console.log("feedback", feedback);
 
   return (
     <div className="pb-10 pt-[100px] mt-[-60px] w-full bg-gradient-to-b from-primary1/50 via-dark1/50  to-dark1 relative">
