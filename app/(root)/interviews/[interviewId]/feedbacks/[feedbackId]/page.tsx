@@ -39,7 +39,7 @@ const page = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.2 }}
               className=" "
             >
               <h2 className="text-4xl font-bold text-center mb-6 text-[--color-primary1]">
@@ -55,7 +55,11 @@ const page = () => {
                 </div>
                 <div className="mb-2 flex gap-x-1 md:mb-0">
                   <p className="text-lg font-semibold">Status:</p>
-                  <p className={`text-2xl font-bold text-primary1/80`}>
+                  <p
+                    className={`text-2xl font-bold ${
+                      status === "Passed" ? "text-green-500" : "text-primary1"
+                    }`}
+                  >
                     {status}
                   </p>
                 </div>
