@@ -52,8 +52,29 @@ const Navbar = memo(() => {
     setShowSubMenu((prev) => !prev);
   };
 
+  useEffect(() => {
+    const navbar = document.getElementById("navbar");
+    if (showSubMenu) {
+      document.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (navbar && !navbar.contains(target)) {
+          setShowSubMenu(false);
+        }
+      });
+    }
+    return () => {
+      document.removeEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (showSubMenu && navbar && !navbar.contains(target)) {
+          setShowSubMenu(false);
+        }
+      });
+    };
+  }, [showSubMenu]);
+
   return (
     <nav
+      id="navbar"
       className={`w-full fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-dark1/60 ${
         showNav
           ? "bg-dark1/60 backdrop-blur-[15px] sm:rounded-b-2xl sm:shadow-md shadow-black/20"
@@ -147,8 +168,14 @@ const Navbar = memo(() => {
         </div>
         <AiButton
           onPress={() => {}}
+          title="Home"
+          icon=""
+          extraClasses=" w-full max-w-[300px] "
+        />
+        <AiButton
+          onPress={() => {}}
           title="Try Premium"
-          icon="mingcute:mic-ai-fill"
+          icon=""
           extraClasses=" w-full max-w-[300px] "
         />
         <AiButton
