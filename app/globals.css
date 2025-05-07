@@ -262,6 +262,12 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
+@media (min-width: 768px) {
+  .repeated-grids {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
 .gradient-primary-hold {
   background: linear-gradient(
     to bottom,
