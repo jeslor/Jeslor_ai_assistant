@@ -47,7 +47,6 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       }
     } catch (error) {
       toast.error("Error fetching user interviews. Please try again later.");
-      console.log("Error fetching user interviews:", error);
     }
   },
   fetchNotUserInterviews: async () => {
@@ -64,7 +63,6 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       }
     } catch (error) {
       toast.error("Error fetching interviews. Please try again later.");
-      console.log("Error fetching interviews:", error);
     }
   },
   fetchMoreUserInterviews: async () => {
@@ -88,7 +86,6 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       toast.error(
         "Error fetching more user interviews. Please try again later."
       );
-      console.log("Error fetching more user interviews:", error);
     }
   },
   fetchMoreNotUserInterviews: async () => {
@@ -113,7 +110,6 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       }
     } catch (error) {
       toast.error("Error fetching more interviews. Please try again later.");
-      console.log("Error fetching more interviews:", error);
     }
   },
 }));

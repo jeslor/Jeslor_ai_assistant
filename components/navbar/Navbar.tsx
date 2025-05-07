@@ -59,12 +59,20 @@ const Navbar = memo(() => {
         setShowSubMenu(false);
       }
     };
+    const handleScroll = (e: Event) => {
+      const navbar = document.getElementById("navbar");
+      if (navbar && !navbar.contains(e.target as Node)) {
+        setShowSubMenu(false);
+      }
+    };
 
     if (showSubMenu) {
       document.addEventListener("click", handleClickOutside);
+      document.addEventListener("scroll", handleScroll);
     }
     return () => {
       document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("scroll", handleScroll);
     };
   }, [showSubMenu]);
 
