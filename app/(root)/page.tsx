@@ -32,9 +32,7 @@ const page = () => {
           <Agent agentType="newInterview" />
         </div>
       </div>
-      <div className="pt-[100px]">
-        <Interviews />
-      </div>
+      <Interviews />
     </main>
   );
 };

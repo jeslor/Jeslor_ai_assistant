@@ -250,7 +250,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
           {chats[chats.length - 1].content}
         </motion.p>
       ) : (
-        <p className="max-w-[800px] mx-auto text-center text-[15px] font-light text-white/70 mt-2 mb-[100px] bg-primary1/20 rounded-3xl px-4 py-2 shadow-xl border border-dark1/10">
+        <p className="max-w-[800px] mx-auto text-center text-[12px] sm:text-[15px] font-light text-white/70 mt-2 mb-[100px] bg-primary1/20 rounded-3xl px-4 py-2 shadow-xl border border-dark1/10">
           You can click the call button to create your own interview or you can
           take any of the interviews below.
         </p>

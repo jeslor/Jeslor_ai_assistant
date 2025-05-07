@@ -130,7 +130,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
           You have not completed this interview yet. To take the test, please
           click the button below.{" "}
         </p>
-        <div className="flex items-center justify-center mt-4 gap-x-3">
+        <div className="flex flex-wrap items-center justify-center mt-4 gap-3">
           {feedback && (
             <AiButton
               onPress={() =>

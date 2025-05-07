@@ -123,8 +123,8 @@ const Navbar = memo(() => {
         />
       </div>
       <div
-        className={`bg-dark1 backdrop-blur-[15px] absolute py-10 w-full left-0 top-[60px] rounded-b-2xl shadow-black/20 flex flex-col items-start justify-center space-y-4 px-4 z-10 transition-opacity  ${
-          showSubMenu ? "opacity-100" : "opacity-0"
+        className={`bg-dark1 backdrop-blur-[15px] absolute py-10 w-full  top-[60px] rounded-b-2xl shadow-black/20 flex flex-col items-start justify-center space-y-4 px-4 z-10   ${
+          showSubMenu ? "opacity-100 left-0" : "opacity-0 left-[100%]"
         }`}
       >
         <div className="w-full max-w-[300px]  flex items-center justify-start text-slate-200 space-x-2">

@@ -154,7 +154,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
       <div
         className={`${
           isMain ? "   top-[60px] z-50" : "-mt-[40px]"
-        } flex gap-x-4 mx-auto w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10  ${
+        } flex gap-x-4 mx-auto w-full overflow-x-scroll sm:w-fit bg-white/10 backdrop-blur-md rounded-3xl  py-2 shadow-xl border border-dark1/10 px-10  ${
           stickyInterviewMenu
             ? "top-0 left-[50%] translate-x-[-50%]  justify-center fixed"
             : "absolute left-[50%] translate-x-[-50%]"
@@ -179,9 +179,10 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
               onPress={() => handleSectionClick(section)}
               title={section.title}
               icon={section.icon}
-              extraClasses={
-                section.id === selectedSection?.id ? "bg-primary1" : ""
-              }
+              extraClasses={`
+                whitespace-nowrap
+               ${section.id === selectedSection?.id ? "bg-primary1" : ""}
+                `}
             />
           )
         )}
@@ -192,7 +193,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
             {selectedSection?.title}
           </h3>
           {isLoading && interviews.length === 0 && (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               <InterviewSkeleton totalCards={4} />
             </div>
           )}
@@ -216,7 +217,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
             </div>
           )}{" "}
           {interviews?.length && (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               {interviews?.map((interview: any) => (
                 <InterviewCard
                   key={interview.id}
