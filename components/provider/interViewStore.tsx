@@ -74,7 +74,9 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       const interviews: any = await getInterviewsByUser(user.id, currentPage);
       if (interviews.data.length) {
         set((state) => ({
-          userInterviews: [...state.userInterviews, ...interviews.data],
+          userInterviews: [
+            ...new Set([...state.userInterviews, ...interviews.data]),
+          ],
           pages: { ...state.pages, user: currentPage },
         }));
       } else {
@@ -99,7 +101,9 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       );
       if (interviews.data.length) {
         set((state) => ({
-          otherInterviews: [...state.otherInterviews, ...interviews.data],
+          otherInterviews: [
+            ...new Set([...state.otherInterviews, ...interviews.data]),
+          ],
           pages: { ...state.pages, other: currentPage },
         }));
       } else {

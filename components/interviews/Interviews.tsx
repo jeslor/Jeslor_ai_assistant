@@ -91,10 +91,18 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   useEffect(() => {
     if (user) {
       if (selectedSection.id === 1) {
-        setInterviews(isMain ? userInterviews : userInterviews.slice(0, 4));
+        setInterviews(
+          isMain
+            ? [...new Set(userInterviews)]
+            : [...new Set(userInterviews.slice(0, 4))]
+        );
       }
       if (selectedSection.id === 2) {
-        setInterviews(isMain ? otherInterviews : otherInterviews.slice(0, 4));
+        setInterviews(
+          isMain
+            ? [...new Set(otherInterviews)]
+            : [...new Set(otherInterviews.slice(0, 4))]
+        );
       }
     }
   }, [user, selectedSection, userInterviews, otherInterviews]);
@@ -123,13 +131,17 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   useEffect(() => {
     if (inView) {
       if (selectedSection.id === 1) {
-        fetchMoreUserInterviews();
+        if (!isAllInterviews.user) {
+          fetchMoreUserInterviews();
+        }
       }
       if (selectedSection.id === 2) {
-        fetchMoreNotUserInterviews();
+        if (!isAllInterviews.other) {
+          fetchMoreNotUserInterviews();
+        }
       }
     }
-  }, [inView, selectedSection]);
+  }, [inView, selectedSection, isAllInterviews]);
 
   return (
     <div
@@ -179,7 +191,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           <h3 className="text-white text-2xl font-semibold">
             {selectedSection?.title}
           </h3>
-          {isLoading && (
+          {isLoading && interviews.length === 0 && (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(310px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               <InterviewSkeleton totalCards={4} />
             </div>

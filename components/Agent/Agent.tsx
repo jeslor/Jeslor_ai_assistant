@@ -67,10 +67,12 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     vapi.on("message", (message: any) => {
       if (agentType !== "newInterview") {
         if (
-          message.role === "system" &&
           message.content.includes("Goodbye") // or your custom phrase
         ) {
-          vapi.stop(); // trigger call end
+          alert("Call ended");
+          vapi.stop();
+          setStatus(AgentStatus.completed);
+          setIsTalking(false); // trigger call end
         }
       }
 
@@ -199,7 +201,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
               </button>
             )}
 
-            {(isTalking || status === "connecting") && (
+            {(status === "active" || status === "connecting") && (
               <div className=" flex items-center justify-center w-full h-full animate-slowping ">
                 {rings.map((ring) => {
                   const width = ring * 20 + 40;
