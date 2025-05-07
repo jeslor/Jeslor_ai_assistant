@@ -170,8 +170,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
                 icon={section.icon}
                 extraClasses={
                   section.id === selectedSection?.id
-                    ? "bg-primary1"
-                    : "bg-gradient-to-bl from-dark/30 to-primary1/10 backdrop-blur-md"
+                    ? "from-orange-900 to-orange-900"
+                    : ""
                 }
               />
             )
@@ -183,7 +183,11 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
               icon={section.icon}
               extraClasses={`
                 whitespace-nowrap
-               ${section.id === selectedSection?.id ? "bg-primary1" : ""}
+               ${
+                 section.id === selectedSection?.id
+                   ? "from-orange-900 to-orange-900"
+                   : ""
+               }
                 `}
             />
           )

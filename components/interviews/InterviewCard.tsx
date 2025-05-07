@@ -140,14 +140,14 @@ const InterviewCard = ({ interview, sectionId }: any) => {
               }
               title="Feedback"
               icon="si:arrow-right-fill"
-              extraClasses="bg-primary1/20 text-white"
+              extraClasses=""
             />
           )}
           <AiButton
             onPress={() => Router.push(`/interviews/${interview.id}`)}
             title={retakeInterview ? "Retake interview" : "Take interview"}
             icon="ion:call"
-            extraClasses="bg-primary1/20 text-white"
+            extraClasses=""
           />
         </div>
       </div>
