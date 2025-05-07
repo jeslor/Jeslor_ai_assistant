@@ -24,9 +24,8 @@ const page = () => {
               Assistant
             </span>
           </div>
-          <h3 className=" px-4 text-center  font-normal mt-10 bg-gradient-to-b from-dark1/10 via-white/70 to-white  text-transparent bg-clip-text clampTitle">
-            Your Personal friend <br />
-            at all times
+          <h3 className=" px-4 text-center  font-normal mt-10 bg-gradient-to-b from-dark1/10 via-white/70 to-white  text-transparent bg-clip-text clampTitle w-full max-w-[900px] ">
+            Practice for your next job interview.
           </h3>
         </div>
         <div>

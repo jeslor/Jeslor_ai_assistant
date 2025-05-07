@@ -254,8 +254,8 @@ body {
 }
 
 .clampTitle {
-  font-size: clamp(20px, 7vw + 1rem, 100px);
-  line-height: clamp(20px, 7vw + 2rem, 100px);
+  font-size: clamp(20px, 7vw + 1rem, 70px);
+  line-height: clamp(20px, 7vw + 2rem, 80px);
 }
 
 .repeated-grids {

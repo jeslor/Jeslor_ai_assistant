@@ -13,6 +13,7 @@ const Navbar = memo(() => {
   const { user, setUser } = useUserStore();
   const { data: session } = useSession();
   const [showNav, setShowNav] = useState(false);
+  const [showSubMenu, setShowSubMenu] = useState(false);
   useEffect(() => {
     if (session && session.user) {
       setUser(session.user.email as string);
@@ -47,16 +48,20 @@ const Navbar = memo(() => {
     }
   };
 
+  const handShowSubMenu = () => {
+    setShowSubMenu((prev) => !prev);
+  };
+
   return (
     <nav
       className={`w-full fixed z-[200] top-0 h-[60px] transition-all duration-300 ease-in-out bg-dark1/60 ${
         showNav
-          ? "bg-dark1/60 backdrop-blur-[15px] rounded-b-2xl shadow-md shadow-black/20"
+          ? "bg-dark1/60 backdrop-blur-[15px] sm:rounded-b-2xl sm:shadow-md shadow-black/20"
           : ""
       }`}
     >
       <div className="flex items-center justify-between h-full p-4 relative">
-        <div className=" flex items-center justify-center text-slate-200 space-x-2">
+        <div className=" hidden sm:flex items-center justify-center text-slate-200 space-x-2">
           {user?.profileImage ? (
             <Image
               src={user?.profileImage}
@@ -79,9 +84,9 @@ const Navbar = memo(() => {
           <button
             onClick={handleScrollToTop}
             id="aiLogo"
-            className={`opacity-0 left-[44.5%]  absolute flex  h-[50px] w-[50px] text-4xl rounded-3xl  items-center justify-center  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center hover:bg-gradient-to-bl hover:from-dark/50 hover:to-primary1/50 transition-all ${
+            className={`opacity-0 left-[2%] sm:left-[44.5%]  absolute flex  h-[50px] w-[50px] text-4xl rounded-3xl  items-center justify-center  bg-gradient-to-bl from-dark/30 via-white/5 to-primary1/10  backdrop-blur-md text-white shadow-inner  border border-white/5 text-center hover:bg-gradient-to-bl hover:from-dark/50 hover:to-primary1/50 transition-all ${
               showNav || path !== "/"
-                ? "opacity-100 left-[50%] cursor-pointer "
+                ? "opacity-100  !sm:left-[50%] cursor-pointer "
                 : "opacity-0"
             } transition-all duration-300 ease-in-out`}
           >
@@ -97,6 +102,7 @@ const Navbar = memo(() => {
             onPress={() => {}}
             title="Try Premium"
             icon="mingcute:mic-ai-fill"
+            extraClasses="hidden sm:flex"
           />
           <AiButton
             onPress={async () => {
@@ -104,8 +110,55 @@ const Navbar = memo(() => {
             }}
             title="Sign out"
             icon=""
+            extraClasses="hidden sm:flex"
           />
         </div>
+        <AiButton
+          onPress={handShowSubMenu}
+          title=""
+          icon={`${
+            !showSubMenu ? "mi:menu" : "line-md:menu-to-close-alt-transition"
+          }`}
+          extraClasses="sm:hidden"
+        />
+      </div>
+      <div
+        className={`bg-dark1 backdrop-blur-[15px] absolute py-10 w-full left-0 top-[60px] rounded-b-2xl shadow-black/20 flex flex-col items-start justify-center space-y-4 px-4 z-10 transition-opacity  ${
+          showSubMenu ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="w-full max-w-[300px]  flex items-center justify-start text-slate-200 space-x-2">
+          {user?.profileImage ? (
+            <Image
+              src={user?.profileImage}
+              alt="Profile Image"
+              width={20}
+              height={20}
+              className="rounded-full border border-white/40 shadow-md shadow-black/20"
+            />
+          ) : (
+            <div className="h-[22px] w-[22px] bg-primary1 rounded-full flex items-center justify-center border border-white/40 shadow-md shadow-black/20">
+              <button className="text-white text-[15px] font-extrabold capitalize cursor-pointer">
+                {user?.username?.charAt(0)}
+              </button>
+            </div>
+          )}
+          <p className="capitalize">{user?.username}</p>
+        </div>
+        <AiButton
+          onPress={() => {}}
+          title="Try Premium"
+          icon="mingcute:mic-ai-fill"
+          extraClasses=" w-full max-w-[300px] "
+        />
+        <AiButton
+          onPress={async () => {
+            await signOut({ callbackUrl: "/sign_in" });
+          }}
+          title="Sign out"
+          icon=""
+          extraClasses="w-full max-w-[300px] "
+        />
       </div>
     </nav>
   );
