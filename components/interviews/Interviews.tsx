@@ -145,7 +145,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
 
   return (
     <div
-      className={`py-10 bg-black  z-2 w-full rounded-t-[30px] pt-[100px]  ${
+      className={`py-10 bg-black  z-2 w-full rounded-t-[30px] pt-[100px] relative  ${
         isMain
           ? "min-h-[100vh] pt-[50px] interviewContainer sticky top-[60px] mx-auto"
           : ""

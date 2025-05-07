@@ -10,33 +10,38 @@ const DottedCanvas = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const drawDots = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+    const resizeAndDraw = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+
+      const width = parent.clientWidth;
+      const height = parent.clientHeight;
+
       canvas.width = width;
       canvas.height = height;
 
       ctx.clearRect(0, 0, width, height);
       ctx.fillStyle = "rgba(255, 255, 255, 0.07)";
       const gap = 30;
+
       for (let x = 0; x < width; x += gap) {
         for (let y = 0; y < height; y += gap) {
           ctx.beginPath();
-          ctx.arc(x, y, 1, 0, Math.PI * 2, true);
+          ctx.arc(x, y, 1, 0, Math.PI * 2);
           ctx.fill();
         }
       }
     };
 
-    drawDots();
-    window.addEventListener("resize", drawDots);
-    return () => window.removeEventListener("resize", drawDots);
+    resizeAndDraw();
+    window.addEventListener("resize", resizeAndDraw);
+    return () => window.removeEventListener("resize", resizeAndDraw);
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+      className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
     />
   );
 };
