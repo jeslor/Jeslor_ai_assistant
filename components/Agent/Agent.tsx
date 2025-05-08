@@ -65,20 +65,20 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     vapi.on("speech-end", onTalkingEnd);
     vapi.on("error", onError);
     vapi.on("message", (message: any) => {
-      if (agentType !== "newInterview") {
-        if (
-          message.content.includes("Goodbye") // or your custom phrase
-        ) {
-          alert("Call ended");
-          vapi.stop();
-          setStatus(AgentStatus.completed);
-          setIsTalking(false); // trigger call end
-        }
-      }
-
       if (message.type === "transcript") {
         const currentTranscript = message.transcript?.trim();
         if (!currentTranscript || currentTranscript === lastTranscript) {
+          return;
+        }
+
+        if (
+          currentTranscript.toLowerCase().includes("bye") ||
+          currentTranscript.toLowerCase().includes("goodbye") ||
+          currentTranscript.toLowerCase().includes("end call")
+        ) {
+          setStatus(AgentStatus.completed);
+          setIsTalking(false);
+          vapi.stop();
           return;
         }
         setChats((prev) => [
@@ -94,8 +94,6 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     try {
       if (status === "inactive" || status === "completed") {
         setStatus(AgentStatus.connecting);
-        console.log(agentType);
-
         if (agentType === "newInterview") {
           await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
             variableValues: {
