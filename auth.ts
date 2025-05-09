@@ -62,18 +62,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  pages: {
+    signIn: "/signin", // Custom sign-in page
+  },
   session: {
     strategy: "jwt",
   },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`, // Cookie name
-      options: {
-        httpOnly: true, // Ensures the cookie can't be accessed via JavaScript
-        sameSite: "lax", // Helps with cross-site request handling
-        path: "/", // Cookie path
-        secure: process.env.NODE_ENV === "production", // Ensures cookies are sent only over HTTPS in production
-      },
-    },
-  },
+  secret: process.env.AUTH_SECRET,
 });
