@@ -222,7 +222,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
               />
             </div>
           )}{" "}
-          {interviews?.length && (
+          {interviews?.length ? (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
               {interviews?.map((interview: any) => (
                 <InterviewCard
@@ -232,17 +232,17 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
                 />
               ))}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
-      {!isMain && interviews?.length && (
+      {!isMain && interviews?.length ? (
         <Link
           className="py-10 ml-[50%] -translate-x-[50%] inline-block text-center  font-semibold hover:text-primary1"
           href={`/interviews?id=${selectedSection.id}`}
         >
           View all interviews
         </Link>
-      )}
+      ) : null}
       {isMain &&
         ((selectedSection?.id === 1 && !isAllInterviews.user) ||
           (selectedSection?.id === 2 && !isAllInterviews.other)) && (

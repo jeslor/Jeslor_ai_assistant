@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/subpath/$1",
+      "has": [
+        {
+          "type": "host",
+          "value": "assistant.jeslor.com"
+        }
+      ]
+    }
+  ]
+}
