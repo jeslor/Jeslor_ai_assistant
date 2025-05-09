@@ -126,7 +126,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
 
   const handleEndCall = async () => {
     if (status === "active" || status === "connecting") {
-      setStatus(AgentStatus.completed);
+      setStatus(AgentStatus.inactive);
       setIsTalking(false);
       await vapi.stop();
     }
