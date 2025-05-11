@@ -276,3 +276,12 @@ body {
     var(--color-dark1) 100%
   );
 }
+
+.clamped-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Number of lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-clamp: 1; /* Optional: supported in newer browsers */
+}
