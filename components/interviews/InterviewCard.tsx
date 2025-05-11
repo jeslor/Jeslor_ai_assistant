@@ -87,22 +87,24 @@ const InterviewCard = ({ interview, sectionId }: any) => {
         </button>
       )}
       <div>
-        <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
-          <img
-            src={`https://logo.clearbit.com/${refactorCompany(
-              interview.company
-            )}`}
-            alt={refactorCompany(interview.company)}
-            className="w-full h-full rounded-full  object-fit"
-          />
+        <div className="flex flex-wrap gap-x-3 items-center pt-5">
+          <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
+            <img
+              src={`https://logo.clearbit.com/${refactorCompany(
+                interview.company
+              )}`}
+              alt={refactorCompany(interview.company)}
+              className="w-full h-full rounded-full  object-fit"
+            />
+          </div>
+          <h2 className="text-primary1/90 font-bold mb-2 text-[22px] capitalize">
+            {interview.role.toLowerCase().includes("front end")
+              ? interview.role.replace("front end", "Frontend")
+              : interview.role.toLowerCase().includes("back end")
+              ? interview.role.replace("back end", "Backend")
+              : interview.role}
+          </h2>
         </div>
-        <h2 className="text-primary1/90 font-bold mb-2 text-[22px] capitalize">
-          {interview.role.toLowerCase().includes("front end")
-            ? interview.role.replace("front end", "Frontend")
-            : interview.role.toLowerCase().includes("back end")
-            ? interview.role.replace("back end", "Backend")
-            : interview.role}
-        </h2>
         <p className="text-primary1/50 font-semibold uppercase text-[12px] mb-2">
           {interview.level}
         </p>
