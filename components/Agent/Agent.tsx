@@ -157,6 +157,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       userId: user?.id,
     });
     if (response.status === 200) {
+      user.feedbacks.push(response.data);
       Router.push(
         `/interviews/${interview?.id}/feedbacks/${response.data?.id}`
       );
