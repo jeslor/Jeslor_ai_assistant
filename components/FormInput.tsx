@@ -38,7 +38,7 @@ const FormInput = ({
     <Controller
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({ field, fieldState }) => (
         <FormItem>
           <FormLabel className="text-sm text-slate-200/70 mb-1 capitalize">
             {label}
@@ -71,7 +71,9 @@ const FormInput = ({
               )}
             </div>
           </FormControl>
-          <FormMessage className="text-[12px]" />
+          <FormMessage className="text-[12px]">
+            {fieldState.error?.message}
+          </FormMessage>
         </FormItem>
       )}
     />
