@@ -109,7 +109,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
         <p className="text-slate-400 text-[12px] mb-2 opacity-60">
           {interview.techstack.join(", ")}
         </p>
-        <p className="flex flex-col justify-between  font-bold flex-wrap gap-2 opacity-80 py-3">
+        <p className="flex flex-wrap justify-around  font-bold  gap-y-2 gap-x-5 opacity-80 py-3 text-[14px]">
           <span className="">Total questions: {interview.questions}</span>
           <span className="font-bold">
             Your score:{" "}
