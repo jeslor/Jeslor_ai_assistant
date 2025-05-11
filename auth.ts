@@ -45,7 +45,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password,
             user.hashedPassword
           );
-          console.log("Password valid:", passwordValid);
 
           if (!passwordValid) {
             console.error("Invalid password");

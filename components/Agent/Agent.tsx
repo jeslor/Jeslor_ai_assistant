@@ -9,6 +9,7 @@ import { interviewer } from "@/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveFeedBack } from "@/lib/actions/feedback.actions";
+import AiButton from "../AiButton";
 
 enum AgentStatus {
   completed = "completed",
@@ -40,18 +41,17 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   const [status, setStatus] = useState<AgentStatus>(AgentStatus.inactive);
   const [isTalking, setIsTalking] = useState(false);
   const [chats, setChats] = useState<any[]>([]);
+  const [isGenerateFeedback, setIsGenerateFeedback] = useState(false);
 
   useEffect(() => {
     let lastTranscript = "";
 
     const onCallStart = () => {
       setStatus(AgentStatus.active);
-      setChats([]);
     };
     const onCallEnd = () => {
       setStatus(AgentStatus.completed);
       setIsTalking(false);
-      setChats([]);
     };
     const onTalkingStart = () => setIsTalking(true);
     const onTalkingEnd = () => setIsTalking(false);
@@ -67,9 +67,14 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     vapi.on("message", (message: any) => {
       if (message.type === "transcript") {
         const currentTranscript = message.transcript?.trim();
-        if (!currentTranscript || currentTranscript === lastTranscript) {
-          return;
-        }
+
+        if (!currentTranscript) return;
+
+        setChats((prev) => [
+          ...prev,
+          { role: message.role, content: currentTranscript },
+        ]);
+        lastTranscript = currentTranscript;
 
         if (
           currentTranscript.toLowerCase().includes("bye") ||
@@ -81,11 +86,6 @@ const Agent = ({ interview, agentType }: AgentProps) => {
           vapi.stop();
           return;
         }
-        setChats((prev) => [
-          ...prev,
-          { role: message.role, content: currentTranscript },
-        ]);
-        lastTranscript = currentTranscript;
       }
     });
   }, []);
@@ -137,7 +137,15 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       if (agentType === "newInterview") {
         Router.push("/interviews");
       } else {
-        handleGenerateFeedback(chats);
+        const userAlreadyHasFeedback = user.feedbacks.some(
+          (feedback: any) => feedback.interviewId === interview?.id
+        );
+
+        if (userAlreadyHasFeedback) {
+          setIsGenerateFeedback(true);
+        } else {
+          handleGenerateFeedback(chats);
+        }
       }
     }
   }, [status]);
@@ -160,6 +168,46 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   return (
     <>
       <div className="card-wrapper w-full max-w-[800px] mx-auto mt-5 ">
+        {isGenerateFeedback && (
+          <div
+            onClick={() => setIsGenerateFeedback(false)}
+            className="fixed z-[195] top-0 left-0 right-0 bottom-0 bg-gradient-to-br from-black/80 to-primary1/30 rounded-4xl flex items-center justify-center"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-slate-100 rounded-3xl pb-7 pt-[50px] px-5 max-w-[500px] w-full text-dark1 relative"
+            >
+              <button
+                className="absolute top-3 right-5 h-[30px] w-[30px] flex justify-center items-center rounded-full bg-primary1/20 hover:bg-primary1/50 transition-all duration-300 cursor-pointer"
+                onClick={() => setIsGenerateFeedback(false)}
+              >
+                <Icon icon="majesticons:close" width="24" height="24" />
+              </button>
+              <h3 className=" text-[14px] font-semibold">
+                Would you like to generate a new feedback, or you prefer to keep
+                you previous results?
+              </h3>
+              <div className=" flex flex-wrap gap-2 mt-5 w-full">
+                <AiButton
+                  icon=""
+                  onPress={() => {
+                    handleGenerateFeedback(chats);
+                  }}
+                  extraClasses=""
+                  title="Generate new"
+                />
+                <AiButton
+                  icon=""
+                  onPress={() => {
+                    setIsGenerateFeedback(false);
+                  }}
+                  extraClasses="bg-primary1/70 hover:bg-primary1/70 "
+                  title="Keep previous"
+                />
+              </div>
+            </div>
+          </div>
+        )}
         <div className="flex  gap-x items-center justify-around flex-1  rounded-4xl bg-black  backdrop-blur-md  px-4 py-2 shadow-xl border border-dark1/10 mx-auto relative w-[calc(100%-5px)] h-[90%] ">
           <div className="flex flex-col items-center justify-around h-[300px] w-[200px] relative group">
             {(status === "active" || status === "connecting") && (
