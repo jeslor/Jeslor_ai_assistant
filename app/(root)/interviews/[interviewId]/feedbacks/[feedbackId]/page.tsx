@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import useUserStore from "@/components/provider/userStore";
-import { getFeedBackByInterviewId } from "@/lib/actions/feedback.actions";
-import { toast } from "sonner";
 
 const page = () => {
   const { user } = useUserStore();
@@ -12,20 +10,11 @@ const page = () => {
   const [feedback, setFeedback] = React.useState<any>(null);
   const { feedbackId } = searchParams;
 
-  // optmise to get feedbackfrom user
-  const fetchFeedback = async () => {
-    const response = await getFeedBackByInterviewId(feedbackId as string);
-    if (response.status === 200) {
-      setFeedback(response.data);
-    } else {
-      setFeedback(null);
-      toast.error(response.message);
-    }
-  };
-
   useEffect(() => {
     if (user) {
-      fetchFeedback();
+      setFeedback(
+        user.feedbacks.find((feedback: any) => feedback.id === feedbackId)
+      );
     }
   }, [user]);
 
