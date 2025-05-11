@@ -207,7 +207,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
             <div className="flex flex-col items-center justify-center w-full ">
               <LottieAnimation path="/media/animations/noInterviewFound.json" />
               <p className="text-slate-200/50 text-center text-[14px]">
-                No interviews found. Please check back later.
+                No interviews found. Please generate some by clicking the button
+                below.
               </p>
               <AiButton
                 onPress={() => {
