@@ -80,7 +80,7 @@ const Account = ({ type }: { type: string }) => {
   };
 
   return (
-    <div className="relative z-10">
+    <div className="relative z-10 w-full mx-auto">
       <h2 className="text-3xl font-bold text-white text-center mb-2 tracking-wide">
         {type === "sign_in" ? "Welcome Back" : "Create an Account"}
       </h2>

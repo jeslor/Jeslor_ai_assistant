@@ -121,8 +121,10 @@ const InterviewCard = ({ interview, sectionId }: any) => {
             /100%
           </span>
         </p>
-        <h4 className="text-center font-extrabold opacity-15 text-[28px] my-5">
-          {interview.type}
+        <h4 className="text-center font-extrabold opacity-15 text-[28px] my-5 capitalize">
+          {interview.type.toLowerCase().includes("interview")
+            ? interview.type.replace("interview", "")
+            : interview.type}
         </h4>
       </div>
       <div className="flex-1 justify-between flex flex-col">
