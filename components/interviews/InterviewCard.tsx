@@ -87,7 +87,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
         </button>
       )}
       <div>
-        <div className="flex flex-wrap gap-x-3 items-center pt-5">
+        <div className="flex  gap-x-3 items-center pt-5">
           <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
             <img
               src={`https://logo.clearbit.com/${refactorCompany(
@@ -97,7 +97,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
               className="w-full h-full rounded-full  object-fit"
             />
           </div>
-          <h2 className="text-primary1/90 font-bold mb-2 text-[22px] capitalize">
+          <h2 className="text-primary1/90 font-bold mb-2 text-[22px] capitalize flex-1 clamped-text">
             {interview.role.toLowerCase().includes("front end")
               ? interview.role.replace("front end", "Frontend")
               : interview.role.toLowerCase().includes("back end")
