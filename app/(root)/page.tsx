@@ -2,6 +2,7 @@
 import Agent from "@/components/Agent/Agent";
 import DottedCanvas from "@/components/DottedCanvas";
 import Interviews from "@/components/interviews/Interviews";
+import PositionInput from "@/components/postionInput/PositionInput";
 import Image from "next/image";
 import React from "react";
 
@@ -29,7 +30,12 @@ const page = () => {
           </h3>
         </div>
         <div>
+          <div className="flex gap-x-10 justify-center items-center mt-5">
+            <button>Use audio assistant</button>
+            <button>Paste job position</button>
+          </div>
           <Agent agentType="newInterview" />
+          <PositionInput />
         </div>
       </div>
       <Interviews />
