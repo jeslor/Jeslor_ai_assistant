@@ -7,6 +7,7 @@ import Image from "next/image";
 import React from "react";
 
 const page = () => {
+  const [isAgent, setIsAgent] = React.useState(false);
   return (
     <main className=" w-full pt-4">
       <div className="overflow-hidden relative ">
@@ -25,17 +26,26 @@ const page = () => {
               Assistant
             </span>
           </div>
-          <h3 className=" px-4 text-center  font-normal mt-10 bg-gradient-to-b from-dark1/10 via-white/70 to-white  text-transparent bg-clip-text clampTitle w-full max-w-[900px] ">
-            Practice for your next job interview.
+          <h3 className=" px-4 text-center  font-normal mt-10 bg-gradient-to-b from-dark1/10 via-white/70 to-white  text-transparent bg-clip-text clampTitle w-full max-w-[1100px] ">
+            Prepare for your next job interview.
           </h3>
         </div>
         <div>
-          <div className="flex gap-x-10 justify-center items-center mt-5">
-            <button>Use audio assistant</button>
-            <button>Paste job position</button>
+          <div className="flex gap-x-1 justify-center items-center mt-5">
+            <button
+              onClick={() => setIsAgent(true)}
+              className="py-2 px-4 bg-slate-200 rounded-s-2xl text-dark1 font-semibold hover:bg-black/80 border-[1px] border-slate-200/15 hover:text-slate-200/80 cursor-pointer"
+            >
+              Use audio assistant
+            </button>
+            <button
+              onClick={() => setIsAgent(false)}
+              className="py-2 px-4 bg-slate-200 rounded-e-2xl text-dark1 font-semibold hover:bg-black/80 border-[1px] border-slate-200/15 hover:text-slate-200/80 cursor-pointer"
+            >
+              Paste job position
+            </button>
           </div>
-          <Agent agentType="newInterview" />
-          <PositionInput />
+          {isAgent ? <Agent agentType="newInterview" /> : <PositionInput />}
         </div>
       </div>
       <Interviews />
