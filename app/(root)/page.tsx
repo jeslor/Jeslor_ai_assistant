@@ -4,10 +4,11 @@ import DottedCanvas from "@/components/DottedCanvas";
 import Interviews from "@/components/interviews/Interviews";
 import PositionInput from "@/components/postionInput/PositionInput";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const page = () => {
-  const [isAgent, setIsAgent] = React.useState(false);
+  const [isAgent, setIsAgent] = useState(false);
+
   return (
     <main className=" w-full pt-4">
       <div className="overflow-hidden relative ">
@@ -34,15 +35,33 @@ const page = () => {
           <div className="flex gap-x-1 justify-center items-center mt-5">
             <button
               onClick={() => setIsAgent(true)}
-              className="py-2 px-4 bg-slate-200 rounded-s-2xl text-dark1 font-semibold hover:bg-black/80 border-[1px] border-slate-200/15 hover:text-slate-200/80 cursor-pointer"
+              className={`py-2 px-4 hover:bg-slate-100 rounded-s-2xl hover:text-dark1 font-semibold  border-[1px] border-slate-200/15  cursor-pointer relative group border-b ${
+                isAgent
+                  ? "bg-slate-100 text-dark1"
+                  : "bg-black/80 text-slate-200/80"
+              }`}
             >
               Use audio assistant
+              <span
+                className={`absolute border-[20px] border-transparent   left-1/2 -translate-x-1/2 top-full group-hover:border-t-slate-100 ${
+                  isAgent ? "border-t-slate-100" : ""
+                }`}
+              ></span>
             </button>
             <button
               onClick={() => setIsAgent(false)}
-              className="py-2 px-4 bg-slate-200 rounded-e-2xl text-dark1 font-semibold hover:bg-black/80 border-[1px] border-slate-200/15 hover:text-slate-200/80 cursor-pointer"
+              className={`py-2 px-4 hover:bg-slate-100 rounded-e-2xl hover:text-dark1 font-semibold  border-[1px] border-slate-200/15  cursor-pointer relative group border-b ${
+                !isAgent
+                  ? "bg-slate-100 text-dark1"
+                  : "bg-black/80 text-slate-200/80"
+              }`}
             >
               Paste job position
+              <span
+                className={`absolute border-[20px] border-transparent   left-1/2 -translate-x-1/2 top-full group-hover:border-t-slate-100 ${
+                  !isAgent ? "border-t-slate-100" : ""
+                }`}
+              ></span>
             </button>
           </div>
           {isAgent ? <Agent agentType="newInterview" /> : <PositionInput />}
