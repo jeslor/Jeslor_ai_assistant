@@ -168,7 +168,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
 
   return (
     <>
-      <div className="card-wrapper w-full max-w-[800px] mx-auto mt-5 ">
+      <div className="card-wrapper w-full max-w-[800px] mx-auto mt-3 ">
         {isGenerateFeedback && (
           <div
             onClick={() => setIsGenerateFeedback(false)}

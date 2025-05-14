@@ -7,7 +7,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 
 const page = () => {
-  const [isAgent, setIsAgent] = useState(false);
+  const [isAgent, setIsAgent] = useState(true);
 
   return (
     <main className=" w-full pt-4">
@@ -43,7 +43,7 @@ const page = () => {
             >
               Use audio assistant
               <span
-                className={`absolute border-[20px] border-transparent   left-1/2 -translate-x-1/2 top-full group-hover:border-t-slate-100 ${
+                className={`absolute border-[10px] border-transparent   left-1/2 -translate-x-1/2 top-full group-hover:border-t-slate-100 ${
                   isAgent ? "border-t-slate-100" : ""
                 }`}
               ></span>
@@ -58,7 +58,7 @@ const page = () => {
             >
               Paste job position
               <span
-                className={`absolute border-[20px] border-transparent   left-1/2 -translate-x-1/2 top-full group-hover:border-t-slate-100 ${
+                className={`absolute border-[10px] border-transparent   left-1/2 -translate-x-1/2 top-full group-hover:border-t-slate-100 ${
                   !isAgent ? "border-t-slate-100" : ""
                 }`}
               ></span>
