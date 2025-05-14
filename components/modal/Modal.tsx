@@ -23,7 +23,10 @@ const Modal = ({
       onClick={() => closeModal()}
       className="fixed inset-0 z-[999] flex items-center justify-center bg-primary1/40"
     >
-      <div className="bg-slate-300 rounded-xl p-6 max-w-md w-full relative">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-300 rounded-xl p-6 max-w-md w-full relative"
+      >
         {children}
       </div>
     </div>,
