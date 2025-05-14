@@ -8,6 +8,7 @@ import React, { useState } from "react";
 
 const page = () => {
   const [isAgent, setIsAgent] = useState(true);
+  const [positionInput, setPositionInput] = useState("");
 
   return (
     <main className=" w-full pt-4">
@@ -64,7 +65,14 @@ const page = () => {
               ></span>
             </button>
           </div>
-          {isAgent ? <Agent agentType="newInterview" /> : <PositionInput />}
+          {isAgent ? (
+            <Agent agentType="newInterview" />
+          ) : (
+            <PositionInput
+              positionInput={positionInput}
+              setPositionInput={setPositionInput}
+            />
+          )}
         </div>
       </div>
       <Interviews />
