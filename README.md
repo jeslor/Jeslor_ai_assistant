@@ -9,7 +9,7 @@ Jeslor-assistant is a voice-enabled AI chatbot built with **Next.js**, **TypeScr
 - 💡 AI-powered by Google Gemini
 - 🎙️ Voice conversations via Vapi
 - 🧠 Collects mock interview setup data
-- 🔐 Auth via NextAuth.js (GitHub login)
+- 🔐 Auth via NextAuth.js (Credentials, github and google)
 - 🎨 Styled with Tailwind CSS
 - ⚡ Streamed responses using Vercel AI SDK
 - ☁️ Easy to deploy on Vercel
@@ -67,15 +67,16 @@ GITHUB_SECRET=""
 ### Step 1: Install NextAuth
 
 ```bash
-npm install next-auth
+npm install next-auth@beta
 ```
 
 ### Step 2: Create the Auth API Route
 
 Create the file: `app/api/auth/[...nextauth].ts`
 
-```ts
 add Auth js
+
+```ts
 Go to [check procedure ](https://authjs.dev/getting-started)
 ```
 
