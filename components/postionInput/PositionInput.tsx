@@ -72,7 +72,7 @@ const PositionInput = ({
       {showGenerateInterviewModal && (
         <div
           onClick={handleCloseGenerateModal}
-          className="fixed inset-0 z-[199] flex items-center justify-center bg-primary1/40"
+          className="fixed inset-0 z-[199] flex items-center justify-center bg-black/90"
         >
           <div
             onClick={(e) => e.stopPropagation()}
