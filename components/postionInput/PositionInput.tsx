@@ -98,6 +98,10 @@ const PositionInput = ({
       updateUserInterviews(generatedInterview.data);
       handleCloseGenerateModal();
     }
+
+    if (generatedInterview.status === 500) {
+      toast.error("Error generating interview. Please try again later.");
+    }
   };
 
   return (

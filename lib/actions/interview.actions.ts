@@ -2,6 +2,7 @@
 import prisma from "@/lib/prisma/prisma";
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
+import { cleanAIJsonResponse } from "../helpers/json";
 
 interface InterviewProps {
   userId: string;
@@ -22,7 +23,7 @@ export const createInterview = async (data: InterviewProps) => {
       prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
     });
 
-    const { text: questions } = await generateText({
+    let { text: questions } = await generateText({
       model: google("gemini-2.0-flash-001"),
       prompt: `Prepare ${totalQuestions} questions for a job interview, let the questions be not so long but professional depending on the level provided here ${level}.
         The job description from the job listing platform is ${jobDescription}.
@@ -43,6 +44,7 @@ export const createInterview = async (data: InterviewProps) => {
     `,
     });
 
+    questions = cleanAIJsonResponse(questions);
     const questionsParsed = JSON.parse(questions);
 
     const interview = await prisma.interview.create({
@@ -50,7 +52,7 @@ export const createInterview = async (data: InterviewProps) => {
         userId,
         company: companyUrl,
         role: questionsParsed.role,
-        techstack: questionsParsed.techstack,
+        techstack: questionsParsed.techstack.split(","),
         questions: questionsParsed.questions,
         type,
         level,
@@ -76,8 +78,6 @@ export const createInterview = async (data: InterviewProps) => {
 };
 
 export const getInterviewsByUser = async (userId: string, page: number) => {
-  console.log("this code ran");
-
   const limit = 12;
   const skip = page * limit;
 
