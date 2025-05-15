@@ -13,6 +13,7 @@ interface InterviewStore {
   fetchUserInterviews: () => Promise<void>;
   fetchNotUserInterviews: () => Promise<void>;
   fetchMoreUserInterviews: () => Promise<void>;
+  updateUserInterviews: (interview: any) => void;
   fetchMoreNotUserInterviews: () => Promise<void>;
   isAllInterviews: {
     user: boolean;
@@ -87,6 +88,11 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
         "Error fetching more user interviews. Please try again later."
       );
     }
+  },
+  updateUserInterviews: (interview: any) => {
+    set((state) => ({
+      userInterviews: [...new Set([interview, ...state.userInterviews])],
+    }));
   },
   fetchMoreNotUserInterviews: async () => {
     try {

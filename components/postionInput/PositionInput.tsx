@@ -16,6 +16,7 @@ import { Input } from "../ui/input";
 import { toast } from "sonner";
 import useUserStore from "../provider/userStore";
 import { createInterview } from "@/lib/actions/interview.actions";
+import useInterviewStore from "../provider/interViewStore";
 
 interface PositionInputProps {
   positionInput: string;
@@ -27,6 +28,7 @@ const PositionInput = ({
   setPositionInput,
 }: PositionInputProps) => {
   const { user } = useUserStore();
+  const { updateUserInterviews } = useInterviewStore();
   const [currentText, setCurrentText] = useState("");
   const [extraDetails, setExtraDetails] = useState({
     companyWebsite: "",
@@ -81,6 +83,21 @@ const PositionInput = ({
       level: extraDetails.level,
       jobDescription: currentText,
     });
+
+    if (generatedInterview.status === 200) {
+      setCurrentText("");
+      setPositionInput("");
+      setExtraDetails({
+        companyWebsite: "",
+        totalQuestions: 0,
+        type: "",
+        level: "",
+      });
+
+      toast.success("Interview generated successfully!");
+      updateUserInterviews(generatedInterview.data);
+      handleCloseGenerateModal();
+    }
   };
 
   return (
