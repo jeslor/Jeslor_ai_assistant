@@ -1,6 +1,19 @@
 "use server";
 import prisma from "@/lib/prisma/prisma";
 
+interface InterviewProps {
+  userId: string;
+  totalQuestions: number;
+  company: string;
+  type: string;
+  level: string;
+  jobDescription: string;
+}
+
+export const createInterview = async (data: InterviewProps) => {
+  console.log(data);
+};
+
 export const getInterviewsByUser = async (userId: string, page: number) => {
   console.log("this code ran");
 

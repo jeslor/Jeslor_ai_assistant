@@ -21,7 +21,7 @@ const Modal = ({
   return createPortal(
     <div
       onClick={() => closeModal()}
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80"
     >
       <div
         onClick={(e) => e.stopPropagation()}

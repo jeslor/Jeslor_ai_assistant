@@ -3,9 +3,19 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import AiButton from "../AiButton";
 import { useEffect, useState } from "react";
-import useModalStore from "../provider/modalStore";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
+import useUserStore from "../provider/userStore";
+import { createInterview } from "@/lib/actions/interview.actions";
 
 interface PositionInputProps {
   positionInput: string;
@@ -16,10 +26,13 @@ const PositionInput = ({
   positionInput,
   setPositionInput,
 }: PositionInputProps) => {
+  const { user } = useUserStore();
   const [currentText, setCurrentText] = useState("");
   const [extraDetails, setExtraDetails] = useState({
     companyWebsite: "",
     totalQuestions: 0,
+    type: "",
+    level: "",
   });
   const [showGenerateInterviewModal, setShowGenerateInterviewModal] =
     useState(false);
@@ -59,11 +72,14 @@ const PositionInput = ({
     document.body.style.overflow = "auto";
   };
 
-  const handleGenerateInterview = () => {
-    console.log("Generating interview with details: ", {
-      positionInput: currentText,
-      companyWebsite: extraDetails.companyWebsite,
+  const handleGenerateInterview = async () => {
+    const generatedInterview = await createInterview({
+      userId: user.id, // Replace with actual user ID
       totalQuestions: extraDetails.totalQuestions,
+      company: extraDetails.companyWebsite,
+      type: extraDetails.type,
+      level: extraDetails.level,
+      jobDescription: currentText,
     });
   };
 
@@ -104,27 +120,85 @@ const PositionInput = ({
                     className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-primary1/70 focus:ring-1 focus:ring-primary1/70"
                   />
                 </div>
-                <label
-                  htmlFor="companyWebsite"
-                  className="text-dark1/60 text-[14px] font-bold"
-                >
-                  Total Questions
-                </label>
-                <Input
-                  id="totalQuestions"
-                  type="number"
-                  min={1}
-                  max={10}
-                  value={extraDetails.totalQuestions}
-                  placeholder="Total Questions"
-                  onChange={(e) =>
-                    setExtraDetails({
-                      ...extraDetails,
-                      totalQuestions: parseInt(e.target.value),
-                    })
-                  }
-                  className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-primary1/70 focus:ring-1 focus:ring-primary1/70"
-                />
+                <div className="flex flex-col mb-4 gap-y-1 w-full ">
+                  <label
+                    htmlFor="companyWebsite"
+                    className="text-dark1/60 text-[14px] font-bold"
+                  >
+                    Total Questions
+                  </label>
+                  <Input
+                    id="totalQuestions"
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={extraDetails.totalQuestions}
+                    placeholder="Total Questions"
+                    onChange={(e) =>
+                      setExtraDetails({
+                        ...extraDetails,
+                        totalQuestions: parseInt(e.target.value),
+                      })
+                    }
+                    className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-primary1/70 focus:ring-1 focus:ring-primary1/70"
+                  />
+                </div>
+                <div className="flex flex-col mb-4 gap-y-1 w-full ">
+                  <label
+                    htmlFor="companyWebsite"
+                    className="text-dark1/60 text-[14px] font-bold"
+                  >
+                    Interview type
+                  </label>
+                  <Select
+                    onValueChange={(value) =>
+                      setExtraDetails({
+                        ...extraDetails,
+                        type: value,
+                      })
+                    }
+                  >
+                    <SelectTrigger className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-dark1/70 focus:ring-1 focus:ring-primary1/20">
+                      <SelectValue placeholder="Select interview type" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[999]">
+                      <SelectGroup>
+                        <SelectLabel>Interview types</SelectLabel>
+                        <SelectItem value="technical">Technical</SelectItem>
+                        <SelectItem value="behavioral">Behavioral</SelectItem>
+                        <SelectItem value="mixed">Mixed</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col mb-4 gap-y-1 w-full ">
+                  <label
+                    htmlFor="companyWebsite"
+                    className="text-dark1/60 text-[14px] font-bold"
+                  >
+                    what is the level of the position?
+                  </label>
+                  <Select
+                    onValueChange={(value) =>
+                      setExtraDetails({
+                        ...extraDetails,
+                        type: value,
+                      })
+                    }
+                  >
+                    <SelectTrigger className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-dark1/70 focus:ring-1 focus:ring-primary1/20">
+                      <SelectValue placeholder="Select interview level" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[999]">
+                      <SelectGroup>
+                        <SelectLabel>Interview level</SelectLabel>
+                        <SelectItem value="senior">Senior</SelectItem>
+                        <SelectItem value="mid">Mid</SelectItem>
+                        <SelectItem value="junior">Junior</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="flex gap-x-4">
                 <AiButton
