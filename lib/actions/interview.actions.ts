@@ -1,5 +1,8 @@
 "use server";
 import prisma from "@/lib/prisma/prisma";
+import { generateText } from "ai";
+import { google } from "@ai-sdk/google";
+import { cleanAIJsonResponse } from "../helpers/json";
 
 interface InterviewProps {
   userId: string;
@@ -11,12 +14,70 @@ interface InterviewProps {
 }
 
 export const createInterview = async (data: InterviewProps) => {
-  console.log(data);
+  try {
+    const { userId, totalQuestions, company, type, level, jobDescription } =
+      data;
+
+    const { text: companyUrl } = await generateText({
+      model: google("gemini-2.0-flash-001"),
+      prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
+    });
+
+    let { text: questions } = await generateText({
+      model: google("gemini-2.0-flash-001"),
+      prompt: `Prepare ${totalQuestions} questions for a job interview, let the questions be not so long but professional depending on the level provided here ${level}.
+        The job description from the job listing platform is ${jobDescription}.
+        The job experience level is ${level}.
+        The focus between behavioural and technical questions should lean towards: ${type}.
+        Make sure you go through the  job description and find the tech stack used in the job, return only the name of the Technologies and tools they use.
+        Make sure you go through the job  description and find the Role.
+        Please return only an object having a three properties,like this{
+          role: " the role you found in the job description",
+          techstack: "the tech stack you found in the job description",
+          questions: ["Question 1", "Question 2", "Question 3"] 
+        } without any additional text.
+        The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
+        Return the questions formatted like this:
+        ["Question 1", "Question 2", "Question 3"]
+        
+        Thank you very much!!!
+    `,
+    });
+
+    questions = cleanAIJsonResponse(questions);
+    const questionsParsed = JSON.parse(questions);
+
+    const interview = await prisma.interview.create({
+      data: {
+        userId,
+        company: companyUrl,
+        role: questionsParsed.role,
+        techstack: questionsParsed.techstack.split(","),
+        questions: questionsParsed.questions,
+        type,
+        level,
+        finalized: false,
+      },
+    });
+    if (!interview) {
+      throw new Error("Interview not created");
+    }
+    return {
+      message: "Interview created successfully",
+      status: 200,
+      data: interview,
+    };
+  } catch (error) {
+    console.error("Error creating interview:", error);
+    return {
+      message: `Internal server error: ${error}`,
+      status: 500,
+      data: null,
+    };
+  }
 };
 
 export const getInterviewsByUser = async (userId: string, page: number) => {
-  console.log("this code ran");
-
   const limit = 12;
   const skip = page * limit;
 
