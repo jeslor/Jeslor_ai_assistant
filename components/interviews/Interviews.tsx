@@ -143,6 +143,8 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     }
   }, [inView, selectedSection, isAllInterviews]);
 
+  console.log("interviews", interviews);
+
   return (
     <div
       className={`py-10 bg-black  z-2 w-full rounded-t-[30px] pt-[100px] relative  ${
