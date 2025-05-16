@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const interviewValidator = z.object({
-  companyWebsite: z.string(),
+  companyWebsite: z.string().min(4, { message: "company website is required" }),
   totalQuestions: z.coerce
     .number()
     .min(1, { message: "questions must be above 0" })
