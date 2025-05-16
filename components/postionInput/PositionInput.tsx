@@ -29,6 +29,7 @@ import useInterviewStore from "../provider/interViewStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { interviewValidator } from "@/lib/validators/interviewValidator";
+import LoadingContent from "../Loaders/Loaded";
 
 interface PositionInputProps {
   positionInput: string;
@@ -49,6 +50,7 @@ const PositionInput = ({
   const { user } = useUserStore();
   const { updateUserInterviews } = useInterviewStore();
   const [currentText, setCurrentText] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const form = useForm<AccountFormData>({
     resolver: zodResolver(interviewValidator),
     defaultValues: {
@@ -100,31 +102,40 @@ const PositionInput = ({
   const handleGenerateInterview = async (
     values: z.infer<typeof interviewValidator>
   ) => {
-    console.log(values);
-
-    const generatedInterview = await createInterview({
-      userId: user.id, // Replace with actual user ID
-      totalQuestions: values.totalQuestions,
-      company: values.companyWebsite,
-      type: values.type,
-      level: values.level,
-      jobDescription: currentText,
-    });
-    if (generatedInterview.status === 200) {
-      setCurrentText("");
-      setPositionInput("");
-      form.reset();
-      toast.success("Interview generated successfully!");
-      updateUserInterviews(generatedInterview.data);
-      handleCloseGenerateModal();
-    }
-    if (generatedInterview.status === 500) {
-      toast.error("Error generating interview. Please try again later.");
+    try {
+      setIsSaving(true);
+      const generatedInterview = await createInterview({
+        userId: user.id, // Replace with actual user ID
+        totalQuestions: values.totalQuestions,
+        company: values.companyWebsite,
+        type: values.type,
+        level: values.level,
+        jobDescription: currentText,
+      });
+      if (generatedInterview.status === 200) {
+        setCurrentText("");
+        setPositionInput("");
+        form.reset();
+        toast.success("Interview generated successfully!");
+        updateUserInterviews(generatedInterview.data);
+        handleCloseGenerateModal();
+      }
+      if (generatedInterview.status === 500) {
+        throw new Error(
+          `Error generating interview, ${generatedInterview.message}`
+        );
+      }
+    } catch (error) {
+      console.error("Error generating interview:", error);
+      toast.error("Error generating interview, please try again");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center gap-y-2 ">
+      {isSaving && <LoadingContent title="Saving interview" />}
       {showGenerateInterviewModal && (
         <div
           onClick={handleCloseGenerateModal}

@@ -48,6 +48,19 @@ const page = async ({ params }: any) => {
                 <span className="text-primary1">{interview?.role}</span>{" "}
                 interview
               </h2>
+              <div className="pl-6 pt-6 flex flex-col md:flex-row gap-3">
+                <h3>Tech Stack:</h3>
+                <div className="flex flex-wrap gap-2 flex-1">
+                  {interview?.techstack.map((item: string, index: number) => (
+                    <span
+                      key={index}
+                      className="text-white/50  font-semibold py-2 px-4 rounded border-white/10 border mr-2 bg-dark1/40 text-[13px]"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
               <ul className="pl-8  w-full mx-auto text-[15px]  opacity-55 mt-2 py-7 font-semibold list-disc flex flex-col gap-y-4">
                 <li>
                   If you are ready to start the interview, please click on the{" "}
