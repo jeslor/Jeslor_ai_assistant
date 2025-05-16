@@ -86,7 +86,10 @@ const Navbar = memo(() => {
       }`}
     >
       <div className="flex items-center justify-between h-full p-4 relative">
-        <div className=" hidden sm:flex items-center justify-center text-slate-200 space-x-2">
+        <div
+          onClick={() => Router.push("/")}
+          className="cursor-pointer hidden sm:flex items-center justify-center text-slate-200 space-x-2"
+        >
           {user?.profileImage ? (
             <Image
               src={user?.profileImage}
@@ -96,7 +99,10 @@ const Navbar = memo(() => {
               className="rounded-full border border-white/40 shadow-md shadow-black/20"
             />
           ) : (
-            <div className="h-[40px] w-[40px] bg-primary1 rounded-full flex items-center justify-center border border-white/40 shadow-md shadow-black/20">
+            <div
+              onClick={() => Router.push("/")}
+              className="cursor-pointer h-[40px] w-[40px] bg-primary1 rounded-full flex items-center justify-center border border-white/40 shadow-md shadow-black/20"
+            >
               <button className="text-white text-[22px] font-extrabold capitalize cursor-pointer">
                 {user?.username?.charAt(0)}
               </button>
