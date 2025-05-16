@@ -100,8 +100,6 @@ const PositionInput = ({
   const handleGenerateInterview = async (
     values: z.infer<typeof interviewValidator>
   ) => {
-    console.log(values);
-
     const generatedInterview = await createInterview({
       userId: user.id, // Replace with actual user ID
       totalQuestions: values.totalQuestions,
