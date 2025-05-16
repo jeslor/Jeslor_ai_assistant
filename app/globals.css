@@ -279,9 +279,8 @@ body {
 
 .clamped-text {
   display: -webkit-box;
-  -webkit-line-clamp: 1; /* Number of lines */
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1; /* correct */
   overflow: hidden;
   text-overflow: ellipsis;
-  line-clamp: 1; /* Optional: supported in newer browsers */
 }

@@ -65,7 +65,10 @@ export const createInterview = async (data: InterviewProps) => {
     return {
       message: "Interview created successfully",
       status: 200,
-      data: interview,
+      data: {
+        ...interview,
+        questions: interview.questions.length,
+      },
     };
   } catch (error) {
     console.error("Error creating interview:", error);
@@ -85,6 +88,9 @@ export const getInterviewsByUser = async (userId: string, page: number) => {
     const interviews = await prisma.interview.findMany({
       where: {
         userId,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
       take: limit,
       skip,
@@ -128,6 +134,9 @@ export const getInterviewsNotByUser = async (userId: string, page: number) => {
         NOT: {
           userId,
         },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
       take: limit,
       skip,

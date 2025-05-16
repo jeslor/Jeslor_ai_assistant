@@ -105,10 +105,10 @@ const InterviewCard = ({ interview, sectionId }: any) => {
               : interview.role}
           </h2>
         </div>
-        <p className="text-primary1/50 font-semibold uppercase text-[12px] mb-2">
+        <p className="text-primary1/50 font-semibold uppercase text-[12px] mb-2 ">
           {interview.level}
         </p>
-        <p className="text-slate-400 text-[12px] mb-2 opacity-60">
+        <p className="text-slate-400 text-[12px] mb-2 opacity-60 clamped-text">
           {interview.techstack.join(", ")}
         </p>
         <p className="flex flex-wrap justify-around  font-bold  gap-y-2 gap-x-5 opacity-80 py-3 text-[14px]">
