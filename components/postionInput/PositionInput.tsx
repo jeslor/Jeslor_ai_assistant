@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { z } from "zod";
 import AiButton from "../AiButton";
 import { useEffect, useState } from "react";
 import {
@@ -57,12 +58,7 @@ const PositionInput = ({
       level: undefined,
     },
   });
-  const [extraDetails, setExtraDetails] = useState({
-    companyWebsite: "",
-    totalQuestions: 0,
-    type: "",
-    level: "",
-  });
+
   const [showGenerateInterviewModal, setShowGenerateInterviewModal] =
     useState(false);
 
@@ -101,31 +97,27 @@ const PositionInput = ({
     document.body.style.overflow = "auto";
   };
 
-  const handleGenerateInterview = async () => {
+  const handleGenerateInterview = async (
+    values: z.infer<typeof interviewValidator>
+  ) => {
+    console.log(values);
+
     const generatedInterview = await createInterview({
       userId: user.id, // Replace with actual user ID
-      totalQuestions: extraDetails.totalQuestions,
-      company: extraDetails.companyWebsite,
-      type: extraDetails.type,
-      level: extraDetails.level,
+      totalQuestions: values.totalQuestions,
+      company: values.companyWebsite,
+      type: values.type,
+      level: values.level,
       jobDescription: currentText,
     });
-
     if (generatedInterview.status === 200) {
       setCurrentText("");
       setPositionInput("");
-      setExtraDetails({
-        companyWebsite: "",
-        totalQuestions: 0,
-        type: "",
-        level: "",
-      });
-
+      form.reset();
       toast.success("Interview generated successfully!");
       updateUserInterviews(generatedInterview.data);
       handleCloseGenerateModal();
     }
-
     if (generatedInterview.status === 500) {
       toast.error("Error generating interview. Please try again later.");
     }
@@ -161,16 +153,9 @@ const PositionInput = ({
                         </FormLabel>
                         <FormControl>
                           <Input
-                            id="companyWebsite"
+                            {...field}
                             type="text"
                             placeholder="Company website"
-                            value={extraDetails.companyWebsite}
-                            onChange={(e) =>
-                              setExtraDetails({
-                                ...extraDetails,
-                                companyWebsite: e.target.value,
-                              })
-                            }
                             className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-primary1/70 focus:ring-1 focus:ring-primary1/70"
                           />
                         </FormControl>
@@ -178,95 +163,108 @@ const PositionInput = ({
                       </FormItem>
                     )}
                   />
-                  <div className="flex flex-col mb-4 gap-y-1 w-full ">
-                    <label
-                      htmlFor="companyWebsite"
-                      className="text-dark1/60 text-[14px] font-bold"
-                    >
-                      Total Questions
-                    </label>
-                    <Input
-                      id="totalQuestions"
-                      type="number"
-                      min={1}
-                      max={10}
-                      value={extraDetails.totalQuestions}
-                      placeholder="Total Questions"
-                      onChange={(e) =>
-                        setExtraDetails({
-                          ...extraDetails,
-                          totalQuestions: parseInt(e.target.value),
-                        })
-                      }
-                      className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-primary1/70 focus:ring-1 focus:ring-primary1/70"
-                    />
-                  </div>
-                  <div className="flex flex-col mb-4 gap-y-1 w-full ">
-                    <label
-                      htmlFor="companyWebsite"
-                      className="text-dark1/60 text-[14px] font-bold"
-                    >
-                      Interview type
-                    </label>
-                    <Select
-                      onValueChange={(value) =>
-                        setExtraDetails({
-                          ...extraDetails,
-                          type: value,
-                        })
-                      }
-                    >
-                      <SelectTrigger className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-dark1/70 focus:ring-1 focus:ring-primary1/20">
-                        <SelectValue placeholder="Select interview type" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[999]">
-                        <SelectGroup>
-                          <SelectLabel>Interview types</SelectLabel>
-                          <SelectItem value="technical">Technical</SelectItem>
-                          <SelectItem value="behavioral">Behavioral</SelectItem>
-                          <SelectItem value="mixed">Mixed</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex flex-col mb-4 gap-y-1 w-full ">
-                    <label
-                      htmlFor="companyWebsite"
-                      className="text-dark1/60 text-[14px] font-bold"
-                    >
-                      what is the level of the position?
-                    </label>
-                    <Select
-                      onValueChange={(value) =>
-                        setExtraDetails({
-                          ...extraDetails,
-                          level: value,
-                        })
-                      }
-                    >
-                      <SelectTrigger className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-dark1/70 focus:ring-1 focus:ring-primary1/20">
-                        <SelectValue placeholder="Select interview level" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[999]">
-                        <SelectGroup>
-                          <SelectLabel>Interview level</SelectLabel>
-                          <SelectItem value="senior">Senior</SelectItem>
-                          <SelectItem value="mid">Mid</SelectItem>
-                          <SelectItem value="junior">Junior</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="totalQuestions"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-dark1/60 text-[14px] font-bold">
+                          Enter the number of questions
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            min={1}
+                            max={10}
+                            type="number"
+                            placeholder="Company website"
+                            className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-primary1/70 focus:ring-1 focus:ring-primary1/70"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[12px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-dark1/60 text-[14px] font-bold">
+                          Select the type of interview
+                        </FormLabel>
+                        <FormControl>
+                          <Select
+                            {...field}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                            }}
+                            value={field.value}
+                          >
+                            <SelectTrigger className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-dark1/70 focus:ring-1 focus:ring-primary1/20">
+                              <SelectValue placeholder="Select interview type" />
+                            </SelectTrigger>
+                            <SelectContent className="z-[999]">
+                              <SelectGroup>
+                                <SelectLabel>Interview types</SelectLabel>
+                                <SelectItem value="technical">
+                                  Technical
+                                </SelectItem>
+                                <SelectItem value="behavioral">
+                                  Behavioral
+                                </SelectItem>
+                                <SelectItem value="mixed">Mixed</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage className="text-[12px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="level"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-dark1/60 text-[14px] font-bold">
+                          Select the level of interview
+                        </FormLabel>
+                        <FormControl>
+                          <Select
+                            {...field}
+                            defaultValue={undefined}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                            }}
+                            value={field.value}
+                          >
+                            <SelectTrigger className="border-2 border-dark1/50 rounded-md p-2 pv-0 w-full text-[14px] text-dark1/70 focus:outline-none focus:border-dark1/70 focus:ring-1 focus:ring-primary1/20">
+                              <SelectValue placeholder="Select interview type" />
+                            </SelectTrigger>
+                            <SelectContent className="z-[999]">
+                              <SelectGroup>
+                                <SelectLabel>Interview level</SelectLabel>
+                                <SelectItem value="intern">Intern</SelectItem>
+                                <SelectItem value="junior">Junior</SelectItem>
+                                <SelectItem value="mid">Mid</SelectItem>
+                                <SelectItem value="senior">Senior</SelectItem>
+                                <SelectItem value="lead">Lead</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage className="text-[12px]" />
+                      </FormItem>
+                    )}
+                  />
                   <div className="flex gap-x-4">
-                    <AiButton
-                      onPress={handleGenerateInterview}
-                      title="Generate interview"
-                      icon=""
-                      extraClasses="bg-red-500 text-white"
-                    />
+                    <button className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-bl from-gray-900 to-black-700 backdrop-blur-md text-white shadow-inner  border border-white/10 text-sm hover:bg-gradient-to-bl hover:from-orange-900 hover:to-orange-950 transition duration-300 ease-in-out cursor-pointer text-[13px] font-medium bg-dark1/70 ">
+                      Generate Interview
+                    </button>
                     <div
                       onClick={handleCloseGenerateModal}
-                      className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-bl from-gray-900 to-black-700 backdrop-blur-md text-white shadow-inner  border border-white/10 text-sm hover:bg-gradient-to-bl hover:from-orange-900 hover:to-orange-950 transition duration-300 ease-in-out cursor-pointer text-[13px] font-medium bg-dark1/70 "
+                      className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-bl from-orange-900 to-black/30 backdrop-blur-md text-white shadow-inner  border border-white/10 text-sm hover:bg-gradient-to-bl hover:from-orange-900 hover:to-orange-950 transition duration-300 ease-in-out cursor-pointer"
                     >
                       Cancel
                       <Icon icon="ion:close" className="" />
