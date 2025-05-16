@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveFeedBack } from "@/lib/actions/feedback.actions";
 import AiButton from "../AiButton";
+import LoadingContent from "../Loaders/Loaded";
 
 enum AgentStatus {
   completed = "completed",
@@ -39,6 +40,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   const Router = useRouter();
   const { user } = useUserStore();
   const [status, setStatus] = useState<AgentStatus>(AgentStatus.inactive);
+  const [isSaving, setIsSaving] = useState(false);
   const [isTalking, setIsTalking] = useState(false);
   const [chats, setChats] = useState<any[]>([]);
   const [isGenerateFeedback, setIsGenerateFeedback] = useState(false);
@@ -151,24 +153,33 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   }, [status]);
 
   const handleGenerateFeedback = async (chats: any) => {
-    const response = await saveFeedBack({
-      chats,
-      interviewId: interview?.id,
-      userId: user?.id,
-    });
-    if (response.status === 200) {
-      user.feedbacks.push(response.data);
-      Router.push(
-        `/interviews/${interview?.id}/feedbacks/${response.data?.id}`
-      );
-    } else {
-      toast.error("Error generating the interview feedback");
+    try {
+      setIsSaving(true);
+      const response = await saveFeedBack({
+        chats,
+        interviewId: interview?.id,
+        userId: user?.id,
+      });
+      if (response.status === 200) {
+        user.feedbacks.push(response.data);
+        Router.push(
+          `/interviews/${interview?.id}/feedbacks/${response.data?.id}`
+        );
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      console.error("Error generating feedback:", error);
+      toast.error("Error generating feedback");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <>
       <div className="card-wrapper w-full max-w-[800px] mx-auto mt-3 ">
+        {isSaving && <LoadingContent title="Generating feedback" />}
         {isGenerateFeedback && (
           <div
             onClick={() => setIsGenerateFeedback(false)}
