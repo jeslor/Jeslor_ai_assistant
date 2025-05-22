@@ -11,12 +11,7 @@ import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
 import useInterviewStore from "../provider/interViewStore";
 import Loading from "../ui/loading";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import Manual from "../Manual/Manual";
 
 const sectionsData = [
   {
@@ -210,89 +205,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
             {selectedSection?.title}
           </h3>
           {isManual ? (
-            <Accordion
-              type="single"
-              collapsible
-              className="customWidth px-4 py-7"
-            >
-              <AccordionItem
-                className="border-slate-100/10 mb-2"
-                value="item-1"
-              >
-                <AccordionTrigger className="font-semibold text-[1.05rem] bg-dark1 px-4">
-                  Is it accessible?
-                </AccordionTrigger>
-                <AccordionContent className="text-slate-200/50 pt-3">
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                className="border-slate-100/10 mb-2"
-                value="item-2"
-              >
-                <AccordionTrigger className="font-semibold text-[1.05rem] bg-dark1 px-4">
-                  Is it accessible?
-                </AccordionTrigger>
-                <AccordionContent className="text-slate-200/50 pt-3">
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                className="border-slate-100/10 mb-2"
-                value="item-3"
-              >
-                <AccordionTrigger className="font-semibold text-[1.05rem] bg-dark1 px-4">
-                  Is it accessible?
-                </AccordionTrigger>
-                <AccordionContent className="text-slate-200/50 pt-3">
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                className="border-slate-100/10 mb-2"
-                value="item-4"
-              >
-                <AccordionTrigger className="font-semibold text-[1.05rem] bg-dark1 px-4">
-                  Is it accessible?
-                </AccordionTrigger>
-                <AccordionContent className="text-slate-200/50 pt-3">
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                className="border-slate-100/10 mb-2"
-                value="item-5"
-              >
-                <AccordionTrigger className="font-semibold text-[1.05rem] bg-dark1 px-4">
-                  Is it accessible?
-                </AccordionTrigger>
-                <AccordionContent className="text-slate-200/50 pt-3">
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                className="border-slate-100/10 mb-2"
-                value="item-6"
-              >
-                <AccordionTrigger className="font-semibold text-[1.05rem] bg-dark1 px-4">
-                  Is it accessible?
-                </AccordionTrigger>
-                <AccordionContent className="text-slate-200/50 pt-3">
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem
-                className="border-slate-100/10 mb-2"
-                value="item-7"
-              >
-                <AccordionTrigger className="font-semibold text-[1.05rem] bg-dark1 px-4">
-                  Is it accessible?
-                </AccordionTrigger>
-                <AccordionContent className="text-slate-200/50 pt-3">
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            <Manual />
           ) : (
             <>
               {isLoading && interviews.length === 0 && (
