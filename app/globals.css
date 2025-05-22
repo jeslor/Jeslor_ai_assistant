@@ -224,6 +224,9 @@ body {
 }
 
 @layer components {
+  .customWidth {
+    @apply max-w-[1200px] w-full;
+  }
   .btn_primary {
     @apply py-2 px-4 bg-gradient-to-r from-secondary1 to-primary1 hover:from-dark1/75 hover:to-primary1/70 text-white font-semibold rounded-xl shadow-lg transition duration-300 cursor-pointer;
   }
