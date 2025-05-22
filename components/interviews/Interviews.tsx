@@ -10,7 +10,6 @@ import { useInView } from "react-intersection-observer";
 import LottieAnimation from "../LottieAnimation";
 import { useSearchParams } from "next/navigation";
 import useInterviewStore from "../provider/interViewStore";
-import { getInterviewsByUser } from "@/lib/actions/interview.actions";
 import Loading from "../ui/loading";
 
 const sectionsData = [
@@ -42,6 +41,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
   const { user } = useUserStore();
 
   const [stickyInterviewMenu, setStickyInterviewMenu] = useState(false);
+  const [isManual, setIsManual] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const id = searchParams.get("id");
@@ -61,6 +61,11 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
         top: 0,
         behavior: "smooth",
       });
+    }
+    if (section.id === 3) {
+      setIsManual(true);
+    } else {
+      setIsManual(false);
     }
   };
   const {
@@ -198,45 +203,51 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
           <h3 className="text-white text-2xl font-semibold">
             {selectedSection?.title}
           </h3>
-          {isLoading && interviews.length === 0 && (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
-              <InterviewSkeleton totalCards={4} />
-            </div>
+          {isManual ? (
+            <p>How to use it</p>
+          ) : (
+            <>
+              {isLoading && interviews.length === 0 && (
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-4 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+                  <InterviewSkeleton totalCards={4} />
+                </div>
+              )}
+              {interviews?.length === 0 && !isLoading && (
+                <div className="flex flex-col items-center justify-center w-full ">
+                  <LottieAnimation path="/media/animations/noInterviewFound.json" />
+                  <p className="text-slate-200/50 text-center text-[14px]">
+                    No interviews found. Please generate some by clicking the
+                    button below.
+                  </p>
+                  <AiButton
+                    onPress={() => {
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                      });
+                    }}
+                    title="generate an interview"
+                    icon=""
+                    extraClasses="mt-4"
+                  />
+                </div>
+              )}{" "}
+              {interviews?.length ? (
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
+                  {interviews?.map((interview: any) => (
+                    <InterviewCard
+                      key={interview.id}
+                      interview={interview}
+                      sectionId={selectedSection.id}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </>
           )}
-          {interviews?.length === 0 && !isLoading && (
-            <div className="flex flex-col items-center justify-center w-full ">
-              <LottieAnimation path="/media/animations/noInterviewFound.json" />
-              <p className="text-slate-200/50 text-center text-[14px]">
-                No interviews found. Please generate some by clicking the button
-                below.
-              </p>
-              <AiButton
-                onPress={() => {
-                  window.scrollTo({
-                    top: 0,
-                    behavior: "smooth",
-                  });
-                }}
-                title="generate an interview"
-                icon=""
-                extraClasses="mt-4"
-              />
-            </div>
-          )}{" "}
-          {interviews?.length ? (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,_1fr))] gap-x-4 gap-y-8 mt-4 w-full repeated-grids px-4 max-w-[1500px]">
-              {interviews?.map((interview: any) => (
-                <InterviewCard
-                  key={interview.id}
-                  interview={interview}
-                  sectionId={selectedSection.id}
-                />
-              ))}
-            </div>
-          ) : null}
         </div>
       </div>
-      {!isMain && interviews?.length ? (
+      {!isMain && interviews?.length && !isManual ? (
         <Link
           className="py-10 ml-[50%] -translate-x-[50%] inline-block text-center  font-semibold hover:text-primary1"
           href={`/interviews?id=${selectedSection.id}`}
