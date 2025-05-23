@@ -2,7 +2,7 @@
 
 Jeslor-assistant is a voice-enabled AI chatbot built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Google Gemini API**, **Vapi**, **Vercel AI SDK**, and **NextAuth**. It simulates mock technical interviews using voice or text.
 
-#[Demo](https://www.assistant.jeslor.com) 
+ <a href="www.assistant.jeslor.com" target="_blank" rel="noopener noreferrer">🌐 Try Demo</a>
 ---
 
 ## ✨ Features
