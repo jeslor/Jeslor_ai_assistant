@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/prisma/generated
+/lib/generated
 /.pnp
 .pnp.*
 .yarn/*
@@ -15,6 +17,7 @@
 
 # next.js
 /.next/
+
 /out/
 
 # production
