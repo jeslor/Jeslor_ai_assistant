@@ -11,7 +11,7 @@ import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 type AccountFormData = z.infer<typeof accountValidator>;
@@ -79,6 +79,20 @@ const Account = ({ type }: { type: string }) => {
     }
   };
 
+  const signInWithProvider = async (provider: string) => {
+    if (provider === "google") {
+    }
+    if (provider === "github") {
+      const res = await signIn("github", { redirect: false });
+      if (res?.error) {
+        toast.error(res.error);
+        console.error("GitHub sign-in error:", res.error);
+      } else {
+        console.log(res);
+      }
+    }
+  };
+
   return (
     <div className="relative z-10 w-full mx-auto">
       <h2 className="text-3xl font-bold text-white text-center mb-2 tracking-wide">
@@ -143,7 +157,7 @@ const Account = ({ type }: { type: string }) => {
           <Button
             variant="outline"
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
-            onClick={() => signIn("google")}
+            onClick={() => signInWithProvider("google")}
           >
             <Icon icon="logos:google-icon" />
             Google
@@ -151,7 +165,7 @@ const Account = ({ type }: { type: string }) => {
           <Button
             variant="outline"
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
-            onClick={() => signIn("github")}
+            onClick={() => signInWithProvider("github")}
           >
             <Icon icon="logos:github-icon" className="" />
             GitHub

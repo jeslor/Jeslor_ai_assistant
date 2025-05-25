@@ -8,8 +8,6 @@ import { comparePassword } from "./lib/helpers/user";
 import prisma from "./lib/prisma/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-
   providers: [
     Credentials({
       name: "Credentials",
