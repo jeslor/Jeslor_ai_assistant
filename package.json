@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.13",
+    "@auth/prisma-adapter": "^2.9.1",
     "@hookform/resolvers": "^5.0.1",
     "@lottiefiles/dotlottie-react": "^0.13.5",
     "@prisma/client": "^6.6.0",
