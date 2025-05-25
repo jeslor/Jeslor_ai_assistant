@@ -137,6 +137,27 @@ const Account = ({ type }: { type: string }) => {
           </Button>
         </form>
       </Form>
+      <div className="mt-5">
+        <p className="text-xm font-bold">Sign in with:</p>
+        <div className="flex items-center justify-center gap-4 mt-2">
+          <Button
+            variant="outline"
+            className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
+            onClick={() => signIn("google")}
+          >
+            <Icon icon="logos:google-icon" />
+            Google
+          </Button>
+          <Button
+            variant="outline"
+            className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
+            onClick={() => signIn("github")}
+          >
+            <Icon icon="logos:github-icon" className="" />
+            GitHub
+          </Button>
+        </div>
+      </div>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-slate-400/70">
