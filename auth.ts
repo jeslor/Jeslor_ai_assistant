@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import Google from "next-auth/providers/google";
 import { comparePassword } from "./lib/helpers/user";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -59,6 +59,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
       },
+    }),
+    Google({
+      clientId: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_ID,
+      clientSecret: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_SECRET,
     }),
   ],
   pages: {
