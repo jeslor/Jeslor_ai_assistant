@@ -65,8 +65,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_SECRET,
     }),
   ],
+
   pages: {
-    signIn: "/signin", // Custom sign-in page
+    signIn: "/sign_in", // Custom sign-in page
   },
   session: {
     strategy: "jwt",
