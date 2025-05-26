@@ -82,24 +82,34 @@ const Account = ({ type }: { type: string }) => {
   };
 
   const signInWithProvider = async (provider: string) => {
-    if (provider === "google") {
+    setSigningIn(true);
+    console.log("Signing in with provider:", provider);
+    if (session) {
+      console.log("User is already signed in:", session.user);
+      return;
     }
-    if (provider === "github") {
-      const res = await signIn("github", {
-        redirect: false,
-      });
-      if (res?.error) {
-        toast.error(res.error);
-        console.error("GitHub sign-in error:", res.error);
-      } else {
-        console.log(res);
-
-        console.log(session);
-
-        const user = session?.user;
-        console.log("GitHub sign-in successful:", user);
-        Router.push("/");
+    try {
+      if (provider === "google") {
       }
+      if (provider === "github") {
+        const res = await signIn("github", {
+          redirect: false,
+        });
+        if (res?.error) {
+          throw new Error(res.error);
+        } else {
+          console.log(res);
+          const userSession: any = session;
+          const user = userSession?.user;
+          console.log("GitHub sign-in successful:", user);
+          Router.push("/");
+        }
+      }
+    } catch (error) {
+      console.error(`Error signing in with ${provider}:`, error);
+      toast.error(`Failed to sign in with ${provider}`);
+    } finally {
+      setSigningIn(false);
     }
   };
 
@@ -169,6 +179,11 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("google")}
           >
+            {signingIn ? (
+              <Loading size={20} />
+            ) : (
+              <Icon icon="logos:google-icon" />
+            )}
             <Icon icon="logos:google-icon" />
             Google
           </Button>
@@ -177,7 +192,11 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("github")}
           >
-            <Icon icon="logos:github-icon" className="" />
+            {signingIn ? (
+              <Loading size={20} />
+            ) : (
+              <Icon icon="logos:github-icon" className="" />
+            )}
             GitHub
           </Button>
         </div>
