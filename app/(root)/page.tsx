@@ -1,14 +1,18 @@
 "use client";
+import React, { useState } from "react";
 import Agent from "@/components/Agent/Agent";
 import DottedCanvas from "@/components/DottedCanvas";
 import Interviews from "@/components/interviews/Interviews";
 import PositionInput from "@/components/postionInput/PositionInput";
 import Image from "next/image";
-import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 
 const page = () => {
+  const { data: session } = useSession();
   const [isAgent, setIsAgent] = useState(true);
   const [positionInput, setPositionInput] = useState("");
+
+  console.log("Session data:", session);
 
   return (
     <main className=" w-full pt-4">
