@@ -1,7 +1,9 @@
 "use client";
 import { create } from "zustand";
 import { findUserByEmail } from "@/lib/actions/user.action";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
+import prisma from "@/lib/prisma/prisma";
 
 interface UserStore {
   user: any;
@@ -16,8 +18,23 @@ const useUserStore = create<UserStore>((set) => ({
     if (loggedInUser.status === 200) {
       set({ user: loggedInUser.data });
     } else {
-      set({ user: null });
-      toast.error("User not found");
+      const { data: session } = useSession();
+      if (session?.user?.email) {
+        const saveUser = await prisma.user.create({
+          data: {
+            email: session.user.email,
+            username: session.user.name || "Anonymous",
+            profileImage: session.user.image || "",
+          },
+        });
+        if (saveUser) {
+          set({ user: saveUser });
+          return;
+        }
+      } else {
+        set({ user: null });
+        toast.error("User not found");
+      }
     }
   },
   clearUser: () => set({ user: null }),
