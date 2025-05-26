@@ -11,12 +11,14 @@ import FormInput from "@/components/FormInput";
 import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 import { signIn } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 type AccountFormData = z.infer<typeof accountValidator>;
 
 const Account = ({ type }: { type: string }) => {
+  const { data: session } = useSession();
   const Router = useRouter();
   const [signingIn, setSigningIn] = useState(false);
   const form = useForm<AccountFormData>({
@@ -83,12 +85,17 @@ const Account = ({ type }: { type: string }) => {
     if (provider === "google") {
     }
     if (provider === "github") {
-      const res = await signIn("github", { redirect: false });
+      const res = await signIn("github", {
+        redirect: false,
+      });
       if (res?.error) {
         toast.error(res.error);
         console.error("GitHub sign-in error:", res.error);
       } else {
-        console.log(res);
+        console.log(session);
+
+        const user = session?.user;
+        console.log("GitHub sign-in successful:", user);
       }
     }
   };
