@@ -20,7 +20,11 @@ type AccountFormData = z.infer<typeof accountValidator>;
 const Account = ({ type }: { type: string }) => {
   const { data: session } = useSession();
   const Router = useRouter();
-  const [signingIn, setSigningIn] = useState(false);
+  const [signingIn, setSigningIn] = useState({
+    signingInCredentials: false,
+    signingInGitHub: false,
+    signingInGoogle: false,
+  });
   const form = useForm<AccountFormData>({
     resolver: zodResolver(accountValidator),
     defaultValues: {
@@ -31,7 +35,11 @@ const Account = ({ type }: { type: string }) => {
   });
 
   const onSubmit = async (data: AccountFormData) => {
-    setSigningIn(true);
+    setSigningIn({
+      signingInCredentials: true,
+      signingInGitHub: false,
+      signingInGoogle: false,
+    });
 
     try {
       if (type === "sign_in") {
@@ -77,12 +85,15 @@ const Account = ({ type }: { type: string }) => {
     } catch (error) {
       console.error("Error during sign-in/sign-up:", error);
     } finally {
-      setSigningIn(false);
+      setSigningIn({
+        signingInCredentials: false,
+        signingInGitHub: false,
+        signingInGoogle: false,
+      });
     }
   };
 
   const signInWithProvider = async (provider: string) => {
-    setSigningIn(true);
     console.log("Signing in with provider:", provider);
     if (session) {
       console.log("User is already signed in:", session.user);
@@ -90,26 +101,31 @@ const Account = ({ type }: { type: string }) => {
     }
     try {
       if (provider === "google") {
+        setSigningIn({
+          signingInCredentials: false,
+          signingInGitHub: false,
+          signingInGoogle: true,
+        });
       }
       if (provider === "github") {
-        const res = await signIn("github", {
-          redirect: false,
+        setSigningIn({
+          signingInCredentials: false,
+          signingInGitHub: true,
+          signingInGoogle: false,
         });
-        if (res?.error) {
-          throw new Error(res.error);
-        } else {
-          console.log(res);
-          const userSession: any = session;
-          const user = userSession?.user;
-          console.log("GitHub sign-in successful:", user);
-          Router.push("/");
-        }
+        const res = await signIn("github");
+
+        console.log("GitHub sign-in response:", res);
       }
     } catch (error) {
       console.error(`Error signing in with ${provider}:`, error);
       toast.error(`Failed to sign in with ${provider}`);
     } finally {
-      setSigningIn(false);
+      setSigningIn({
+        signingInCredentials: false,
+        signingInGitHub: false,
+        signingInGoogle: false,
+      });
     }
   };
 
@@ -161,7 +177,7 @@ const Account = ({ type }: { type: string }) => {
             ) : (
               <span className="flex items-center gap-2">
                 Sign Up
-                {signingIn ? (
+                {signingIn.signingInCredentials ? (
                   <Loading size={20} />
                 ) : (
                   <Icon icon="ph:user-duotone" />
@@ -179,7 +195,7 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("google")}
           >
-            {signingIn ? (
+            {signingIn.signingInGoogle ? (
               <Loading size={20} />
             ) : (
               <Icon icon="logos:google-icon" />
@@ -192,7 +208,7 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("github")}
           >
-            {signingIn ? (
+            {signingIn.signingInGitHub ? (
               <Loading size={20} />
             ) : (
               <Icon icon="logos:github-icon" className="" />
