@@ -13,12 +13,10 @@ import Loading from "./ui/loading";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useSession } from "next-auth/react";
 
 type AccountFormData = z.infer<typeof accountValidator>;
 
 const Account = ({ type }: { type: string }) => {
-  const { data: session } = useSession();
   const Router = useRouter();
   const [signingIn, setSigningIn] = useState({
     signingInCredentials: false,
@@ -95,10 +93,6 @@ const Account = ({ type }: { type: string }) => {
 
   const signInWithProvider = async (provider: string) => {
     console.log("Signing in with provider:", provider);
-    if (session) {
-      console.log("User is already signed in:", session.user);
-      return;
-    }
     try {
       if (provider === "google") {
         setSigningIn({
