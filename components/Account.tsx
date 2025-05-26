@@ -22,7 +22,7 @@ const Account = ({ type }: { type: string }) => {
   const Router = useRouter();
   const [signingIn, setSigningIn] = useState({
     signingInCredentials: false,
-    signingInGitHbb: false,
+    signingInGitHub: false,
     signingInGoogle: false,
   });
   const form = useForm<AccountFormData>({
@@ -37,7 +37,7 @@ const Account = ({ type }: { type: string }) => {
   const onSubmit = async (data: AccountFormData) => {
     setSigningIn({
       signingInCredentials: true,
-      signingInGitHbb: false,
+      signingInGitHub: false,
       signingInGoogle: false,
     });
 
@@ -87,7 +87,7 @@ const Account = ({ type }: { type: string }) => {
     } finally {
       setSigningIn({
         signingInCredentials: false,
-        signingInGitHbb: false,
+        signingInGitHub: false,
         signingInGoogle: false,
       });
     }
@@ -103,14 +103,14 @@ const Account = ({ type }: { type: string }) => {
       if (provider === "google") {
         setSigningIn({
           signingInCredentials: false,
-          signingInGitHbb: false,
+          signingInGitHub: false,
           signingInGoogle: true,
         });
       }
       if (provider === "github") {
         setSigningIn({
           signingInCredentials: false,
-          signingInGitHbb: true,
+          signingInGitHub: true,
           signingInGoogle: false,
         });
         const res = await signIn("github");
@@ -123,7 +123,7 @@ const Account = ({ type }: { type: string }) => {
     } finally {
       setSigningIn({
         signingInCredentials: false,
-        signingInGitHbb: false,
+        signingInGitHub: false,
         signingInGoogle: false,
       });
     }
@@ -177,7 +177,7 @@ const Account = ({ type }: { type: string }) => {
             ) : (
               <span className="flex items-center gap-2">
                 Sign Up
-                {signingIn ? (
+                {signingIn.signingInCredentials ? (
                   <Loading size={20} />
                 ) : (
                   <Icon icon="ph:user-duotone" />
@@ -195,7 +195,7 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("google")}
           >
-            {signingIn ? (
+            {signingIn.signingInGoogle ? (
               <Loading size={20} />
             ) : (
               <Icon icon="logos:google-icon" />
@@ -208,7 +208,7 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("github")}
           >
-            {signingIn ? (
+            {signingIn.signingInGitHub ? (
               <Loading size={20} />
             ) : (
               <Icon icon="logos:github-icon" className="" />
