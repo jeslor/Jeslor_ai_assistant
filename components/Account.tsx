@@ -168,7 +168,7 @@ const Account = ({ type }: { type: string }) => {
             {type === "sign_in" ? (
               <span className="flex items-center gap-2">
                 Sign In{" "}
-                {signingIn ? (
+                {signingIn.signingInCredentials ? (
                   <Loading size={20} />
                 ) : (
                   <Icon icon="hugeicons:login-method" />
