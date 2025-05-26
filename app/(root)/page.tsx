@@ -8,11 +8,8 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 
 const page = () => {
-  const { data: session } = useSession();
   const [isAgent, setIsAgent] = useState(true);
   const [positionInput, setPositionInput] = useState("");
-
-  console.log("Session data:", session);
 
   return (
     <main className=" w-full pt-4">
