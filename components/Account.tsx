@@ -92,10 +92,13 @@ const Account = ({ type }: { type: string }) => {
         toast.error(res.error);
         console.error("GitHub sign-in error:", res.error);
       } else {
+        console.log(res);
+
         console.log(session);
 
         const user = session?.user;
         console.log("GitHub sign-in successful:", user);
+        Router.push("/");
       }
     }
   };
