@@ -8,8 +8,6 @@ export const POST = async (req: Request) => {
     const { type, role, level, techstack, totalQuestions, userid, company } =
       await req.json();
 
-    console.log(totalQuestions);
-
     let totalQuestionsInt = parseInt(totalQuestions, 10);
     if (
       isNaN(totalQuestionsInt) ||
