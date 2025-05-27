@@ -19,22 +19,22 @@ const useUserStore = create<UserStore>((set) => ({
       set({ user: loggedInUser.data });
     } else {
       const { data: session } = useSession();
-      if (session?.user?.email) {
-        const saveUser = await prisma.user.create({
-          data: {
-            email: session.user.email,
-            username: session.user.name || "Anonymous",
-            profileImage: session.user.image || "",
-          },
-        });
-        if (saveUser) {
-          set({ user: saveUser });
-          return;
-        }
-      } else {
-        set({ user: null });
-        toast.error("User not found");
-      }
+      // if (session?.user?.email) {
+      //   const saveUser = await prisma.user.create({
+      //     data: {
+      //       email: session.user.email,
+      //       username: session.user.name || "Anonymous",
+      //       profileImage: session.user.image || "",
+      //     },
+      //   });
+      //   if (saveUser) {
+      //     set({ user: saveUser });
+      //     return;
+      //   }
+      // } else {
+      set({ user: null });
+      toast.error("User not found");
+      // }
     }
   },
   clearUser: () => set({ user: null }),
