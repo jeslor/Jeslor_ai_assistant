@@ -85,8 +85,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       if (user) {
-        console.log(process.env.NEXTAUTH_URL);
-
         try {
           const res = await fetch(
             `${process.env.NEXTAUTH_URL}/api/auth/findUser`,
@@ -97,9 +95,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               }),
             }
           );
-          const isUserExists = await res.json();
-
-          console.log(isUserExists);
+          const { message, status } = await res.json();
+          if (status > 200 && message === "User not found") {
+          }
         } catch (error) {}
       }
       return true;
