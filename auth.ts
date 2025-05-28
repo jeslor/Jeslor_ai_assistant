@@ -6,7 +6,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import { comparePassword } from "./lib/helpers/user";
 import prisma from "./lib/prisma/prisma";
-import { profile } from "console";
+import { error, profile } from "console";
 import { findUserByEmail } from "./lib/actions/user.action";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -95,10 +95,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               }),
             }
           );
-          const { message, status } = await res.json();
-          if (status > 200 && message === "User not found") {
+
+          const { error, status } = await res.json();
+
+          if (status > 200 && error === "User not found") {
+            await fetch(`${process.env.NEXTAUTH_URL}/api/auth/register`, {
+              method: "POST",
+              body: JSON.stringify({
+                email: user.email,
+                username: user.name,
+                profileImage: user.image,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                console.log(data);
+
+                if (data.status === 200) {
+                  console.log(data);
+                } else {
+                  throw new Error(data.error);
+                }
+              });
           }
-        } catch (error) {}
+        } catch (error) {
+          console.log(error);
+        }
       }
       return true;
     },
