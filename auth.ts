@@ -6,6 +6,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import { comparePassword } from "./lib/helpers/user";
 import prisma from "./lib/prisma/prisma";
+import { profile } from "console";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -68,7 +69,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_ID,
       clientSecret: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_SECRET,
     }),
-    GitHub,
+    GitHub({
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name || profile.login,
+          email: profile.email,
+          image: profile.avatar_url,
+        };
+      },
+    }),
   ],
 
   pages: {

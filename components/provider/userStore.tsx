@@ -18,7 +18,6 @@ const useUserStore = create<UserStore>((set) => ({
     if (loggedInUser.status === 200) {
       set({ user: loggedInUser.data });
     } else {
-      const { data: session } = useSession();
       set({ user: null });
       toast.error("User not found");
     }
