@@ -1,9 +1,7 @@
 "use client";
 import { create } from "zustand";
 import { findUserByEmail } from "@/lib/actions/user.action";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import prisma from "@/lib/prisma/prisma";
 
 interface UserStore {
   user: any;

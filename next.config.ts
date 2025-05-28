@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
       {
         hostname: "logo.clearbit.com",
       },
+      {
+        hostname: "avatars.githubusercontent.com",
+      },
+      {
+        hostname: "lh3.googleusercontent.com",
+      },
     ],
   },
 };

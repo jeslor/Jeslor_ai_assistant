@@ -6,7 +6,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import { comparePassword } from "./lib/helpers/user";
 import prisma from "./lib/prisma/prisma";
-import { profile } from "console";
+import { error, profile } from "console";
+import { findUserByEmail } from "./lib/actions/user.action";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -80,6 +81,51 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      if (user) {
+        try {
+          const res = await fetch(
+            `${process.env.NEXTAUTH_URL}/api/auth/findUser`,
+            {
+              method: "POST",
+              body: JSON.stringify({
+                email: user.email,
+              }),
+            }
+          );
+
+          const { error, status } = await res.json();
+
+          if (status > 200 && error === "User not found") {
+            await fetch(`${process.env.NEXTAUTH_URL}/api/auth/register`, {
+              method: "POST",
+              body: JSON.stringify({
+                email: user.email,
+                username: user.name,
+                profileImage: user.image,
+                isGitHub: true,
+              }),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                console.log(data);
+
+                if (data.status === 200) {
+                  console.log(data);
+                } else {
+                  throw new Error(data.error);
+                }
+              });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      return true;
+    },
+  },
 
   pages: {
     signIn: "/sign_in", // Custom sign-in page
