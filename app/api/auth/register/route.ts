@@ -7,35 +7,56 @@ import { accountValidator } from "@/lib/validators/account.validator";
 export const POST = async (req: Request) => {
   const body = await req.json();
 
-  const { email, password, username } = accountValidator.parse(body);
-
   try {
     await prisma.$connect();
     const userExists = await prisma.user.findUnique({
       where: {
-        email,
+        email: body.email,
       },
     });
     if (userExists) {
       return NextResponse.json({ error: "User already exists", status: 409 });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("reached here ****************");
 
-    const user = await prisma.user.create({
-      data: {
-        email,
-        hashedPassword,
-        username,
-      },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    let user;
+    if (body.isGitHub || body.isGoogle) {
+      user = await prisma.user.create({
+        data: {
+          email: body.email,
+          username: body.username,
+          profileImage: body.profileImage || null,
+        },
+        select: {
+          id: true,
+          email: true,
+          profileImage: true,
+          username: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } else {
+      const { email, password, username } = accountValidator.parse(body);
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      user = await prisma.user.create({
+        data: {
+          email: body.email,
+          hashedPassword,
+          username: body.username,
+          profileImage: body.profileImage || null,
+        },
+        select: {
+          id: true,
+          email: true,
+          profileImage: true,
+          username: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    }
+
     return NextResponse.json({ user, status: 200 });
   } catch (error: any) {
     if (error instanceof z.ZodError) {

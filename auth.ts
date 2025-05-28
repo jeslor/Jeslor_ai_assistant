@@ -105,6 +105,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 email: user.email,
                 username: user.name,
                 profileImage: user.image,
+                isGitHub: true,
               }),
             })
               .then((res) => res.json())
