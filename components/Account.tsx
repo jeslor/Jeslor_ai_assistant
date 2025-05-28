@@ -108,7 +108,6 @@ const Account = ({ type }: { type: string }) => {
           signingInGoogle: false,
         });
         const res = await signIn("github");
-
         console.log("GitHub sign-in response:", res);
       }
     } catch (error) {
