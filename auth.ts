@@ -7,6 +7,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { comparePassword } from "./lib/helpers/user";
 import prisma from "./lib/prisma/prisma";
 import { profile } from "console";
+import { findUserByEmail } from "./lib/actions/user.action";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -80,6 +81,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      if (user) {
+        console.log(process.env.NEXTAUTH_URL);
+
+        try {
+          const res = await fetch(
+            `${process.env.NEXTAUTH_URL}/api/auth/findUser`,
+            {
+              method: "POST",
+              body: JSON.stringify({
+                email: user.email,
+              }),
+            }
+          );
+          const isUserExists = await res.json();
+
+          console.log(isUserExists);
+        } catch (error) {}
+      }
+      return true;
+    },
+  },
 
   pages: {
     signIn: "/sign_in", // Custom sign-in page
