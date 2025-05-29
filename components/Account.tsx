@@ -92,7 +92,6 @@ const Account = ({ type }: { type: string }) => {
   };
 
   const signInWithProvider = async (provider: string) => {
-    console.log("Signing in with provider:", provider);
     try {
       if (provider === "google") {
         setSigningIn({
@@ -100,6 +99,7 @@ const Account = ({ type }: { type: string }) => {
           signingInGitHub: false,
           signingInGoogle: true,
         });
+        const res = await signIn("google");
       }
       if (provider === "github") {
         setSigningIn({
@@ -193,7 +193,6 @@ const Account = ({ type }: { type: string }) => {
             ) : (
               <Icon icon="logos:google-icon" />
             )}
-            <Icon icon="logos:google-icon" />
             Google
           </Button>
           <Button
