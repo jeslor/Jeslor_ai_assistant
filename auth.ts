@@ -2,12 +2,8 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import { comparePassword } from "./lib/helpers/user";
-import prisma from "./lib/prisma/prisma";
-import { error, profile } from "console";
-import { findUserByEmail } from "./lib/actions/user.action";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -69,6 +65,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_ID,
       clientSecret: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     GitHub({
       profile(profile) {
