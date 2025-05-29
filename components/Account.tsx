@@ -125,12 +125,12 @@ const Account = ({ type }: { type: string }) => {
   return (
     <div className="relative z-10 w-full mx-auto">
       <h2 className="text-3xl font-bold text-white text-center mb-2 tracking-wide">
-        {type === "sign_in" ? "Welcome Back" : "Create an Account"}
+        {type === "sign_in" ? "Welcome" : "Create an Account"}
       </h2>
       <p className="text-small text-slate-200/55 text-center mb-10">
         {type === "sign_in"
-          ? "Manage your account,create new projects and more."
-          : "Join us to unlock the full potential of our platform."}
+          ? "Login to generate, practice or attend and interviews."
+          : "Create an account to generate, practice or attend interviews."}
       </p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
