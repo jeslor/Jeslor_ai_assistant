@@ -45,9 +45,8 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   const [chats, setChats] = useState<any[]>([]);
   const [isGenerateFeedback, setIsGenerateFeedback] = useState(false);
 
+  let lastTranscript = "";
   useEffect(() => {
-    let lastTranscript = "";
-
     const onCallStart = () => {
       setStatus(AgentStatus.active);
     };
