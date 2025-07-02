@@ -120,6 +120,8 @@ export const generateInterviewFromChat = async ({ userId, chats }: any) => {
       },
     });
 
+    console.log("interview", interview);
+
     if (!interview) {
       throw new Error("Interview not created");
     }
