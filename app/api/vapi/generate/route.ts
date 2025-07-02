@@ -41,16 +41,12 @@ export const POST = async (req: Request) => {
     `,
     });
 
-    console.log("Company URL found:", questions);
-
     const user = await prisma.user.findUnique({
       where: {
         id: userid,
       },
     });
     if (!user) {
-      console.log("User not found");
-
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
     const interview = await prisma.interview.create({

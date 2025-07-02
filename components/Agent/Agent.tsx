@@ -140,8 +140,6 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   };
 
   const handleGenerateInterview = async (chats: any) => {
-    console.log("Generating interview with chats:", chats);
-
     try {
       setIsSaving(true);
       const savedInterview: any = await generateInterviewFromChat({
