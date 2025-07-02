@@ -184,7 +184,6 @@ export const getInterviewsByUser = async (userId: string, page: number) => {
 };
 
 export const getInterviewsNotByUser = async (userId: string, page: number) => {
-  console.log("this code ran not by user");
   const limit = 12;
   const skip = page * limit;
 
