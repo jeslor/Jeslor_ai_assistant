@@ -5,7 +5,7 @@ import useUserStore from "../provider/userStore";
 import { vapi } from "@/lib/vapi.sdk";
 import { motion } from "framer-motion";
 import CallVisualizer from "../BarEqualizers";
-import { interviewer } from "@/constants";
+import { interviewer, interviewGenerator } from "@/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveFeedBack } from "@/lib/actions/feedback.actions";
@@ -96,10 +96,15 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       if (status === "inactive" || status === "completed") {
         setStatus(AgentStatus.connecting);
         if (agentType === "newInterview") {
-          await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+          // await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+          //   variableValues: {
+          //     username: user?.username,
+          //     userid: user?.id,
+          //   },
+          // });
+          await vapi.start(interviewGenerator, {
             variableValues: {
-              username: user?.username,
-              userid: user?.id,
+              username: user?.username || "Guest",
             },
           });
           setStatus(AgentStatus.active);
