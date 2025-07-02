@@ -9,6 +9,7 @@ import { interviewer, interviewGenerator } from "@/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveFeedBack } from "@/lib/actions/feedback.actions";
+import { generateInterviewFromChat } from "@/lib/actions/interview.actions";
 import AiButton from "../AiButton";
 import LoadingContent from "../Loaders/Loaded";
 
@@ -138,10 +139,30 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     }
   };
 
+  const handleGenerateInterview = async (chats: any) => {
+    try {
+      setIsSaving(true);
+      const savedInterview: any = await generateInterviewFromChat(
+        chats,
+        user?.id
+      );
+      if (savedInterview.status === 200) {
+        Router.push(`/interviews/${savedInterview.data.id}`);
+      } else {
+        throw new Error(savedInterview.message);
+      }
+    } catch (error) {
+      console.error("Error generating interview:", error);
+      toast.error("Error generating interview");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   useEffect(() => {
     if (status === "completed") {
       if (agentType === "newInterview") {
-        Router.push("/interviews");
+        handleGenerateInterview(chats);
       } else {
         const userAlreadyHasFeedback = user.feedbacks.some(
           (feedback: any) => feedback.interviewId === interview?.id

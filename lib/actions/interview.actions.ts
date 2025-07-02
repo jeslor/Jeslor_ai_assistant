@@ -80,6 +80,11 @@ export const createInterview = async (data: InterviewProps) => {
   }
 };
 
+export const generateInterviewFromChat = async (userId: string, data: any) => {
+  try {
+  } catch (error) {}
+};
+
 export const getInterviewsByUser = async (userId: string, page: number) => {
   const limit = 12;
   const skip = page * limit;
