@@ -5,10 +5,11 @@ import useUserStore from "../provider/userStore";
 import { vapi } from "@/lib/vapi.sdk";
 import { motion } from "framer-motion";
 import CallVisualizer from "../BarEqualizers";
-import { interviewer } from "@/constants";
+import { interviewer, interviewGenerator } from "@/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { saveFeedBack } from "@/lib/actions/feedback.actions";
+import { generateInterviewFromChat } from "@/lib/actions/interview.actions";
 import AiButton from "../AiButton";
 import LoadingContent from "../Loaders/Loaded";
 
@@ -96,10 +97,15 @@ const Agent = ({ interview, agentType }: AgentProps) => {
       if (status === "inactive" || status === "completed") {
         setStatus(AgentStatus.connecting);
         if (agentType === "newInterview") {
-          await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+          // await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+          //   variableValues: {
+          //     username: user?.username,
+          //     userid: user?.id,
+          //   },
+          // });
+          await vapi.start(interviewGenerator, {
             variableValues: {
-              username: user?.username,
-              userid: user?.id,
+              username: user?.username || "Guest",
             },
           });
           setStatus(AgentStatus.active);
@@ -133,10 +139,33 @@ const Agent = ({ interview, agentType }: AgentProps) => {
     }
   };
 
+  const handleGenerateInterview = async (chats: any) => {
+    console.log("Generating interview with chats:", chats);
+
+    try {
+      setIsSaving(true);
+      const savedInterview: any = await generateInterviewFromChat({
+        chats,
+        userId: user?.id,
+      });
+      if (savedInterview.status === 200) {
+        Router.push(`/interviews}`);
+      } else {
+        throw new Error(savedInterview.message);
+      }
+    } catch (error) {
+      console.error("Error generating interview:", error);
+      toast.error("Error generating interview");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   useEffect(() => {
     if (status === "completed") {
       if (agentType === "newInterview") {
-        Router.push("/interviews");
+        // Router.push("/interviews");
+        handleGenerateInterview(chats);
       } else {
         const userAlreadyHasFeedback = user.feedbacks.some(
           (feedback: any) => feedback.interviewId === interview?.id
