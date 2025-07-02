@@ -80,8 +80,34 @@ export const createInterview = async (data: InterviewProps) => {
   }
 };
 
-export const generateInterviewFromChat = async (userId: string, data: any) => {
+export const generateInterviewFromChat = async ({ userId, chats }: any) => {
+  console.log(chats, "chats from generateInterviewFromChat");
+
+  const transformedScript = chats
+    .map(
+      (sentence: { role: string; content: string }) =>
+        `-${sentence.role}: ${sentence.content} \n`
+    )
+    .join("");
   try {
+    let { text: newInterview } = await generateText({
+      model: google("gemini-2.0-flash-001"),
+      prompt: `Go through this  chat data ${transformedScript} carefully and generate an object having the following properties:
+      {
+        role: "the role you found in the chat",
+        type: "the type of interview you found in the chat, make sure the type is either technical, mixed or behavioral",
+        level: "the level of the position you found in the chat, make sure the level is either junior, mid-level, senior or any other level you found in the chat",
+        company: "the company website you found in the chat, make sure the company is a valid website",
+        techstack: "the tech stack you found in the chat, make sure the tech stack is an array of technologies and tools used in the job",
+        totalQuestions: "the total number of questions you found in the chat, make sure the total number of questions is a number between 3 and 10",
+
+      },
+      Thank you very much!!!
+
+      `,
+    });
+
+    console.log("newInterview", newInterview);
   } catch (error) {}
 };
 

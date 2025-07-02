@@ -140,14 +140,16 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   };
 
   const handleGenerateInterview = async (chats: any) => {
+    console.log("Generating interview with chats:", chats);
+
     try {
       setIsSaving(true);
-      const savedInterview: any = await generateInterviewFromChat(
+      const savedInterview: any = await generateInterviewFromChat({
         chats,
-        user?.id
-      );
+        userId: user?.id,
+      });
       if (savedInterview.status === 200) {
-        Router.push(`/interviews/${savedInterview.data.id}`);
+        Router.push(`/interviews}`);
       } else {
         throw new Error(savedInterview.message);
       }
@@ -162,6 +164,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
   useEffect(() => {
     if (status === "completed") {
       if (agentType === "newInterview") {
+        // Router.push("/interviews");
         handleGenerateInterview(chats);
       } else {
         const userAlreadyHasFeedback = user.feedbacks.some(
