@@ -81,8 +81,6 @@ export const createInterview = async (data: InterviewProps) => {
 };
 
 export const generateInterviewFromChat = async ({ userId, chats }: any) => {
-  console.log(chats, "chats from generateInterviewFromChat");
-
   const transformedScript = chats
     .map(
       (sentence: { role: string; content: string }) =>
@@ -99,16 +97,48 @@ export const generateInterviewFromChat = async ({ userId, chats }: any) => {
         level: "the level of the position you found in the chat, make sure the level is either junior, mid-level, senior or any other level you found in the chat",
         company: "the company website you found in the chat, make sure the company is a valid website",
         techstack: "the tech stack you found in the chat, make sure the tech stack is an array of technologies and tools used in the job",
-        totalQuestions: "the total number of questions you found in the chat, make sure the total number of questions is a number between 3 and 10",
-
+        questions: "Generate a list of questions based on the chat, make sure the questions are professional and related to the role, type, level of the position and let the total number of questions be the total the user suggested in the chat, return only an array of questions like this: ['Question 1', 'Question 2', 'Question 3'], the questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant. Furthermore, make sure the questions are not too long and are easy to understand.",
       },
       Thank you very much!!!
 
       `,
     });
 
-    console.log("newInterview", newInterview);
-  } catch (error) {}
+    newInterview = cleanAIJsonResponse(newInterview);
+    const newInterviewParsed = JSON.parse(newInterview);
+
+    const interview = await prisma.interview.create({
+      data: {
+        userId,
+        company: newInterviewParsed.company,
+        role: newInterviewParsed.role,
+        techstack: newInterviewParsed.techstack,
+        questions: newInterviewParsed.questions,
+        type: newInterviewParsed.type,
+        level: newInterviewParsed.level,
+        finalized: false,
+      },
+    });
+
+    if (!interview) {
+      throw new Error("Interview not created");
+    }
+    return {
+      message: "Interview created successfully",
+      status: 200,
+      data: {
+        ...interview,
+        questions: interview.questions.length,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating interview from chat:", error);
+    return {
+      message: `Internal server error: ${error}`,
+      status: 500,
+      data: null,
+    };
+  }
 };
 
 export const getInterviewsByUser = async (userId: string, page: number) => {
