@@ -120,8 +120,6 @@ export const generateInterviewFromChat = async ({ userId, chats }: any) => {
       },
     });
 
-    console.log("interview", interview);
-
     if (!interview) {
       throw new Error("Interview not created");
     }
@@ -134,7 +132,6 @@ export const generateInterviewFromChat = async ({ userId, chats }: any) => {
       },
     };
   } catch (error) {
-    console.error("Error generating interview from chat:", error);
     return {
       message: `Internal server error: ${error}`,
       status: 500,
