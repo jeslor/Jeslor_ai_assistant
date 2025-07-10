@@ -147,7 +147,7 @@ const Agent = ({ interview, agentType }: AgentProps) => {
         userId: user?.id,
       });
       if (savedInterview.status === 200) {
-        Router.push(`/interviews}`);
+        Router.push("/interviews");
       } else {
         throw new Error(savedInterview.message);
       }
