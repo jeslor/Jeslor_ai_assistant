@@ -9,7 +9,7 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
     const transformedScript = chats
       .map(
         (sentence: { role: string; content: string }) =>
-          `-${sentence.role}: ${sentence.content} \n`
+          `-${sentence.role}: ${sentence.content} \n`,
       )
       .join("");
 
@@ -22,7 +22,7 @@ export const saveFeedBack = async ({ chats, interviewId, userId }: any) => {
         finalAssessment,
       },
     } = await generateObject({
-      model: google("gemini-2.0-flash-001", {
+      model: google("gemini-2.5-flash", {
         structuredOutputs: false,
       }),
       schema: feedbackSchema,

@@ -19,12 +19,12 @@ export const createInterview = async (data: InterviewProps) => {
       data;
 
     const { text: companyUrl } = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
     });
 
     let { text: questions } = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `Prepare ${totalQuestions} questions for a job interview, let the questions be not so long but professional depending on the level provided here ${level}.
         The job description from the job listing platform is ${jobDescription}.
         The job experience level is ${level}.
@@ -84,12 +84,12 @@ export const generateInterviewFromChat = async ({ userId, chats }: any) => {
   const transformedScript = chats
     .map(
       (sentence: { role: string; content: string }) =>
-        `-${sentence.role}: ${sentence.content} \n`
+        `-${sentence.role}: ${sentence.content} \n`,
     )
     .join("");
   try {
     let { text: newInterview } = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `Go through this  chat data ${transformedScript} carefully and generate an object having the following properties:
       {
         role: "the role you found in the chat",
