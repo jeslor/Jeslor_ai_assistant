@@ -18,7 +18,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
   useEffect(() => {
     if (user?.feedbacks) {
       const interviewFeedback = user.feedbacks.find(
-        (feedback: any) => feedback.interviewId === interview.id
+        (feedback: any) => feedback.interviewId === interview.id,
       );
       if (interviewFeedback) {
         setFeedback(interviewFeedback);
@@ -30,7 +30,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
   }, [user, interview.id]);
 
   const retakeInterview = user?.feedbacks?.some(
-    (feedback: any) => feedback.interviewId === interview.id
+    (feedback: any) => feedback.interviewId === interview.id,
   );
 
   const handleDeleteInterview = async () => {
@@ -69,7 +69,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
             extraClasses=" bg-dark1/70 text-white"
           />
         </div>
-      </div>
+      </div>,
     );
   };
 
@@ -90,9 +90,9 @@ const InterviewCard = ({ interview, sectionId }: any) => {
         <div className="flex  gap-x-3 items-center pt-5">
           <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
             <img
-              src={`https://logo.clearbit.com/${refactorCompany(
-                interview.company
-              )}`}
+              src={`https://img.logokit.com/${refactorCompany(
+                interview.company,
+              )}?token=${process.env.NEXT_PUBLIC_LOGO_TOKEN}&size=80x80&format=png`}
               alt={refactorCompany(interview.company)}
               className="w-full h-full rounded-full  object-fit"
             />
@@ -101,8 +101,8 @@ const InterviewCard = ({ interview, sectionId }: any) => {
             {interview.role.toLowerCase().includes("front end")
               ? interview.role.replace("front end", "Frontend")
               : interview.role.toLowerCase().includes("back end")
-              ? interview.role.replace("back end", "Backend")
-              : interview.role}
+                ? interview.role.replace("back end", "Backend")
+                : interview.role}
           </h2>
         </div>
         <p className="text-primary1/50 font-semibold uppercase text-[12px] mb-2 ">
@@ -139,7 +139,7 @@ const InterviewCard = ({ interview, sectionId }: any) => {
             <AiButton
               onPress={() =>
                 Router.push(
-                  `/interviews/${interview.id}/feedbacks/${feedback.id}`
+                  `/interviews/${interview.id}/feedbacks/${feedback.id}`,
                 )
               }
               title="Feedback"
