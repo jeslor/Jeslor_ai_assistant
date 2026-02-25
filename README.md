@@ -38,35 +38,123 @@ yarn install
 
 ### 3. Set up environment variables
 
-Create a `.env.local` file at the root of the project and add your keys:
+Create a `.env.local` file at the root of the project and add all required keys:
 
 ```env
-NEXT_PUBLIC_LOGO_TOKEN=your_logokit_token_here
-# ...other env variables
+# ── Database ──────────────────────────────────────────────────────────────────
+DATABASE_URL=your_mongodb_connection_string
+
+# ── NextAuth ──────────────────────────────────────────────────────────────────
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret
+
+# ── Google OAuth ──────────────────────────────────────────────────────────────
+AUTH_WEBAPP_GOOGLE_CLIENT_ID=your_google_client_id
+AUTH_WEBAPP_GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# ── GitHub OAuth ──────────────────────────────────────────────────────────────
+AUTH_GITHUB_ID=your_github_oauth_app_id
+AUTH_GITHUB_SECRET=your_github_oauth_app_secret
+
+# ── Google Gemini AI ──────────────────────────────────────────────────────────
+GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_api_key
+
+# ── Vapi (client-side) ────────────────────────────────────────────────────────
+NEXT_PUBLIC_VAPI_WEB_TOKEN=your_vapi_web_token
+
+# ── LogoKit (client-side) ─────────────────────────────────────────────────────
+NEXT_PUBLIC_LOGO_TOKEN=your_logokit_token
 ```
 
 ---
 
-## 🖼️ LogoKit Setup
+## 🔑 Environment Variables Guide
 
-This project uses [LogoKit](https://logokit.com) to display company logos on interview cards.
+### `DATABASE_URL` — MongoDB Connection String
 
-### Steps to get your LogoKit token
+This project uses **MongoDB** via **Prisma**.
 
-1. Go to [https://logokit.com](https://logokit.com) and click **Sign Up**.
-2. Create an account using your email or a social login.
-3. Once logged in, navigate to your **Dashboard**.
-4. Locate your **API Token** (sometimes listed under _Settings_ or _API Keys_).
-5. Copy the token and paste it into your `.env.local` file:
+1. Go to [https://cloud.mongodb.com](https://cloud.mongodb.com) and create a free account.
+2. Create a new **Cluster** (the free M0 tier is sufficient).
+3. Under **Database Access**, create a new database user with a username and password.
+4. Under **Network Access**, add `0.0.0.0/0` to allow connections from anywhere (or restrict to your IP).
+5. Click **Connect** on your cluster → **Drivers** → copy the connection string.
+6. Replace `<password>` with your database user's password and append your database name:
 
-```env
-NEXT_PUBLIC_LOGO_TOKEN=your_token_here
+```
+DATABASE_URL="mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/your_db_name?retryWrites=true&w=majority"
 ```
 
-> **Note:** The `NEXT_PUBLIC_` prefix is required for the token to be accessible in the browser (client-side components). Without it, Next.js will strip the value and it will appear as `undefined`.
+---
+
+### `NEXTAUTH_URL` & `NEXTAUTH_SECRET` — NextAuth.js
+
+- **`NEXTAUTH_URL`**: The canonical URL of your app. Use `http://localhost:3000` for local development and your production domain when deployed.
+- **`NEXTAUTH_SECRET`**: A random secret used to sign and encrypt JWTs. Generate one with:
+
+```bash
+openssl rand -base64 32
+```
+
+---
+
+### `AUTH_WEBAPP_GOOGLE_CLIENT_ID` & `AUTH_WEBAPP_GOOGLE_CLIENT_SECRET` — Google OAuth
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project (or select an existing one).
+3. Navigate to **APIs & Services** → **Credentials** → **Create Credentials** → **OAuth 2.0 Client IDs**.
+4. Set the application type to **Web application**.
+5. Under **Authorized redirect URIs**, add:
+   - `http://localhost:3000/api/auth/callback/google` (local)
+   - `https://your-domain.com/api/auth/callback/google` (production)
+6. Copy the **Client ID** and **Client Secret**.
+
+---
+
+### `AUTH_GITHUB_ID` & `AUTH_GITHUB_SECRET` — GitHub OAuth
+
+1. Go to [https://github.com/settings/developers](https://github.com/settings/developers).
+2. Click **New OAuth App**.
+3. Fill in the details:
+   - **Homepage URL**: `http://localhost:3000`
+   - **Authorization callback URL**: `http://localhost:3000/api/auth/callback/github`
+4. Click **Register application**.
+5. Copy the **Client ID** and generate a **Client Secret**.
+
+---
+
+### `GOOGLE_GENERATIVE_AI_API_KEY` — Google Gemini AI
+
+This key is used by the `@ai-sdk/google` package to generate interview questions and analyse feedback via the Gemini model.
+
+1. Go to [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey).
+2. Click **Create API key**.
+3. Copy the key and paste it as `GOOGLE_GENERATIVE_AI_API_KEY`.
+
+---
+
+### `NEXT_PUBLIC_VAPI_WEB_TOKEN` — Vapi Voice AI
+
+1. Go to [https://dashboard.vapi.ai](https://dashboard.vapi.ai) and sign up.
+2. From the dashboard, navigate to **API Keys** or **Settings**.
+3. Copy your **Web Token** (the public/client-side token, not the private API key).
+
+> **Note:** The `NEXT_PUBLIC_` prefix exposes this value to the browser. Never use your private Vapi API key here.
+
+---
+
+### `NEXT_PUBLIC_LOGO_TOKEN` — LogoKit
+
+Used to display company logos on interview cards.
+
+1. Go to [https://logokit.com](https://logokit.com) and click **Sign Up**.
+2. Once logged in, navigate to your **Dashboard** → **API Keys** (or **Settings**).
+3. Copy your **API Token**.
 
 Logo URLs are constructed like this:
 
 ```
 https://img.logokit.com/{company-name}?token=YOUR_TOKEN&size=80x80&format=png
 ```
+
+> **Note:** The `NEXT_PUBLIC_` prefix is required so the token is accessible in client-side components.
