@@ -1,30 +1,40 @@
 # 🤖 Jeslor AI Assistant
 
-A simple AI chatbot built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Gemini API**, **Vercel AI SDK**, and **Vapi** for voice input/output. 💬
+Jeslor-assistant is a voice-enabled AI chatbot built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Google Gemini API**, **Vapi**, **Vercel AI SDK**, and **NextAuth**. It simulates mock technical interviews using voice or text.
+
+ <a href="https://www.assistant.jeslor.com" target="_blank" rel="noopener noreferrer">🌐 Try Demo</a>
+---
 
 ## ✨ Features
 
-- 💡 Google Gemini-powered responses
-- ⚡ Streamed replies via Vercel AI SDK
-- 🎨 Beautiful UI with Tailwind CSS
-- 🔊 Optional voice interaction via Vapi
-- 🌐 Easily deployable to Vercel
+- 💡 AI-powered by Google Gemini
+- 🎙️ Voice conversations via Vapi
+- 🧠 Collects mock interview setup data
+- 🔐 Auth via NextAuth.js (Credentials, github and google)
+- 🎨 Styled with Tailwind CSS
+- ⚡ Streamed responses using Vercel AI SDK
+- ☁️ Easy to deploy on Vercel
+
+---
 
 ## 🛠️ Tech Stack
 
 - [Next.js](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Gemini API](https://ai.google.dev/)
+- [Google Generative AI (Gemini)](https://ai.google.dev/)
 - [Vercel AI SDK](https://vercel.com/docs/ai)
 - [Vapi](https://vapi.ai/)
+- [NextAuth.js](https://next-auth.js.org/)
+
+---
 
 ## 🚀 Getting Started
 
-### 1. Clone the repo
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/jeslor_ai_assistant.git
+git clone https://github.com/jeslor/jeslor_ai_assistant.git
 cd jeslor_ai_assistant
 ```
 
