@@ -20,12 +20,12 @@ export const POST = async (req: Request) => {
     }
 
     const { text: questions2 } = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `search the web and find the url of the company ${company}, please make sure you return only the root url and nothing else. If no url is found, return "".`,
     });
 
     const { text: questions } = await generateText({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-flash"),
       prompt: `Prepare questions for a job interview.
         The job role is ${role}.
         The job experience level is ${level}.
@@ -71,7 +71,7 @@ export const POST = async (req: Request) => {
     console.error("Error creating interview:", error);
     return NextResponse.json(
       { message: "Internal server error", error },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
