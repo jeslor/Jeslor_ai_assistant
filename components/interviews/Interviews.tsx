@@ -77,6 +77,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
     isAllInterviews,
     fetchMoreUserInterviews,
     fetchMoreNotUserInterviews,
+    removeDeletedInterview,
   } = useInterviewStore();
 
   const fetchInterviews = async () => {
@@ -100,14 +101,14 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
         setInterviews(
           isMain
             ? [...new Set(userInterviews)]
-            : [...new Set(userInterviews.slice(0, 4))]
+            : [...new Set(userInterviews.slice(0, 4))],
         );
       }
       if (selectedSection.id === 2) {
         setInterviews(
           isMain
             ? [...new Set(otherInterviews)]
-            : [...new Set(otherInterviews.slice(0, 4))]
+            : [...new Set(otherInterviews.slice(0, 4))],
         );
       }
     }
@@ -196,7 +197,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
                }
                 `}
             />
-          )
+          ),
         )}
       </div>
       <div>
@@ -240,6 +241,7 @@ const Interviews = memo(({ isMain = false }: { isMain?: boolean }) => {
                       key={interview.id}
                       interview={interview}
                       sectionId={selectedSection.id}
+                      removeDeletedInterview={removeDeletedInterview}
                     />
                   ))}
                 </div>

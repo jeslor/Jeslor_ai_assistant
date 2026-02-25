@@ -8,7 +8,11 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import useModalStore from "../provider/modalStore";
 import { toast } from "sonner";
 import { deleteInterview } from "@/lib/actions/interview.actions";
-const InterviewCard = ({ interview, sectionId }: any) => {
+const InterviewCard = ({
+  interview,
+  sectionId,
+  removeDeletedInterview,
+}: any) => {
   const { user } = useUserStore();
   const { openModal, closeModal } = useModalStore();
   const [feedback, setFeedback] = useState<any>(null);
@@ -37,6 +41,9 @@ const InterviewCard = ({ interview, sectionId }: any) => {
     try {
       const deleteInterView = await deleteInterview(interview.id);
       if (deleteInterView.status === 200) {
+        toast.success("Interview deleted successfully.");
+        removeDeletedInterview(interview.id);
+        closeModal();
       } else {
         toast.error("Error deleting interview. Please try again later.");
       }

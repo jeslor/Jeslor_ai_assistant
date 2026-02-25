@@ -15,6 +15,7 @@ interface InterviewStore {
   fetchMoreUserInterviews: () => Promise<void>;
   updateUserInterviews: (interview: any) => void;
   fetchMoreNotUserInterviews: () => Promise<void>;
+  removeDeletedInterview: (interviewId: number) => void;
   isAllInterviews: {
     user: boolean;
     other: boolean;
@@ -35,6 +36,17 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
   isAllInterviews: {
     user: false,
     other: false,
+  },
+
+  removeDeletedInterview: (interviewId: number) => {
+    set((state) => ({
+      userInterviews: state.userInterviews.filter(
+        (interview) => interview.id !== interviewId,
+      ),
+      otherInterviews: state.otherInterviews.filter(
+        (interview) => interview.id !== interviewId,
+      ),
+    }));
   },
 
   fetchUserInterviews: async () => {
@@ -58,7 +70,7 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
         const currentPage = get().pages.other;
         const interviews: any = await getInterviewsNotByUser(
           user.id,
-          currentPage
+          currentPage,
         );
         set({ otherInterviews: interviews.data });
       }
@@ -85,7 +97,7 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       }
     } catch (error) {
       toast.error(
-        "Error fetching more user interviews. Please try again later."
+        "Error fetching more user interviews. Please try again later.",
       );
     }
   },
@@ -100,7 +112,7 @@ const useInterviewStore = create<InterviewStore>((set, get) => ({
       const currentPage = get().pages.other + 1;
       const interviews: any = await getInterviewsNotByUser(
         user.id,
-        currentPage
+        currentPage,
       );
       if (interviews.data.length) {
         set((state) => ({
