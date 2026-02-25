@@ -38,179 +38,45 @@ git clone https://github.com/jeslor/jeslor_ai_assistant.git
 cd jeslor_ai_assistant
 ```
 
-### 2. Install Dependencies
+### 2. Install dependencies
 
 ```bash
 npm install
+# or
+yarn install
 ```
 
----
+### 3. Set up environment variables
 
-## 📄 Environment Variables
-
-Create a `.env` file in the root directory and add the following:
+Create a `.env.local` file at the root of the project and add your keys:
 
 ```env
-GOOGLE_GENERATIVE_AI_API_KEY=""
-NEXT_PUBLIC_VAPI_WEB_TOKEN=""
-NEXT_PUBLIC_VAPI_WORKFLOW_ID=""
-DATABASE_URL=""
-NEXTAUTH_SECRET=""
-NEXTAUTH_URL="http://localhost:3000"
-GITHUB_ID=""
-GITHUB_SECRET=""
+NEXT_PUBLIC_LOGO_TOKEN=your_logokit_token_here
+# ...other env variables
 ```
 
 ---
 
-## 🔐 Set Up Authentication with NextAuth
+## 🖼️ LogoKit Setup
 
-### Step 1: Install NextAuth
+This project uses [LogoKit](https://logokit.com) to display company logos on interview cards.
 
-```bash
-npm install next-auth@beta
-```
+### Steps to get your LogoKit token
 
-### Step 2: Create the Auth API Route
-
-Create the file: `app/api/auth/[...nextauth].ts`
-
-add Auth js
-
-```ts
-Go to [check procedure ](https://authjs.dev/getting-started)
-```
-
-### Step 3: Register a GitHub OAuth App
-
-1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Create a new OAuth App:
-   - Homepage: `http://localhost:3000`
-   - Callback URL: `http://localhost:3000/api/auth/callback/github`
-3. Paste the **Client ID** and **Client Secret** into `.env`
-
----
-
-## 🧠 Set Up Google Generative AI (Gemini API)
-
-1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click **“Get API Key”**
-4. Copy it and paste into your `.env`:
+1. Go to [https://logokit.com](https://logokit.com) and click **Sign Up**.
+2. Create an account using your email or a social login.
+3. Once logged in, navigate to your **Dashboard**.
+4. Locate your **API Token** (sometimes listed under _Settings_ or _API Keys_).
+5. Copy the token and paste it into your `.env.local` file:
 
 ```env
-GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
+NEXT_PUBLIC_LOGO_TOKEN=your_token_here
 ```
 
----
+> **Note:** The `NEXT_PUBLIC_` prefix is required for the token to be accessible in the browser (client-side components). Without it, Next.js will strip the value and it will appear as `undefined`.
 
-## 🎙️ Set Up Vapi Voice Workflow
+Logo URLs are constructed like this:
 
-### Step 1: Create a Vapi Account
-
-1. Go to [https://vapi.ai](https://vapi.ai) and sign up
-2. Open your [Vapi Dashboard](https://app.vapi.ai/dashboard)
-
----
-
-### Step 2: Create a Workflow
-
-1. Go to the **Workflows** tab → Click **"New Workflow"**
-2. Add the following actions:
-
-#### Workflow Steps:
-
-- **Say**:
-
-  > "Welcome to Jeslor! I will ask you a few questions to prepare your mock interview."
-
-- **Collect**:
-
-  - "What role are you interviewing for?"
-  - "What is your experience level?"
-  - "What is your tech stack?"
-  - "How many questions would you like in the interview?"
-  - "Which company are you preparing for?"
-
-- **Call API**:
-
-  - Set the API URL to your endpoint (e.g., `https://your-domain.com/api/start-interview`)
-  - Method: `POST`
-  - Body: Send collected values as JSON
-
-- **Say**:
-
-  > "Your interview has been generated. Good luck!"
-
-- **Hang Up**:
-  - End the call
-
-3. Save and publish the workflow
-4. Copy the Workflow ID and paste into `.env`:
-
-```env
-NEXT_PUBLIC_VAPI_WORKFLOW_ID=your_workflow_id
 ```
-
----
-
-### Step 3: Create a Vapi Assistant
-
-1. Go to the **Assistants** tab → Click **"Create Assistant"**
-2. Fill out the following:
-
-   - Name: _Jeslor Assistant_
-   - Model: **Vapi**
-   - Workflow: Select the one you just created
-
-3. Save the assistant
-
----
-
-### Step 4: Get the Vapi Web Token
-
-1. Go to **Settings > API** in Vapi dashboard
-2. Generate your Web Token
-3. Paste it into `.env`:
-
-```env
-NEXT_PUBLIC_VAPI_WEB_TOKEN=your_web_token
+https://img.logokit.com/{company-name}?token=YOUR_TOKEN&size=80x80&format=png
 ```
-
----
-
-## 🧪 Run the App Locally
-
-```bash
-npm run dev
-```
-
-Then open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## ☁️ Deploying to Vercel
-
-1. Push your project to GitHub
-2. Go to [https://vercel.com](https://vercel.com) and import your GitHub repo
-3. Set all environment variables in the Vercel dashboard
-4. Click **Deploy**
-
----
-
-## ✅ Sample `.env` Template
-
-```env
-GOOGLE_GENERATIVE_AI_API_KEY="your_google_api_key"
-NEXT_PUBLIC_VAPI_WEB_TOKEN="your_vapi_web_token"
-NEXT_PUBLIC_VAPI_WORKFLOW_ID="your_workflow_id"
-DATABASE_URL="your_database_connection_string"
-NEXTAUTH_SECRET="your_nextauth_secret"
-NEXTAUTH_URL="http://localhost:3000"
-```
-
----
-
-## 📄 License
-
-MIT License – Free to use and modify.

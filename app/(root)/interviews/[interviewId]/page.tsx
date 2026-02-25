@@ -28,9 +28,9 @@ const page = async ({ params }: any) => {
             <div className="bg-white/10 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-dark1/10 w-full h-full flex flex-col items-center">
               <div className="h-[40px] w-[40px] flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md mb-4">
                 <img
-                  src={`https://logo.clearbit.com/${refactorCompany(
-                    interview?.company as string
-                  )}`}
+                  src={`https://img.logokit.com/${refactorCompany(
+                    interview?.company as string,
+                  )}?token=${process.env.NEXT_PUBLIC_LOGO_TOKEN}&size=80x80&format=png`}
                   alt={refactorCompany(interview?.company as string)}
                   className="w-full h-full rounded-full  object-fit"
                 />
