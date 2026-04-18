@@ -8,14 +8,16 @@ export const POST = async (req: Request) => {
   const body = await req.json();
 
   try {
-    await prisma.$connect();
     const userExists = await prisma.user.findUnique({
       where: {
         email: body.email,
       },
     });
     if (userExists) {
-      return NextResponse.json({ error: "User already exists", status: 409 });
+      return NextResponse.json(
+        { error: "User already exists", status: 409 },
+        { status: 409 },
+      );
     }
 
     let user;
@@ -57,16 +59,23 @@ export const POST = async (req: Request) => {
       });
     }
 
-    return NextResponse.json({ user, status: 200 });
+    return NextResponse.json({ user, status: 200 }, { status: 200 });
   } catch (error: any) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors, status: 422 });
+      return NextResponse.json(
+        { error: error.errors, status: 422 },
+        { status: 422 },
+      );
     }
     if (error.code === "P2002") {
-      return NextResponse.json({ error: "Email already exists", status: 409 });
+      return NextResponse.json(
+        { error: "Email already exists", status: 409 },
+        { status: 409 },
+      );
     }
-    return NextResponse.json({ error: "Internal server error", status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json(
+      { error: "Internal server error", status: 500 },
+      { status: 500 },
+    );
   }
 };

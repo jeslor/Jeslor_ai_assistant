@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Controller } from "react-hook-form"; // Importing eye icons
+import { Controller } from "react-hook-form";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 interface FormInputProps {
@@ -29,10 +29,7 @@ const FormInput = ({
 }: FormInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  // Toggles password visibility
-  const togglePasswordVisibility = () => {
-    setShowPassword((prevState) => !prevState);
-  };
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   return (
     <Controller

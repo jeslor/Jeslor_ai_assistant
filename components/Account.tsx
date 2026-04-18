@@ -17,27 +17,23 @@ import { toast } from "sonner";
 type AccountFormData = z.infer<typeof accountValidator>;
 
 const Account = ({ type }: { type: string }) => {
-  const Router = useRouter();
+  const router = useRouter();
   const [signingIn, setSigningIn] = useState({
-    signingInCredentials: false,
-    signingInGitHub: false,
-    signingInGoogle: false,
-  });
-  const form = useForm<AccountFormData>({
-    resolver: zodResolver(accountValidator),
-    defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-    },
+    credentials: false,
+    github: false,
+    google: false,
   });
 
+  const form = useForm<AccountFormData>({
+    resolver: zodResolver(accountValidator),
+    defaultValues: { username: "", email: "", password: "" },
+  });
+
+  const setLoading = (provider: string, value: boolean) =>
+    setSigningIn((prev) => ({ ...prev, [provider]: value }));
+
   const onSubmit = async (data: AccountFormData) => {
-    setSigningIn({
-      signingInCredentials: true,
-      signingInGitHub: false,
-      signingInGoogle: false,
-    });
+    setLoading("credentials", true);
 
     try {
       if (type === "sign_in") {
@@ -47,11 +43,10 @@ const Account = ({ type }: { type: string }) => {
           redirect: false,
         });
         if (res?.error) {
-          toast.error(res.error);
-          console.error("Sign-in error:", res.error);
+          toast.error("Invalid email or password");
         } else {
           toast.success("Sign-in successful");
-          Router.push("/");
+          router.push("/");
         }
       }
 
@@ -63,62 +58,32 @@ const Account = ({ type }: { type: string }) => {
         });
         const result = await res.json();
         if (result.status === 200) {
-          const registeredUser = result.user;
           await signIn("credentials", {
-            email: registeredUser.email,
+            email: result.user.email,
             password: data.password,
-          }).then((res: any) => {
-            if (res?.error) {
-              toast.error(res.error);
-              console.error("Sign-in error:", res.error);
-            } else {
-              toast.success("Account created successfully");
-              Router.push("/");
-            }
+            redirect: false,
           });
+          toast.success("Account created successfully");
+          router.push("/");
         } else {
           toast.error(result.error);
         }
       }
-    } catch (error) {
-      console.error("Error during sign-in/sign-up:", error);
+    } catch {
+      toast.error("Something went wrong");
     } finally {
-      setSigningIn({
-        signingInCredentials: false,
-        signingInGitHub: false,
-        signingInGoogle: false,
-      });
+      setLoading("credentials", false);
     }
   };
 
-  const signInWithProvider = async (provider: string) => {
+  const signInWithProvider = async (provider: "google" | "github") => {
+    setLoading(provider, true);
     try {
-      if (provider === "google") {
-        setSigningIn({
-          signingInCredentials: false,
-          signingInGitHub: false,
-          signingInGoogle: true,
-        });
-        const res = await signIn("google");
-      }
-      if (provider === "github") {
-        setSigningIn({
-          signingInCredentials: false,
-          signingInGitHub: true,
-          signingInGoogle: false,
-        });
-        const res = await signIn("github");
-        console.log("GitHub sign-in response:", res);
-      }
-    } catch (error) {
-      console.error(`Error signing in with ${provider}:`, error);
+      await signIn(provider);
+    } catch {
       toast.error(`Failed to sign in with ${provider}`);
     } finally {
-      setSigningIn({
-        signingInCredentials: false,
-        signingInGitHub: false,
-        signingInGoogle: false,
-      });
+      setLoading(provider, false);
     }
   };
 
@@ -152,16 +117,27 @@ const Account = ({ type }: { type: string }) => {
           <FormInput
             control={form.control}
             label="password"
-            placeholder="password"
+            placeholder="Password"
             name="password"
             type="password"
           />
 
+          {type === "sign_in" && (
+            <div className="text-right -mt-4">
+              <Link
+                href="/forgot-password"
+                className="text-xs text-primary1/60 hover:text-primary1 font-medium"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          )}
+
           <Button type="submit" className="btn_primary px-10">
             {type === "sign_in" ? (
               <span className="flex items-center gap-2">
-                Sign In{" "}
-                {signingIn.signingInCredentials ? (
+                Sign In
+                {signingIn.credentials ? (
                   <Loading size={20} />
                 ) : (
                   <Icon icon="hugeicons:login-method" />
@@ -170,7 +146,7 @@ const Account = ({ type }: { type: string }) => {
             ) : (
               <span className="flex items-center gap-2">
                 Sign Up
-                {signingIn.signingInCredentials ? (
+                {signingIn.credentials ? (
                   <Loading size={20} />
                 ) : (
                   <Icon icon="ph:user-duotone" />
@@ -188,7 +164,7 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("google")}
           >
-            {signingIn.signingInGoogle ? (
+            {signingIn.google ? (
               <Loading size={20} />
             ) : (
               <Icon icon="logos:google-icon" />
@@ -200,10 +176,10 @@ const Account = ({ type }: { type: string }) => {
             className="btn_secondary flex items-center gap-2 bg-primary1/20 flex-1 cursor-pointer"
             onClick={() => signInWithProvider("github")}
           >
-            {signingIn.signingInGitHub ? (
+            {signingIn.github ? (
               <Loading size={20} />
             ) : (
-              <Icon icon="logos:github-icon" className="" />
+              <Icon icon="logos:github-icon" />
             )}
             GitHub
           </Button>
@@ -228,6 +204,3 @@ const Account = ({ type }: { type: string }) => {
 };
 
 export default Account;
-
-// z.infer<typeof accountValidator>;
-// z.infer<typeof accountValidator>
