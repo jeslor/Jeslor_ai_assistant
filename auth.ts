@@ -5,6 +5,9 @@ import GitHub from "next-auth/providers/github";
 
 import { comparePassword } from "./lib/helpers/user";
 
+const baseUrl =
+  process.env.NEXTAUTH_URL || process.env.AUTH_URL || "http://localhost:3000";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -13,7 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const { email, password } = credentials as {
           email: string;
           password: string;
@@ -25,27 +28,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         try {
-          const res = await fetch(
-            `${process.env.NEXTAUTH_URL}/api/auth/findUser`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ email }),
-            }
-          );
+          const res = await fetch(`${baseUrl}/api/auth/findUser`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
 
           if (!res.ok) {
             console.error("Failed to fetch user");
             return null;
           }
 
-          const user = await res.json();
+          const data = await res.json();
+
+          if (data.error) return null;
+
+          if (!data.hashedPassword) return null;
 
           const passwordValid = await comparePassword(
             password,
-            user.hashedPassword
+            data.hashedPassword,
           );
 
           if (!passwordValid) {
@@ -53,9 +55,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null;
           }
 
-          // Omit sensitive fields before returning
-          const { hashedPassword, ...safeUser } = user;
-          return safeUser;
+          const { hashedPassword, ...safeUser } = data;
+          return {
+            id: safeUser.id,
+            name: safeUser.username,
+            email: safeUser.email,
+            image: safeUser.profileImage,
+          };
         } catch (error) {
           console.error("Error during authorization:", error);
           return null;
@@ -63,8 +69,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
     Google({
-      clientId: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_ID,
-      clientSecret: process.env.AUTH_WEBAPP_GOOGLE_CLIENT_SECRET,
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
       authorization: {
         params: {
           prompt: "consent",
@@ -74,6 +80,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
     GitHub({
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
       profile(profile) {
         return {
           id: profile.id.toString(),
@@ -86,55 +94,80 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user, account, profile }) {
-      if (user) {
+    async signIn({ user, account }) {
+      if (account?.provider === "credentials") return true;
+
+      // OAuth: auto-register new users
+      if (
+        (account?.provider === "google" || account?.provider === "github") &&
+        user?.email
+      ) {
         try {
-          const res = await fetch(
-            `${process.env.NEXTAUTH_URL}/api/auth/findUser`,
-            {
-              method: "POST",
-              body: JSON.stringify({
-                email: user.email,
-              }),
-            }
-          );
+          const findRes = await fetch(`${baseUrl}/api/auth/findUser`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: user.email }),
+          });
 
-          const { error, status } = await res.json();
+          const findData = await findRes.json();
 
-          if (status > 200 && error === "User not found") {
-            await fetch(`${process.env.NEXTAUTH_URL}/api/auth/register`, {
+          if (findData.error === "User not found") {
+            const registerRes = await fetch(`${baseUrl}/api/auth/register`, {
               method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 email: user.email,
                 username: user.name,
                 profileImage: user.image,
-                isGitHub: true,
+                isGoogle: account.provider === "google",
+                isGitHub: account.provider === "github",
               }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                console.log(data);
+            });
 
-                if (data.status === 200) {
-                  console.log(data);
-                } else {
-                  throw new Error(data.error);
-                }
-              });
+            const registerData = await registerRes.json();
+            if (registerData.status !== 200) {
+              console.error(
+                "Failed to register OAuth user:",
+                registerData.error,
+              );
+              return false;
+            }
           }
         } catch (error) {
-          console.log(error);
+          console.error("Error in signIn callback:", error);
+          return false;
         }
       }
+
       return true;
+    },
+
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.image = token.picture as string;
+      }
+      return session;
     },
   },
 
   pages: {
-    signIn: "/sign_in", // Custom sign-in page
+    signIn: "/sign_in",
   },
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 });

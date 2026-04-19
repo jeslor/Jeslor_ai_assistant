@@ -1,13 +1,19 @@
 import { auth } from "@/auth";
 import React, { ReactNode } from "react";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 const AuthLayout = async ({ children }: { children: ReactNode }) => {
   const session = await auth();
+  const headerList = await headers();
+  const pathname = headerList.get("x-next-pathname") || "";
+  const isResetPage =
+    pathname.includes("reset-password") || pathname.includes("forgot-password");
 
-  if (session && session.user) {
+  if (session?.user && !isResetPage) {
     redirect("/");
   }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-dark1/95 via-black-900 to-dark1 w-full fixed">
       <div className="relative bg-slate-200/5 backdrop-blur-md px-4 py-10 md:py-10 md:px-10 rounded-2xl shadow-2xl w-full max-w-md border border-slate-200/10">
