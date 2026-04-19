@@ -1,4 +1,4 @@
-# 🤖 Jeslor AI Assistant
+# 🤖 Jeslor Interview AI
 
 Jeslor-assistant is a voice-enabled AI chatbot built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Google Gemini API**, **Vapi**, **Vercel AI SDK**, and **NextAuth**. It simulates mock technical interviews using voice or text.
 
@@ -42,21 +42,23 @@ cd jeslor_ai_assistant
 
 ```bash
 npm install
-# or
-yarn install
 ```
 
 ### 3. Set up environment variables
 
-Create a `.env.local` file at the root of the project and add all required keys:
+Create a `.env` file at the root of the project:
 
 ```env
+# ── App ───────────────────────────────────────────────────────────────────────
+APP_NAME="Jeslor Interview AI"
+
 # ── Database ──────────────────────────────────────────────────────────────────
 DATABASE_URL=your_mongodb_connection_string
 
 # ── NextAuth ──────────────────────────────────────────────────────────────────
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_nextauth_secret
+AUTH_TRUST_HOST=true
 
 # ── Google OAuth ──────────────────────────────────────────────────────────────
 AUTH_WEBAPP_GOOGLE_CLIENT_ID=your_google_client_id
@@ -71,10 +73,38 @@ GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_api_key
 
 # ── Vapi (client-side) ────────────────────────────────────────────────────────
 NEXT_PUBLIC_VAPI_WEB_TOKEN=your_vapi_web_token
+NEXT_PUBLIC_VAPI_WORKFLOW_ID=your_vapi_workflow_id
 
 # ── LogoKit (client-side) ─────────────────────────────────────────────────────
 NEXT_PUBLIC_LOGO_TOKEN=your_logokit_token
+
+# ── SMTP (password reset emails) ─────────────────────────────────────────────
+EMAIL_HOST=your_smtp_host
+EMAIL_PORT=465
+EMAIL_SECURE=true
+EMAIL_USER=your_email@example.com
+EMAIL_PASS=your_email_password
 ```
+
+### 4. Generate Prisma client
+
+```bash
+npx prisma generate
+```
+
+### 5. Push database schema
+
+```bash
+npx prisma db push
+```
+
+### 6. Run the development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
@@ -135,7 +165,7 @@ openssl rand -base64 32
 
 ### `GOOGLE_GENERATIVE_AI_API_KEY` — Google Gemini AI
 
-This key is used by the `@ai-sdk/google` package to generate interview questions and analyse feedback via the Gemini model.
+Used by the `@ai-sdk/google` package to generate interview questions and grade feedback via the Gemini model.
 
 1. Go to [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey).
 2. Click **Create API key**.
@@ -143,13 +173,14 @@ This key is used by the `@ai-sdk/google` package to generate interview questions
 
 ---
 
-### `NEXT_PUBLIC_VAPI_WEB_TOKEN` — Vapi Voice AI
+### `NEXT_PUBLIC_VAPI_WEB_TOKEN` & `NEXT_PUBLIC_VAPI_WORKFLOW_ID` — Vapi Voice AI
 
 1. Go to [https://dashboard.vapi.ai](https://dashboard.vapi.ai) and sign up.
 2. From the dashboard, navigate to **API Keys** or **Settings**.
 3. Copy your **Web Token** (the public/client-side token, not the private API key).
+4. Create a workflow for interview generation and copy the **Workflow ID**.
 
-> **Note:** The `NEXT_PUBLIC_` prefix exposes this value to the browser. Never use your private Vapi API key here.
+> **Note:** The `NEXT_PUBLIC_` prefix exposes these values to the browser. Never use your private Vapi API key here.
 
 ---
 
@@ -161,10 +192,47 @@ Used to display company logos on interview cards.
 2. Once logged in, navigate to your **Dashboard** → **API Keys** (or **Settings**).
 3. Copy your **API Token**.
 
-Logo URLs are constructed like this:
-
-```
-https://img.logokit.com/{company-name}?token=YOUR_TOKEN&size=80x80&format=png
-```
-
 > **Note:** The `NEXT_PUBLIC_` prefix is required so the token is accessible in client-side components.
+
+---
+
+### SMTP Variables — Password Reset Emails
+
+The forgot/reset password flow sends emails via SMTP using Nodemailer.
+
+| Variable       | Description                                                                    |
+| -------------- | ------------------------------------------------------------------------------ |
+| `EMAIL_HOST`   | Your SMTP server hostname (e.g. `smtp.gmail.com`, `server334.web-hosting.com`) |
+| `EMAIL_PORT`   | SMTP port — `465` for SSL, `587` for TLS                                       |
+| `EMAIL_SECURE` | Set to `true` for port 465                                                     |
+| `EMAIL_USER`   | The sender email address                                                       |
+| `EMAIL_PASS`   | The email account password (use an App Password for Gmail)                     |
+
+> **Gmail users:** Enable 2-Step Verification and generate an [App Password](https://myaccount.google.com/apppasswords).
+
+---
+
+## 🚢 Deployment
+
+### Vercel
+
+1. Push your repo to GitHub.
+2. Import the project on [Vercel](https://vercel.com/new).
+3. Add all environment variables from your `.env` file in the Vercel dashboard.
+4. Set `NEXTAUTH_URL` to your production domain.
+5. Deploy.
+
+Prisma client generation runs automatically during `next build`.
+
+---
+
+## 📜 Scripts
+
+| Script          | Command                   | Description                   |
+| --------------- | ------------------------- | ----------------------------- |
+| Dev server      | `npm run dev`             | Starts Next.js with Turbopack |
+| Build           | `npm run build`           | Production build              |
+| Start           | `npm start`               | Starts production server      |
+| Lint            | `npm run lint`            | Runs ESLint                   |
+| Prisma Generate | `npm run prisma:generate` | Generates Prisma client       |
+| Prisma Push     | `npm run prisma:push`     | Pushes schema to database     |
