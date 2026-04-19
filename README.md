@@ -1,101 +1,41 @@
 # 🤖 Jeslor Interview AI
 
-An AI-powered mock interview platform built with **Next.js 15**, **TypeScript**, **Tailwind CSS v4**, **Google Gemini**, **Vapi Voice AI**, and **Prisma** (MongoDB). Generate, conduct, and receive AI-graded feedback on job interviews — entirely through voice.
+Jeslor-assistant is a voice-enabled AI chatbot built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Google Gemini API**, **Vapi**, **Vercel AI SDK**, and **NextAuth**. It simulates mock technical interviews using voice or text.
+
+ <a href="https://www.assistant.jeslor.com" target="_blank" rel="noopener noreferrer">🌐 Try Demo</a>
+---
 
 ## ✨ Features
 
-- 🎙️ **Real-time voice interviews** — powered by Vapi (Deepgram transcription + ElevenLabs voice + GPT-4)
-- 🤖 **AI interview generation** — describe a role via voice or paste a job description; Gemini creates tailored questions
-- 📊 **Detailed AI feedback** — scored across 13 skill categories with strengths, weaknesses, and a final assessment
-- 🔐 **Authentication** — Credentials (email/password), Google OAuth, and GitHub OAuth via NextAuth v5
-- 📧 **Password reset** — email-based forgot/reset password flow via SMTP (Nodemailer)
-- 🏢 **Company logos** — auto-fetched via LogoKit on interview cards
-- ♾️ **Infinite scroll** — paginated interview listings (your interviews + community interviews)
-- 🎨 **Polished UI** — Framer Motion animations, Radix UI primitives, glassmorphism, animated backgrounds
-- 🌐 **Deployable to Vercel** — zero-config deployment
+- 💡 AI-powered by Google Gemini
+- 🎙️ Voice conversations via Vapi
+- 🧠 Collects mock interview setup data
+- 🔐 Auth via NextAuth.js (Credentials, github and google)
+- 🎨 Styled with Tailwind CSS
+- ⚡ Streamed responses using Vercel AI SDK
+- ☁️ Easy to deploy on Vercel
+
+---
 
 ## 🛠️ Tech Stack
 
-| Layer      | Technology                                                                                                                          |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Framework  | [Next.js 15](https://nextjs.org/) (App Router, Turbopack)                                                                           |
-| Language   | [TypeScript](https://www.typescriptlang.org/)                                                                                       |
-| Database   | [MongoDB](https://www.mongodb.com/) via [Prisma ORM](https://www.prisma.io/) + Prisma Accelerate                                    |
-| Auth       | [NextAuth v5](https://authjs.dev/) (Credentials, Google, GitHub)                                                                    |
-| AI (text)  | [Google Gemini 2.5 Flash](https://ai.google.dev/) via [Vercel AI SDK](https://vercel.com/docs/ai)                                   |
-| AI (voice) | [Vapi](https://vapi.ai/) (Deepgram + ElevenLabs + GPT-4)                                                                            |
-| State      | [Zustand](https://zustand-demo.pmnd.rs/)                                                                                            |
-| Forms      | [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)                                                           |
-| Styling    | [Tailwind CSS v4](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/), [Radix UI](https://www.radix-ui.com/) |
-| Email      | [Nodemailer](https://nodemailer.com/) (SMTP)                                                                                        |
-| Icons      | [Iconify](https://iconify.design/)                                                                                                  |
-| Animations | [DotLottie](https://lottiefiles.com/)                                                                                               |
+- [Next.js](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Google Generative AI (Gemini)](https://ai.google.dev/)
+- [Vercel AI SDK](https://vercel.com/docs/ai)
+- [Vapi](https://vapi.ai/)
+- [NextAuth.js](https://next-auth.js.org/)
 
-## 📁 Project Structure
-
-```
-├── app/
-│   ├── (auth)/                    # Auth pages (sign in, sign up, forgot/reset password)
-│   ├── (root)/                    # Protected pages (dashboard, interviews, feedbacks)
-│   └── api/
-│       ├── auth/                  # NextAuth routes, register, forgot/reset password
-│       └── vapi/generate/         # API-based interview generation
-├── components/
-│   ├── Agent/                     # Voice AI call interface
-│   ├── interviews/                # Interview listing & cards
-│   ├── Manual/                    # Help/FAQ accordion
-│   ├── modal/                     # Generic modal system
-│   ├── navbar/                    # Navigation bar
-│   ├── postionInput/              # Job description paste input
-│   ├── provider/                  # Zustand stores (user, interview, modal)
-│   ├── skeletons/                 # Loading skeletons
-│   └── ui/                        # Reusable UI primitives (button, form, input, etc.)
-├── constants/                     # Vapi assistant configurations
-├── lib/
-│   ├── actions/                   # Server actions (interview, feedback, user)
-│   ├── generated/prisma/          # Generated Prisma client
-│   ├── helpers/                   # Email, hashing, JSON parsing, URL utils
-│   ├── prisma/                    # Prisma client singleton
-│   └── validators/                # Zod schemas (account, interview, feedback)
-├── prisma/schema.prisma           # Database schema
-└── auth.ts                        # NextAuth v5 configuration
-```
-
-## 🔄 How It Works
-
-### Interview Generation (two paths)
-
-1. **Voice-based** — Talk to the AI assistant on the home page. Describe the role, type, level, company, skills, and question count. The Vapi agent collects information, then Gemini parses the transcript to generate a tailored interview.
-2. **Paste job description** — Paste a job listing, fill in a short form (company, question count, interview type, level), and Gemini extracts relevant details and generates questions.
-
-### Conducting an Interview
-
-Navigate to an interview and click the call button. A real-time voice call starts with a Vapi-powered AI interviewer that asks the generated questions, follows up, and interacts naturally.
-
-### AI Feedback
-
-When the call ends, the full transcript is sent to Gemini, which grades the response across **13 skill categories**:
-
-> Communication, Technical Knowledge, Problem-Solving, Cultural Fit, Confidence, Leadership, Adaptability, Collaboration, Emotional Intelligence, Initiative, Creativity, Resilience, Attention to Detail
-
-Each category receives a score and comment. You also get an overall score (out of 100), a list of strengths and areas for improvement, and a final assessment.
-
-### Database Models
-
-| Model                | Description                                                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------------- |
-| `User`               | Email/password or OAuth user. Has interviews, feedbacks, and reset tokens.                      |
-| `Interview`          | Role, level, type, company, tech stack, questions. Linked to a user.                            |
-| `Feedback`           | Total score, 13 category scores (embedded), strengths, areas for improvement, final assessment. |
-| `PasswordResetToken` | Token-based email password reset with 1-hour expiry.                                            |
+---
 
 ## 🚀 Getting Started
 
-### 1. Clone the repo
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/ai_chat_bot.git
-cd ai_chat_bot
+git clone https://github.com/jeslor/jeslor_ai_assistant.git
+cd jeslor_ai_assistant
 ```
 
 ### 2. Install dependencies
